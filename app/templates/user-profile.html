@@ -1,0 +1,10 @@
+<h1>@<%= user.get('username') %></h1>
+<div class="posts">
+<% posts.each(function (post) { %>
+    <div class="post">
+        <p>
+            <%= post.getMessageRegexed() %>
+        </p>
+    </div>
+<% }); %>
+</div>
