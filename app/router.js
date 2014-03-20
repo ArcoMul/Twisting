@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var app = require("app");
     var UserModel = require("models/User");
     var UserProfileView = require("views/UserProfile");
+    var FeedView = require("views/Feed");
     var NotYetImplementedView = require("views/NotYetImplemented");
 
     // Defining the application router.
@@ -13,7 +14,7 @@ define(function(require, exports, module) {
         routes: {
             "index.html": "index",
             "user/:user": "user",
-            "feed": "notYetImplemented",
+            "feed": "feed",
             "settings": "notYetImplemented",
             "logout": "notYetImplemented"
         },
@@ -26,6 +27,11 @@ define(function(require, exports, module) {
         user: function(user) {
             console.log("User route:", user);
             var view = new UserProfileView({model: new UserModel({username: user})});
+            view.render();
+        },
+
+        feed: function () {
+            var view = new FeedView();
             view.render();
         },
 

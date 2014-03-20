@@ -99,7 +99,7 @@ define (['jquery.json'], function ($) {
       },
 
       success  : function(data) {
-        if ('error' in data) error_cb(data.error);
+        // if ('error' in data) error_cb(data.error);
         success_cb(data.result);
       },
 
