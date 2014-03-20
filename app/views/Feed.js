@@ -8,6 +8,7 @@ define(function(require, exports, module) {
     var feedTemplate = _.template(require("text!templates/feed.html"));
     var PostsCollection = require("collections/posts");
     var PostModel = require("models/Post");
+    var UserModel = require("models/User");
     var Twister = require("Twister");
     var async = require("async");
 
@@ -20,26 +21,26 @@ define(function(require, exports, module) {
         },
 
         initialize: function() {
-            console.log("Initialize user profile");
+            console.log("Initialize feed");
             
             var self = this;
+            var users = [];
 
             this.posts = new PostsCollection();
 
-            Twister.getFollowing(function (err, users) {
-                async.each(users, function (user, callback) {
-                    Twister.getPosts(user, 10, function (err, data) {
+            Twister.getFollowing(function (err, usernames) {
+                async.each(usernames, function (username, callback) {
+                    var user = new UserModel({username: username});
+                    user.fetchPosts(10, function (err, posts) {
                         if (err) {
                             console.log('Error getting user posts for user:', user, err);
                             return;
                         }
-                        _.each(data, function (item) {
-                            self.posts.add([new PostModel({message: item.msg, username: item.n})]);
-                        });
+                        self.posts.add(posts);
                         callback();
                     });
                 }, function () {
-                    console.log ('async done', self.posts);
+                    console.log ('Got all initial feed posts:', self.posts);
                     self.render();
                 });
             });

@@ -4,6 +4,7 @@ define(function(require, exports, module) {
     // External dependencies.
     var Backbone = require("backbone");
     var app = require("app");
+    var moment = require("moment");
 
     // Defining the application router.
     module.exports = Backbone.Model.extend({
@@ -14,6 +15,11 @@ define(function(require, exports, module) {
         getMessageRegexed: function () {
             if (!this.get('message')) return "";
             return this.get('message').replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a href="/user/$2">@$2</a>' );
+        },
+
+        getTimeAgo: function ()
+        {
+            return moment(this.get('time') * 1000).fromNow();
         }
     });
 });

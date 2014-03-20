@@ -7,6 +7,7 @@ require.config({
     "underscore": "../vendor/bower/lodash/dist/lodash.underscore",
     "jquery": "../vendor/bower/jquery/dist/jquery",
     "backbone": "../vendor/bower/backbone/backbone",
-    "async": "../vendor/bower/async/lib/async"
+    "async": "../vendor/bower/async/lib/async",
+    "moment": "../vendor/bower/moment/moment"
   }
 });

@@ -31,7 +31,7 @@ define(function(require, exports, module) {
                     return;
                 }
                 _.each(data, function (item) {
-                    self.posts.add([new PostModel({message: item.msg, username: item.n})]);
+                    self.posts.add([new PostModel({message: item.msg, username: item.n, time: item.time})]);
                 });
                 self.render();
             });

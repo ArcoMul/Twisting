@@ -3,7 +3,8 @@
 <% posts.each(function (post) { %>
     <div class="post">
         <p>
-            <%= post.getMessageRegexed() %>
+            <a href="/user/<%= post.get('username') %>">@<%= post.get('username') %></a>: <%= post.getMessageRegexed() %><br />
+            <em><%= post.getTimeAgo() %></em>
         </p>
     </div>
 <% }); %>
