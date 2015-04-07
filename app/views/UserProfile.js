@@ -18,6 +18,8 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
+    el: "#main-page",
+
     posts: null,
 
     events: {
@@ -37,67 +39,16 @@ module.exports = Backbone.View.extend({
         this.feed.fetchPosts(100, function (err, user) {
             this.render();
             this.feed.fetchAvatars(function (err, user, posts) {
-                console.log('set avatar of user for post', user, posts);
                 _.each(posts, function (post) {
                     this.$el.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
                 }, this);
             }.bind(this));
         }.bind(this));
-
-        /*j
-        this.feed.fetchPosts(100, function (err) {
-            if (err) {
-                console.log('Error getting user posts for user:', user, err);
-                return;
-            }
-
-            console.log(this.feed);
-
-            this.render();
-
-        }.bind(this));
-        */
-
-        /*
-        Twister.getPosts(this.model.get('username'), 10, function (err, data) {
-            if (err) {
-                console.log('Error getting user posts:', err);
-                return;
-            }
-
-            _.each(data, function (item) {
-                var user = this.users.findWhere({username: item.n});
-                if (!user) {
-                    user = new UserModel({username: item.n}); 
-                    this.users.add(user);
-                }
-                this.posts.add([new PostModel({message: item.msg, user: user, time: item.time})]);
-            }, this);
-
-            this.render();
-
-            async.eachSeries(this.users.models, function (user, callback) {
-                user.fetchAvatar(function (err) {
-                    callback();
-                    _.each(this.posts.where({user: user}), function (post) {
-                        console.log('set avatar of post', user.get('avatar'));
-                        this.$el.find(".post[data-id="+post.cid+"] .left img").attr('src', user.get('avatar'));
-                    }, this);
-                }.bind(this));
-            }.bind(this),
-            function () {
-                console.log('All avatars fetched');
-            });
-        }.bind(this));
-        */
-
-        this.setElement($("#main-page"));
     },
 
     navigate: function (e) {
-        console.log (arguments);
-        app.router.navigate(e.target.pathname, {trigger: true});
         e.preventDefault();
+        app.router.navigate(e.target.pathname, {trigger: true});
     },
 
     render: function() {

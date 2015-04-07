@@ -16,8 +16,13 @@ Backbone.$ = $;
 // Defining the application router.
 module.exports = Backbone.Model.extend({
     defaults: {
-        users: new UserCollection(),
-        posts: new PostsCollection()
+        users: null,
+        posts: null 
+    },
+
+    initialize: function () {
+        this.set('users', new UserCollection());
+        this.set('posts', new PostsCollection());
     },
 
     fetchPosts: function (amount, callback) {

@@ -14,8 +14,12 @@ Backbone.$ = $;
 module.exports = Backbone.Model.extend({
     defaults: {
         username: null,
-        posts: new PostsCollection(),
+        posts: null,
         avatar: null
+    },
+
+    initialize: function () {
+        this.set('posts', new PostsCollection());
     },
 
     fetchPosts: function (amount, callback) {

@@ -18,6 +18,8 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
+    el : "#main-page",
+
     posts: null,
 
     events: {
@@ -65,8 +67,6 @@ module.exports = Backbone.View.extend({
                 }.bind(this));
             }.bind(this));
         }.bind(this));
-
-        this.setElement($("#main-page"));
     },
 
     navigate: function (e) {
@@ -95,8 +95,11 @@ module.exports = Backbone.View.extend({
     },
 
     render: function() {
-        console.log("Render user profile");
-        this.$el.html(feedTemplate({user: this.model, posts: this.feed.get('posts')}));
+        console.log("Render Feed");
+        this.$el.html(feedTemplate({
+            user: this.model,
+            posts: this.feed.get('posts')
+        }));
         return this;
     }
 });
