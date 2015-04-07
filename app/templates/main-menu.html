@@ -1,21 +1,34 @@
-<div class="center">
-    <ul class="left">
-        <li>
-            <a href="feed">Feed</a>
-        </li>
-        <li>
-            <a href="user/<%= user.get('username') %>">Profile</a>
-        </li>
-        <br style="clear: both" />
-    </ul>
-    <ul class="right">
-        <li>
-            <a href="settings">Settings</a>
-        </li>
-        <li>
-            <a href="logout">Log out</a>
-        </li>
-        <br style="clear: both" />
-    </ul>
+<ul class="left">
+    <li class="bold">
+        <a href="compose">W</a>
+    </li>
+    <li class="border"></li>
+    <li>
+        <a href="user/<%= user.get('username') %>">P</a>
+    </li>
+    <li>
+        <a href="mentions">M</a>
+    </li>
+    <li>
+        <a href="messages">M</a>
+    </li>
     <br style="clear: both" />
-</div>
+</ul>
+<ul class="middle">
+    <li>
+        <a href="feed">F</a>
+    </li>
+</ul>
+<ul class="right">
+    <li>
+        <input type="text" name="search" placeholder="Search" />
+    </li>
+    <li>
+        <a href="settings">S</a>
+    </li>
+    <li>
+        <a href="logout">X</a>
+    </li>
+    <br style="clear: both" />
+</ul>
+<br style="clear: both" />
