@@ -2,3 +2,19 @@
 /node_modules/
 /vendor/bower/
 /test/coverage/
+
+.DS_Store
+npm-debug.log
+
+*.dll
+*.exe
+*.dat
+*.pak
+
+### Vim ###
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~

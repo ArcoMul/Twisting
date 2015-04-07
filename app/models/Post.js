@@ -1,25 +1,29 @@
-define(function(require, exports, module) {
-    "use strict";
+"use strict";
 
-    // External dependencies.
-    var Backbone = require("backbone");
-    var app = require("app");
-    var moment = require("moment");
+// External dependencies.
+var $ = require("jquery");
+var Backbone = require("backbone");
+var app = require("../app");
+var moment = require("moment");
 
-    // Defining the application router.
-    module.exports = Backbone.Model.extend({
+Backbone.$ = $;
+
+// Defining the application router.
+module.exports = Backbone.Model.extend({
+    defaults: {
         message: null,
         time: null,
         user: null,
+        retwist: false
+    },
 
-        getMessageRegexed: function () {
-            if (!this.get('message')) return "";
-            return this.get('message').replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a href="/user/$2">@$2</a>' );
-        },
+    getMessageRegexed: function () {
+        if (!this.get('message')) return "";
+        return this.get('message').replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a class="username" href="/user/$2">$2</a>' );
+    },
 
-        getTimeAgo: function ()
-        {
-            return moment(this.get('time') * 1000).fromNow();
-        }
-    });
+    getTimeAgo: function ()
+    {
+        return moment(this.get('time') * 1000).fromNow();
+    }
 });

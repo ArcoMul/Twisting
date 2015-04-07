@@ -1,30 +1,31 @@
-define(function(require, exports, module) {
-    "use strict";
+"use strict";
 
-    // External dependencies.
-    var Backbone = require("backbone");
-    var app = require("app");
-    var mainMenuTemplate = _.template(require("text!templates/main-menu.html"));
+// External dependencies.
+var $ = require("jquery");
+var Backbone = require("backbone");
+var app = require("../app");
+var _ = require("underscore");
+var mainMenuTemplate = _.template(require("../templates/main-menu.html"));
 
-    module.exports = Backbone.View.extend({
+Backbone.$ = $;
 
-        events: {
-            "click a": "navigate",
-        },
+module.exports = Backbone.View.extend({
 
-        initialize: function() {
-            this.setElement($("#main-menu"));
-        },
+    events: {
+        "click a": "navigate",
+    },
 
-        navigate: function (e) {
-            app.router.navigate(e.target.pathname, {trigger: true});
-            e.preventDefault();
-        },
+    initialize: function() {
+        this.setElement($("#main-menu"));
+    },
 
-        render: function() {
-            this.$el.html(mainMenuTemplate({user: this.model}));
-            return this;
-        }
-    });
+    navigate: function (e) {
+        e.preventDefault();
+        app.router.navigate($(e.target).attr('href'), {trigger: true});
+    },
+
+    render: function() {
+        this.$el.html(mainMenuTemplate({user: this.model}));
+        return this;
+    }
 });
-

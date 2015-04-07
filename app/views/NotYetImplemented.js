@@ -1,29 +1,30 @@
-define(function(require, exports, module) {
-    "use strict";
+"use strict";
 
-    // External dependencies.
-    var Backbone = require("backbone");
-    var notYetImplementedTemplate = _.template(require("text!templates/not-yet-implemented.html"));
+// External dependencies.
+var $ = require("jquery");
+var Backbone = require("backbone");
+var _ = require("underscore");
+var notYetImplementedTemplate = _.template(require("../templates/not-yet-implemented.html"));
 
-    module.exports = Backbone.View.extend({
+Backbone.$ = $;
 
-        events: {
-            "click a": "navigate",
-        },
+module.exports = Backbone.View.extend({
 
-        initialize: function() {
-            this.setElement($("#main-page"));
-        },
+    events: {
+        "click a": "navigate",
+    },
 
-        navigate: function (e) {
-            app.router.navigate(e.target.pathname, {trigger: true});
-            e.preventDefault();
-        },
+    initialize: function() {
+        this.setElement($("#main-page"));
+    },
 
-        render: function() {
-            this.$el.html(notYetImplementedTemplate());
-            return this;
-        }
-    });
+    navigate: function (e) {
+        app.router.navigate(e.target.pathname, {trigger: true});
+        e.preventDefault();
+    },
+
+    render: function() {
+        this.$el.html(notYetImplementedTemplate());
+        return this;
+    }
 });
-
