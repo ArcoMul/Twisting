@@ -2,6 +2,17 @@
   "name": "Twist It",
   "version": "1.0.0",
   "main": "index.html",
+  "window": {
+    "title": "Twist It",
+    "icon": "link.png",
+    "toolbar": false,
+    "frame": false,
+    "width": 1024,
+    "height": 768,
+    "position": "mouse",
+    "min_width": 800,
+    "min_height": 600
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "bbb": "~0.2.0",

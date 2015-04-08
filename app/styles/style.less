@@ -28,6 +28,8 @@ a {
     position: fixed;
     box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.1);
     z-index: 1;
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
 
     ul {
         list-style: none;
@@ -61,6 +63,7 @@ a {
                 margin: 15px !important;
             }
             a {
+                -webkit-app-region: no-drag;
                 display: block;
                 padding: 5px;
                 color: #000;
