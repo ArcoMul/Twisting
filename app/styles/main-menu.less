@@ -1,0 +1,90 @@
+#main-menu {
+    margin: 0;
+    background-color: #FFFBF5;
+    box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        &.left { 
+            float: left;
+            a { margin: 15px 0 15px 15px; }
+        }
+        &.middle { margin: 0 50%; }
+        &.right {
+            float: right;
+            a { margin: 15px 15px 15px 0; }
+        }
+
+        li {
+            float: left;
+            &.border {
+                height: 67px;
+                width: 1px;
+                background-color: #E0E0E0;
+            }
+            &.bold a {
+                background-color: #80A8CC;
+                color: #FFFBF5;
+                border: 0;
+                width: 27px;
+                height: 27px;
+                line-height: 27px;
+                margin: 15px !important;
+                background-size: 37px;
+                opacity: 1;
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+            a {
+                -webkit-app-region: no-drag;
+                display: block;
+                padding: 5px;
+                color: #000;
+                text-decoration: none;
+                width: 25px;
+                height: 25px;
+                margin: 15px;
+                border: 1px solid #E0E0E0;
+                border-radius: 25px;
+                text-align: center;
+                line-height: 25px;
+                &:hover {
+                    background-color: #F5F5F5;
+                }
+                &.feed {
+                    -webkit-mask: url(../svg/twister.svg);
+                    background-color: #6992B8;
+                    border-radius: 0;
+                    padding: 0;
+                    width: 35px;
+                    border: 0;
+                    height: 30px;
+                    margin: 19px;
+                }
+            }
+            input {
+                display: block;
+                padding: 5px 15px;
+                text-decoration: none;
+                height: 25px;
+                margin: 15px;
+                border: 1px solid #E0E0E0;
+                border-radius: 25px;
+                line-height: 25px;
+                background-color: #FFFBF5;
+                width: 125px;
+                color: #605e58;
+                font-weight: lighter;
+                font-size: 14px;
+                font-family: 'Open Sans';
+            }
+        }
+    }
+}

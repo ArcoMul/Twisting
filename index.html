@@ -1,32 +1,28 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <title>Twister</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/png" href="/favicon.png" />
-
-  <title>Twister</title>
-
-  <!-- Application styles. -->
-  <!-- build:[href] /styles.min.css -->
   <link rel="stylesheet" href="app/styles/index.css">
-  <!-- /build -->
 </head>
 
 <body>
-  <!-- Application container. -->
   <main role="main" id="main">
+    <!-- The main menu, duh -->
     <div id="main-menu"></div>
-    <div id="main-page"></div> 
-  </main>
 
-  <!-- Application source. -->
-  <!-- build:[src] /source.min.js -->
-  <!--<script data-main="app/main" src="vendor/bower/requirejs/require.js"></script>-->
-  <!-- /build -->
+    <!-- The rest of the page (scrollable) -->
+    <div id="main-scrollable">
+        <div id="main-page">
+
+        </div> 
+    </div>
+  </main>
   <script>
-        console.log('start');
+        // Start the app!
         require('./app/main');
   </script>
 </body>

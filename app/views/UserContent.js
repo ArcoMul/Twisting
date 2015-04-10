@@ -6,7 +6,7 @@ var $ = require("jquery"),
     async = require("async"),
     app = require("../app"),
     _ = require("underscore"),
-    userProfileTemplate = _.template(require("../templates/user-profile.html")),
+    postsContentTemplate = _.template(require("../templates/content-posts.html")),
     postTemplate = _.template(require("../templates/post.html")),
     PostsCollection = require("../collections/posts"),
     UserCollection = require("../collections/users"),
@@ -18,8 +18,6 @@ var $ = require("jquery"),
 Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
-
-    el: "#main-page",
 
     posts: null,
 
@@ -35,12 +33,12 @@ module.exports = Backbone.View.extend({
         this.feed = new FeedModel();
         this.feed.get('users').add(new UserModel({username: this.model.get('username')}));
         this.feed.get('posts').on('add', function (post) {
-            this.$el.children('.posts').first().append(postTemplate({post: post}));
+            this.$el.children('#content-posts').first().append(postTemplate({post: post}));
         }.bind(this));
 
         this.loadPosts();
 
-        $(window.document).scroll(this.scroll.bind(this));
+        $("#main-scrollable").scroll(this.scroll.bind(this));
     },
 
     navigate: function (e) {
@@ -70,24 +68,24 @@ module.exports = Backbone.View.extend({
     },
 
     scroll: function (e) {
-        var bottomOfScreen = $(window).height() + $(window).scrollTop();
+        var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
         var indexJustOutOfScreen;
         var index = 0;
-        $('#main-page .posts .post').each(function () {
-            if ($(this).offset().top > bottomOfScreen) {
+        this.$el.children('#content-posts').children().each(function () {
+            if ($(this).position().top > bottomOfScreen) {
                 indexJustOutOfScreen = index;
                 return false;
             }
             index++;
         });
-        if (indexJustOutOfScreen == $('#main-page .posts .post').length - 1) {
+        if (indexJustOutOfScreen == this.$el.children('#content-posts').children().length - 1) {
             this.loadPosts();
         }
     },
 
     render: function() {
         console.log("Render user profile");
-        this.$el.html(userProfileTemplate({user: this.model}));
+        this.$el.html(postsContentTemplate({user: this.model}));
         return this;
     },
 

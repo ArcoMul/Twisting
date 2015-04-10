@@ -1,10 +1,9 @@
 <ul class="left">
     <li class="bold">
-        <a href="compose">W</a>
+        <a class="user-profile" href="user/<%= user.get('username') %>"></a>
     </li>
     <li class="border"></li>
     <li>
-        <a href="user/<%= user.get('username') %>">P</a>
     </li>
     <li>
         <a href="mentions">M</a>
@@ -16,7 +15,7 @@
 </ul>
 <ul class="middle">
     <li>
-        <a href="feed">F</a>
+        <a class="feed" href="feed"></a>
     </li>
 </ul>
 <ul class="right">

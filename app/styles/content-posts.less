@@ -1,0 +1,76 @@
+#content-posts {
+    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.1);
+    position: relative;
+
+    .post {
+        background-color: #fffbf5;
+        padding: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        color: #605e58;
+        position: relative;
+        display: flex;
+        &:first-child {
+            border: 0;
+        }
+        &.retwist span.retwist-icon {
+          width: 15px;
+          height: 15px;
+          display: inline-block;
+          -webkit-mask: url(../svg/retwist.svg);
+          background-color: #91C348;
+          vertical-align: middle;
+          margin-right: 5px;
+          margin-top: -1px;
+        }
+
+        .left {
+            padding-right: 20px;
+            vertical-align: top;
+            flex-basis: 72px;
+            img {
+                width: 60px;
+                height: 60px;
+                border-radius: 60px;
+            }
+        }
+
+        .right {
+            flex-basis: 100%;
+            p {
+                color: #605e58;
+                font-weight: lighter;
+                font-size: 14px;
+                margin: 5px 0 0 0;
+                a {
+                    color: #57575f;
+                    text-decoration: none;
+                    font-weight: normal;
+                }
+            }
+            .date {
+                font-size: 14px;
+                position: absolute;
+                font-weight: lighter;
+                right: 20px;
+                top: 20px;
+                float: right;
+                color: #b7b5b4;
+                font-family: 'Open Sans';
+            }
+            .retwisted-by {
+                color: #605e58;
+                font-size: 12px;
+                font-weight: lighter;
+                font-family: 'Open Sans';
+                .username {
+                    font-size: 12px;
+                    font-weight: lighter;
+                    color: #57575f;
+                    &::before {
+                        font-size: 10px;
+                    }
+                }
+            }
+        }
+    }
+}

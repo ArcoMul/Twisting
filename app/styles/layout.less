@@ -1,0 +1,47 @@
+#main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#main-menu {
+    flex-basis: 74px;
+    width: 100%;
+}
+
+#main-scrollable {
+    flex-basis: 100%;
+    overflow-y: scroll;
+    height: 100%;
+
+    &::-webkit-scrollbar {
+        width: 9px;
+    }
+     
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 134, 255, 0.04);
+    }
+     
+    &::-webkit-scrollbar-thumb {
+        border-radius: 9px;
+        background: #80a8cc;
+        width: 9px;
+    }
+}
+
+#main-page {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 100%;
+}
+#context-section {
+    flex-basis: 20%;
+}
+#content-section {
+    flex-basis: 40%;
+}
+#preview-section {
+    flex-basis: 20%;
+}

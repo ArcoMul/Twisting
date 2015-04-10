@@ -1,14 +1,16 @@
 "use strict";
 
 // External dependencies.
-var gui = window.require('nw.gui');
-var Backbone = require("backbone");
-var $ = require("jquery");
-var app = require("./app");
-var UserModel = require("./models/User");
-var UserProfileView = require("./views/UserProfile");
-var FeedView = require("./views/Feed");
-var NotYetImplementedView = require("./views/NotYetImplemented");
+var gui = window.require('nw.gui'),
+    Backbone = require("backbone"),
+    $ = require("jquery"),
+    app = require("./app"),
+    UserModel = require("./models/User"),
+    UserContentView = require("./views/UserContent"),
+    UserContextView = require("./views/UserContext"),
+    FeedContentView = require("./views/FeedContent"),
+    FeedContextView = require("./views/FeedContext"),
+    NotYetImplementedView = require("./views/NotYetImplemented");
 
 Backbone.$ = $;
 
@@ -39,19 +41,18 @@ module.exports = Backbone.Router.extend({
     },
 
     index: function() {
-        console.log("Welcome to your / route.");
         app.router.navigate("user/" + app.user.get('username'), {trigger: true});
     },
     
     user: function(user) {
-        console.log("User route:", user);
-        var view = new UserProfileView({model: new UserModel({username: user})});
-        view.render();
+        var user = new UserModel({username: user});
+        app.mainView.switchContextView(new UserContextView({model: user}));
+        app.mainView.switchContentView(new UserContentView({model: user}));
     },
 
     feed: function () {
-        var view = new FeedView();
-        view.render();
+        app.mainView.switchContextView(new FeedContextView());
+        app.mainView.switchContentView(new FeedContentView());
     },
 
     notYetImplemented: function () {

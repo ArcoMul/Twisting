@@ -11,12 +11,18 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
+    el: "#main-menu",
+
     events: {
         "click a": "navigate",
     },
 
     initialize: function() {
-        this.setElement($("#main-menu"));
+        this.render();
+        this.model.fetchAvatar(function () {
+            console.log('set avatar img', this.model.get('avatar'));
+            this.$el.find('.user-profile').css({'background-image': 'url(' + this.model.get('avatar') + ')'});
+        }.bind(this));
     },
 
     navigate: function (e) {

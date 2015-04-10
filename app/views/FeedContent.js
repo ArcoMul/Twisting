@@ -5,7 +5,7 @@ var $ = require("jquery"),
     Backbone = require("backbone"),
     app = require("../app"),
     _ = require("underscore"),
-    feedTemplate = _.template(require("../templates/feed.html")),
+    postsContent = _.template(require("../templates/content-posts.html")),
     postTemplate = _.template(require("../templates/post.html")),
     PostsCollection = require("../collections/posts"),
     UserCollection = require("../collections/users"),
@@ -19,8 +19,6 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
-    el : "#main-page",
-
     events: {
         "click a": "navigate",
     },
@@ -32,7 +30,7 @@ module.exports = Backbone.View.extend({
 
         this.feed = new FeedModel();
         this.feed.get('posts').on('add', function (post) {
-            this.$el.children('.posts').first().append(postTemplate({post: post}));
+            this.$el.children('#content-posts').first().append(postTemplate({post: post}));
         }.bind(this));
 
         Twister.getFollowing(function (err, usernames) {
@@ -45,7 +43,7 @@ module.exports = Backbone.View.extend({
             this.loadPosts();
         }.bind(this));
 
-        $(window.document).scroll(this.scroll.bind(this));
+        $("#main-scrollable").scroll(this.scroll.bind(this));
     },
 
     loadPosts: function () {
@@ -75,32 +73,24 @@ module.exports = Backbone.View.extend({
     },
 
     scroll: function (e) {
-        var bottomOfScreen = $(window).height() + $(window).scrollTop();
+        var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
         var indexJustOutOfScreen;
         var index = 0;
-        $('#main-page .posts .post').each(function () {
-            if ($(this).offset().top > bottomOfScreen) {
+        this.$el.children('#content-posts').children().each(function () {
+            if ($(this).position().top > bottomOfScreen) {
                 indexJustOutOfScreen = index;
                 return false;
             }
             index++;
         });
-
-        if (indexJustOutOfScreen == $('#main-page .posts .post').length - 1) {
+        if (indexJustOutOfScreen == this.$el.children('#content-posts').children().length - 1) {
             this.loadPosts();
         }
     },
 
     render: function() {
         console.log("Render Feed");
-        this.$el.html(feedTemplate());
-        return this;
-    },
-
-    remove: function() {
-        $(window.document).unbind('scroll');
-        this.$el.empty().off();
-        this.stopListening();
+        this.$el.html(postsContent());
         return this;
     }
 });
