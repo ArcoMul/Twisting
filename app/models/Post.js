@@ -19,7 +19,10 @@ module.exports = Backbone.Model.extend({
 
     getMessageRegexed: function () {
         if (!this.get('message')) return "";
-        return this.get('message').replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a class="username" href="/user/$2">$2</a>' );
+        var msg = this.get('message').replace( /(https?:\/\/[^\s]+)/g, function(url) { return '<a href="'+url+'">'+url+'</a>' });
+        msg = msg.replace( /(^|[^#\w])#(\w{1,15})\b/g, '$1<a href="hashtag/$2">#$2</a>' );
+        msg = msg.replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a class="username" href="user/$2">$2</a>' );
+        return msg;
     },
 
     getTimeAgo: function ()

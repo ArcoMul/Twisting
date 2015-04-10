@@ -1,6 +1,7 @@
 "use strict";
 
 // External dependencies.
+var gui = window.require('nw.gui');
 var Backbone = require("backbone");
 var $ = require("jquery");
 var app = require("./app");
@@ -13,11 +14,22 @@ Backbone.$ = $;
 
 // Defining the application router.
 module.exports = Backbone.Router.extend({
+
     navigate: function (url) {
-        console.log('loadUrl', url);
-        // Override pushstate and load url directly
-        Backbone.history.loadUrl(url);
+        if (this.isExternal(url)) {
+            gui.Shell.openExternal(url);
+        } else {
+            Backbone.history.loadUrl(url);
+        }
     },
+    
+    isExternal: function (url) {
+        var match = url.match(/^([^:\/?#]+:)?(?:\/\/([^\/?#]*))?([^?#]+)?(\?[^#]*)?(#.*)?/);
+        if (typeof match[1] === "string" && match[1].length > 0 && match[1].toLowerCase() !== window.location.protocol) return true;
+        if (typeof match[2] === "string" && match[2].length > 0 && match[2].replace(new RegExp(":("+{"http:":80,"https:":443}[window.location.protocol]+")?$"), "") !== window.location.host) return true;
+        return false;
+    },
+
     routes: {
         "index.html": "index",
         "user/:user": "user",

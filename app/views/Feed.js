@@ -70,8 +70,8 @@ module.exports = Backbone.View.extend({
     },
 
     navigate: function (e) {
-        app.router.navigate(e.target.pathname, {trigger: true});
         e.preventDefault();
+        app.router.navigate($(e.target).attr('href'), {trigger: true});
     },
 
     scroll: function (e) {
