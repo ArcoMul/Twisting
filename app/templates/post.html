@@ -1,0 +1,41 @@
+<% if (post.get('retwist')) { %>
+
+<div class="post retwist" data-id="<%=post.cid%>">
+    <div class="left">
+        <% if (post.get('retwist').get('user').get('avatar')) { %>
+            <img src="<%= post.get('retwist').get('user').get('avatar') %>" />
+        <% } else { %>
+            <img src="app/img/profile.jpg" />
+        <% } %>
+    </div>
+    <div class="right">
+        <span class="retwist-icon"></span>
+        <a class="username" href="/user/<%= post.get('retwist').get('user').get('username') %>"><%= post.get('retwist').get('user').get('username') %></a>
+        <span class="retwisted-by"> retwisted by <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
+        <span class="date"><%= post.get('retwist').getTimeAgo() %></span>
+        <p>
+            <%= post.get('retwist').getMessageRegexed() %><br />
+        </p>
+    </div>
+</div>
+
+<% } else { %>
+
+<div class="post" data-id="<%=post.cid%>">
+    <div class="left">
+        <% if (post.get('user').get('avatar')) { %>
+            <img src="<%= post.get('user').get('avatar') %>" />
+        <% } else { %>
+            <img src="app/img/profile.jpg" />
+        <% } %>
+    </div>
+    <div class="right">
+        <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
+        <span class="date"><%= post.getTimeAgo() %></span>
+        <p>
+            <%= post.getMessageRegexed() %><br />
+        </p>
+    </div>
+</div>
+
+<% } %>

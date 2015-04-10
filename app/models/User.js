@@ -15,11 +15,36 @@ module.exports = Backbone.Model.extend({
     defaults: {
         username: null,
         posts: null,
-        avatar: null
+        avatar: null,
+        lowest_id: null,
+        following: true,
     },
 
     initialize: function () {
         this.set('posts', new PostsCollection());
+        this.get('posts').on('add', this.onAddPost.bind(this));
+    },
+
+    addPost: function (post) {
+        // Add posts to user
+        this.get('posts').add(post);
+    },
+
+    addPosts: function (posts) {
+        // Add posts to user
+        this.get('posts').add(posts);
+
+        // Add user to posts
+        _.each(posts, function (post) {
+            post.set('user', this);
+        }, this);
+    },
+
+    onAddPost: function (post) {
+        var lowest_id = this.get('lowest_id');
+        if (!lowest_id || post.get('twister_id') < lowest_id) {
+            this.set('lowest_id', post.get('twister_id'));
+        }
     },
 
     fetchPosts: function (amount, callback) {

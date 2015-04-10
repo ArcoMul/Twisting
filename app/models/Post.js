@@ -14,7 +14,7 @@ module.exports = Backbone.Model.extend({
         message: null,
         time: null,
         user: null,
-        retwist: false
+        retwist: null
     },
 
     getMessageRegexed: function () {

@@ -1,18 +1,19 @@
 "use strict";
 
 // External dependencies.
-var $ = require("jquery");
-var Backbone = require("backbone");
-var app = require("../app");
-var _ = require("underscore");
-var feedTemplate = _.template(require("../templates/feed.html"));
-var PostsCollection = require("../collections/posts");
-var UserCollection = require("../collections/users");
-var PostModel = require("../models/Post");
-var UserModel = require("../models/User");
-var FeedModel = require("../models/Feed");
-var Twister = require("../Twister");
-var async = require("async");
+var $ = require("jquery"),
+    Backbone = require("backbone"),
+    app = require("../app"),
+    _ = require("underscore"),
+    feedTemplate = _.template(require("../templates/feed.html")),
+    postTemplate = _.template(require("../templates/post.html")),
+    PostsCollection = require("../collections/posts"),
+    UserCollection = require("../collections/users"),
+    PostModel = require("../models/Post"),
+    UserModel = require("../models/User"),
+    FeedModel = require("../models/Feed"),
+    Twister = require("../Twister"),
+    async = require("async");
 
 Backbone.$ = $;
 
@@ -20,26 +21,19 @@ module.exports = Backbone.View.extend({
 
     el : "#main-page",
 
-    posts: null,
-
     events: {
         "click a": "navigate",
-        "scoll document": "scroll"
     },
 
     initialize: function() {
         console.log("Initialize feed");
 
-        var self = this;
-        var users = [];
-
-        this.posts = new PostsCollection();
-
-        $(window.document).scroll(function (e) {
-            self.scroll (e);
-        });
+        this.render();
 
         this.feed = new FeedModel();
+        this.feed.get('posts').on('add', function (post) {
+            this.$el.children('.posts').first().append(postTemplate({post: post}));
+        }.bind(this));
 
         Twister.getFollowing(function (err, usernames) {
             console.log('Followers', usernames);
@@ -48,24 +42,30 @@ module.exports = Backbone.View.extend({
                 this.feed.get('users').add(new UserModel({username: u}));
             }, this);
 
-            this.feed.fetchPosts(100, function (err) {
-                if (err) {
-                    console.log('Error getting user posts for user:', user, err);
+            this.loadPosts();
+        }.bind(this));
+
+        $(window.document).scroll(this.scroll.bind(this));
+    },
+
+    loadPosts: function () {
+        if (this.isLoading) return;
+        this.isLoading = true;
+        this.feed.fetchPosts(10, function (err) {
+
+            // Fetch avatars of users of which we don't have one yet
+            this.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
+                if (!user.get('avatar')) {
+                    console.log(user.get('username'), 'does not have an avatar');
                     return;
                 }
-
-                this.render();
-
-                this.feed.fetchAvatars(function (err, user, posts) {
-                    if (!user.get('avatar')) {
-                        console.log(user.get('username'), 'does not have an avatar');
-                        return;
-                    }
-                    _.each(posts, function (post) {
-                        this.$el.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
-                    }, this);
-                }.bind(this));
+                _.each(postsToSetAvatar, function (post) {
+                    this.$el.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                }, this);
             }.bind(this));
+
+            // Allowed to load the next page
+            this.isLoading = false;
         }.bind(this));
     },
 
@@ -85,21 +85,22 @@ module.exports = Backbone.View.extend({
             }
             index++;
         });
-        //console.log(indexJustOutOfScreen);
-        // get time of this posts
-        // for each user check if it has posts in memory after this time
-        //      if so, do nothing
-        //      if doesnt have posts after the time in memory, fetch more posts 
-        //          if there is nothing to fetch save this so that we won't try again all the time
-        //  render new fetched posts
+
+        if (indexJustOutOfScreen == $('#main-page .posts .post').length - 1) {
+            this.loadPosts();
+        }
     },
 
     render: function() {
         console.log("Render Feed");
-        this.$el.html(feedTemplate({
-            user: this.model,
-            posts: this.feed.get('posts')
-        }));
+        this.$el.html(feedTemplate());
+        return this;
+    },
+
+    remove: function() {
+        $(window.document).unbind('scroll');
+        this.$el.empty().off();
+        this.stopListening();
         return this;
     }
 });

@@ -1,17 +1,3 @@
 <h1>Feed</h1>
 <div class="posts">
-<% posts.each(function (post) { %>
-    <div class="post <%= post.get('retwist') ? "retwist" : "" %>" data-id="<%=post.cid%>">
-        <div class="left">
-            <img src="app/img/profile.jpg" />
-        </div>
-        <div class="right">
-            <%= post.get('retwist') ? '<span class="retwist-icon"></span>' : "" %><a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
-            <span class="date"><%= post.getTimeAgo() %></span>
-            <p>
-                <%= post.getMessageRegexed() %><br />
-            </p>
-        </div>
-    </div>
-<% }); %>
 </div>

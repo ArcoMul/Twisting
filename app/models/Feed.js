@@ -25,29 +25,39 @@ module.exports = Backbone.Model.extend({
         this.set('posts', new PostsCollection());
     },
 
+    // Get posts
     fetchPosts: function (amount, callback) {
-        this.get('users').fetchPosts(amount, function (err, data) {
+
+        // Get all the posts of the users in this feed
+        this.get('users').fetchPosts(amount, function (err, posts) {
             if (err) return callback(err);
-            _.each(data, function (posts, username) {
-                var user = this.get('users').findWhere({username: username});
-                if (!user) {
-                    user = new UserModel({username: username});
-                    this.get('users').add(user);
-                }
-                _.each(posts, function (post) {
-                    post.set('user', user);
-                }, this);
-                this.get('posts').add(posts);
-            }, this);
+
+            // Sort before adding so that the 'add' events are called
+            // in the right order
+            posts = _.sortBy(posts, function (post) {
+                return post.get('time') * -1;
+            });
+            this.get('posts').add(posts);
+
             callback();
         }.bind(this));
     },
 
+    // Get all users which don't have an avatar yet in memory. The others
+    // will already be rendered on the page so don't need fetching
     fetchAvatars: function (avatarLoadForUserCallback) {
-        async.eachSeries(this.get('users').models, function (user, callback) {
+        var usersWithoutAvatar = this.get('users').filter(function (user) { return user.get('avatar') == null});
+        async.eachSeries(usersWithoutAvatar, function (user, callback) {
             user.fetchAvatar(function (err) {
                 if (err) return callback(err);
-                avatarLoadForUserCallback(null, user, this.get('posts').filter(function (post) { return post.get('user').cid == user.cid }));
+
+                // Avatar should be set to all posts of user which are NOT a retwist
+                var postsToSetAvatar = user.get('posts').filter(function (post) { return !post.get('retwist') });
+
+                // AND all retwists of posts of this user
+                postsToSetAvatar = postsToSetAvatar.concat(this.get('posts').filter(function (post) { return post.get('retwist') && post.get('retwist').get('user').cid == user.cid }));
+
+                avatarLoadForUserCallback(null, user, postsToSetAvatar);
                 callback();
             }.bind(this));
         }.bind(this),

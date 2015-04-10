@@ -15,35 +15,62 @@ module.exports = Backbone.Collection.extend({
     model: UserModel,
 
     fetchPosts: function (amount, callback) {
-        var self = this;
+
+        // Build request object array
         var users = [];
-        this.each(function (user) {
-            users.push(user.get('username'));
+        var following = this.filter(function (user) { return user.get('following') });
+        _.each(following, function (user) {
+            var data = {};
+            data.username = user.get('username');
+            if (user.get('lowest_id')) {
+                data.max_id = user.get('lowest_id') - 1;
+            }
+            users.push(data);
         });
-        Twister.getPosts(users, amount, function (err, data) {
+
+        // Request!
+        Twister.getPosts(users, amount, function (err, posts_data) {
             if (err) {
                 console.log('Error getting user posts for user collection', err);
                 callback(err);
                 return;
             }
-            var posts = {};
-            _.each(data, function (item) {
-                // If retwist
+            var posts = [];
+            _.each(posts_data, function (item) {
+
+                var retwist;
                 if(item.rt) {
-                    console.log('retwist!', item);
-                    if (!posts[item.rt.n]) {
-                        posts[item.rt.n] = [];
+                    // If this is a retwist we might not know the user
+                    // in that case add it to the list of users
+                    var retwistUser = this.findWhere({username: item.rt.n});
+                    if (!retwistUser) {
+                        retwistUser = new UserModel({username: item.rt.n, following: false});
+                        this.add(retwistUser);
                     }
-                    posts[item.rt.n].push(new PostModel({message: item.rt.msg, time: item.time, retwist: true}));
-                    return;
+
+                    // Build the retwist post model
+                    retwist = new PostModel({
+                        user: retwistUser,
+                        message: item.rt.msg,
+                        time: item.rt.time,
+                        twister_id: item.rt.k
+                    });
                 }
 
-                if (!posts[item.n]) {
-                    posts[item.n] = [];
-                }
-                posts[item.n].push(new PostModel({message: item.msg, time: item.time}));
-            });
+                var user = this.findWhere({username: item.n});
+                var post = new PostModel({
+                    user: user,
+                    message: item.msg,
+                    time: item.time,
+                    retwist: retwist,
+                    twister_id: item.k
+                });
+                console.log(post);
+
+                user.addPost(post);
+                posts.push(post);
+            }, this);
             callback(null, posts);
-        });
+        }.bind(this));
     }
 });

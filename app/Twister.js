@@ -9,6 +9,8 @@ module.exports = (function () {
     var twisterRpc = function (method, params, callback) {
 
         var client = rpc.Client.$create(28332, 'localhost', 'user', 'pwd');
+
+        console.log('CALL:', method, params);
          
         // Call add function on the server 
         client.call(method, params, function(err, result) {
@@ -19,13 +21,23 @@ module.exports = (function () {
     // getposts <count> '[{"username":username,"max_id":max_id,"since_id":since_id},...]' [flags]
     var getPosts = function (username, amount, callback) {
         var users = [];
+
+        // It is one user
         if (_.isString(username)) {
             users.push({username: username});
         }
+
+        // It is a list of users
         if (_.isArray(username)) {
-            _.each(username, function (u) {
-                users.push({username: u});
-            });
+            if (_.isObject(username[0])) {
+                // It is a list of username with max ids
+                users = username;
+            } else {
+                // It is a list of usernames
+                _.each(username, function (u) {
+                    users.push({username: u});
+                });
+            }
         }
         twisterRpc("getposts", [amount, users], function (err, data) {
             if (err) callback(err);
