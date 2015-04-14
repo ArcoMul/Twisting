@@ -10,6 +10,8 @@ var gui = window.require('nw.gui'),
     UserContextView = require("./views/UserContext"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
+    StatusOverlayView = require("./views/StatusOverlay"),
+    LoginOverlayView = require("./views/LoginOverlay"),
     NotYetImplementedView = require("./views/NotYetImplemented");
 
 Backbone.$ = $;
@@ -34,6 +36,8 @@ module.exports = Backbone.Router.extend({
 
     routes: {
         "index.html": "index",
+        "start": "start",
+        "login": "login",
         "user/:user": "user",
         "feed": "feed",
         "settings": "notYetImplemented",
@@ -41,7 +45,15 @@ module.exports = Backbone.Router.extend({
     },
 
     index: function() {
-        app.router.navigate("user/" + app.user.get('username'), {trigger: true});
+        app.router.navigate("start", {trigger: true});
+    },
+
+    start: function () {
+       app.mainView.showOverlay(new StatusOverlayView({starting: true})); 
+    },
+
+    login: function () {
+       app.mainView.showOverlay(new LoginOverlayView()); 
     },
     
     user: function(user) {

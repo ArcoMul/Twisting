@@ -22,6 +22,7 @@ module.exports = Backbone.View.extend({
         this.render();
         this.$context = this.$el.children('#context-section');
         this.$content = this.$el.children('#content-section');
+        this.$overlay = $("#overlay-holder");
     },
 
     switchContextView: function (view) {
@@ -42,6 +43,12 @@ module.exports = Backbone.View.extend({
         this.currentContentView = view;
         this.currentContentView.setElement(this.$content.children().first());
         this.currentContentView.render();
+    },
+
+    showOverlay: function (view) {
+        this.$overlay.html('<div />');
+        view.setElement(this.$overlay.children().first());
+        view.render();
     },
 
     render: function() {

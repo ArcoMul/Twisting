@@ -5,13 +5,14 @@
   "window": {
     "title": "Twist It",
     "icon": "link.png",
-    "toolbar": false,
+    "toolbar": true,
     "frame": false,
     "width": 1024,
     "height": 768,
     "position": "mouse",
     "min_width": 800,
-    "min_height": 600
+    "min_height": 600,
+    "position": "center"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

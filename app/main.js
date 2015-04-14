@@ -10,6 +10,7 @@ require.extensions['.html'] = function (module, filename) {
 
 var $ = require('jquery'),
     Backbone = require('backbone'),
+    Twister = require('./Twister'),
     app = require('./app'),
     Router = require('./router');
 
@@ -30,6 +31,20 @@ $(window.document).on('keypress', function (e) {
     if (e.keyCode == 100) {
         gui.Window.get().showDevTools();
     }
+});
+
+var win = gui.Window.get();
+win.on('close', function() {
+    console.log('Application closing!');
+    this.hide(); // Pretend to be closed already
+    Twister.stopDeamon(function (err, data) {
+        // TODO: application should always quit, no matter what
+        //      this is just for debugging
+        if (err) return console.log('Error stopping deamon, inspect!', err);
+    });
+
+    // Quit the application
+    gui.App.quit();
 });
 
 // Enable shadow
