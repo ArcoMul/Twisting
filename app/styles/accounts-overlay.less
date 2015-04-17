@@ -1,0 +1,35 @@
+.overlay.accounts {
+    h2 {
+        color: #57575F;
+        font-weight: lighter;
+    }
+    .users {
+        display: flex;
+        margin-top: 20px;
+        justify-content: center;
+
+        .user {
+            max-width: 150px;
+            padding: 20px;
+            background-color: #F9F7F5;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,0.1);
+            margin: 10px;
+            cursor: pointer;
+            &:hover {
+                margin-top: 7px;
+                margin-bottom: 13px;
+                box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.1);
+            }
+
+            img {
+                width: 100px;
+                border-radius: 100%;
+            }
+
+            span {
+                display: inline-block;
+                margin-top: 10px;
+            }
+        }
+    }
+}

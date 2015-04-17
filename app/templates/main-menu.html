@@ -1,6 +1,8 @@
 <ul class="left">
     <li class="bold">
+        <% if (user) { %>
         <a class="user-profile" href="user/<%= user.get('username') %>"></a>
+        <% } %>
     </li>
     <li class="border"></li>
     <li>

@@ -33,7 +33,7 @@ module.exports = Backbone.View.extend({
             this.$el.children('#content-posts').first().append(postTemplate({post: post}));
         }.bind(this));
 
-        Twister.getFollowing(function (err, usernames) {
+        Twister.getFollowing(app.user.get('username'), function (err, usernames) {
             console.log('Followers', usernames);
 
             _.each(usernames, function (u) {

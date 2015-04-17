@@ -39,6 +39,7 @@ module.exports = Backbone.View.extend({
 
     login: function (e) {
         e.preventDefault();
+        var self = this;
         var user = this.$el.find("input[name=username]").val();
         var key = this.$el.find("input[name=key]").val();
         console.log(user,key);
@@ -65,6 +66,7 @@ module.exports = Backbone.View.extend({
                             }
                             console.log('Everybody followed, lets start!'); 
                             app.router.navigate('feed', {trigger: true});
+                            self.destroy();
                         });
                     } else {
                         dhtRequestFinished = true;
@@ -78,5 +80,9 @@ module.exports = Backbone.View.extend({
         console.log("Render login overlay");
         this.$el.html(loginOverlayTemplate());
         return this;
+    },
+
+    destroy: function () {
+        this.remove();
     }
 });

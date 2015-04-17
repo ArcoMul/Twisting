@@ -19,8 +19,20 @@ module.exports = Backbone.View.extend({
 
     initialize: function() {
         this.render();
+
+        this.on('userChange', function (user) {
+            this.model = user;
+            this.render();
+            this.loadAvatar();
+        }, this);
+
+        if (this.model) {
+            this.loadAvatar();
+        }
+    },
+
+    loadAvatar: function () {
         this.model.fetchAvatar(function () {
-            console.log('set avatar img', this.model.get('avatar'));
             this.$el.find('.user-profile').css({'background-image': 'url(' + this.model.get('avatar') + ')'});
         }.bind(this));
     },

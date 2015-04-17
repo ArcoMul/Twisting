@@ -1,0 +1,23 @@
+<div class="overlay accounts">
+    <div class="inner">
+        <div class="logo"></div><br />
+        <% if (!users || users.length == 0) { %>
+            <span class="status">Loading accounts</span>
+        <% } else { %>
+        <h2>Choose an account</h2>
+        <div class="users">
+            <% _.each(users, function (user, username) { %>
+            <div class="user" data-user=<%= user.get('username') %>>
+                <% if (user.get('avatar')) { %>
+                    <img src="<%= user.get('avatar') %>" />
+                <% } else { %>
+                    <img src="app/img/profile.jpg" />
+                <% } %>
+                <br />
+                <span class="username"><%= user.get('username') %></span>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+    </div>
+</div>

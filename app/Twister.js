@@ -64,9 +64,9 @@ module.exports = (function () {
         });
     }
 
-    var getFollowing = function (callback)
+    var getFollowing = function (username, callback)
     {
-        twisterRpc("getfollowing", ["arco"], function (err, data) {
+        twisterRpc("getfollowing", [username], function (err, data) {
             if (err) callback(err);
             console.log("getfollowing", arguments);
             callback (err, data);
@@ -108,9 +108,10 @@ module.exports = (function () {
                         filename += ".png";
                     } else if (img == "img/genericPerson.png") {
                         // This is some sort of default image? Anyway, return like there is no image
-                        callback(null, null);
+                        return callback(null, null);
                     } else {
                         console.log('No jpg or png for', username, img);
+                        return callback(null, null);
                     }
                     fs.writeFile(filename, base64, 'base64', function(err) {
                         if (err) {

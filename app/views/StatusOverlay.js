@@ -20,20 +20,21 @@ module.exports = Backbone.View.extend({
         "click a": "navigate",
     },
 
-    initialize: function() {
+    initialize: function(options) {
         var self = this;
         console.log("Initialize status overlay");
+
+        this.options = options;
 
         this.render();
 
         this.setText("Requesting status");
 
         Twister.getStatus(function (status) {
-            console.log('received status', status);
             if (status == Twister.status.NOCONNECTION) {
                 self.startDeamon();
             } else {
-                self.gatherInfo();
+                self.checkAccounts();
             }
         });
     },
@@ -46,52 +47,67 @@ module.exports = Backbone.View.extend({
     startDeamon: function () {
         var self = this;
 
+        // Tell the user we are starting Twister
+        self.setText("Starting");
+
         // Start the deamon
         Twister.startDeamon();
 
         // Keep checking if it is started
         var check = setInterval (function () {
             Twister.getStatus(function (status) {
-                console.log('Twister status', status);
                 if (status != Twister.status.NOCONNECTION) {
                     clearInterval(check);
-                    console.log('Twister started');
-                    self.gatherInfo();
+                    self.checkAccounts();
                 }
             });
         }, 1000);
+    },
 
-        // Tell the user we are starting Twister
-        self.setText("Starting");
+    checkAccounts: function () {
+        var self = this;
+        if (app.user) return this.gatherInfo();
+        self.setText("Looking for accounts");
+        Twister.getUsers(function (err, accounts) {
+            console.log('status users', accounts);
+            if (accounts.length == 0) {
+                app.router.navigate('login', {trigger: true});
+                self.remove();
+            } else if (accounts.length > 1) {
+                app.router.navigate('choose-account', {trigger: true});
+                self.remove();
+            } else {
+                self.gatherInfo();
+            }
+        });
     },
 
     gatherInfo: function () {
         var self = this;
 
-        self.setText("Looking for accounts");
+        self.setText("Waiting for a connection");
 
-        Twister.getUsers(function (err, accounts) {
-            if (accounts.length == 0) {
-                app.router.navigate('login', {trigger: true});
-            } else {
-                // Twister is started, let's gather info on its status
-                setInterval(function () {
-                    Twister.getInfo(function (err, info) {
-                        console.log('Received info', info, self.$info);
-                        self.latestInfo = info;
-                        self.renderInfo();
-                    });
-                }, 1000);
+        var infoInterval, blockInterval;
+        // Twister is started, let's gather info on its status
+        infoInterval = setInterval(function () {
+            Twister.getInfo(function (err, info) {
+                self.latestInfo = info;
+                self.renderInfo();
+                if (info.connections > 0) {
+                    clearInterval(infoInterval); 
+                    clearInterval(blockInterval); 
+                    self.remove();
+                    app.router.navigate('feed', {trigger: true});
+                }
+            });
+        }, 1000);
 
-                setInterval(function () {
-                    Twister.getBestBlock(function (err, block) {
-                        console.log('Received block', block);
-                        self.latestBlock = block;
-                        self.renderInfo();
-                    });
-                }, 1000);
-            }
-        });
+        blockInterval = setInterval(function () {
+            Twister.getBestBlock(function (err, block) {
+                self.latestBlock = block;
+                self.renderInfo();
+            });
+        }, 1000);
     },
 
     renderInfo: function () {
@@ -111,7 +127,6 @@ module.exports = Backbone.View.extend({
     },
 
     render: function() {
-        console.log("Render status overlay");
         this.$el.html(statusOverlayTemplate());
         this.$status = this.$el.find('span.status');
         this.$info = this.$el.find('span.info');
