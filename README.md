@@ -1,110 +1,69 @@
-![Boilerplate](https://github.com/backbone-boilerplate/backbone-boilerplate/raw/assets/header.png)
+Twisting (alpha)
+==============
 
-[![Build Status](https://travis-ci.org/backbone-boilerplate/backbone-boilerplate.png?branch=master)](https://travis-ci.org/backbone-boilerplate/backbone-boilerplate) [![Coverage Status](https://coveralls.io/repos/backbone-boilerplate/backbone-boilerplate/badge.png)](https://coveralls.io/r/backbone-boilerplate/backbone-boilerplate) [![Dependency Status](https://gemnasium.com/backbone-boilerplate/backbone-boilerplate.png)](https://gemnasium.com/backbone-boilerplate/backbone-boilerplate)
+Intro
+-----
 
-Backbone Boilerplate
-====================
+**What is Twisting?**
+Twisting is a Twister client
 
-This boilerplate is the product of much research and frustration.  Existing
-boilerplates freely modify Backbone core, lack a build process, and are very
-prescriptive; Backbone Boilerplate changes that.
+**What is Twister?**
+Twister is a peer to peer microblogging platform
 
-The Backbone Boilerplate is a way of organizing a web application with some
-opinionated defaults: such as Backbone, Lo-Dash (Underscore compatibility
-build), jQuery, RequireJS, Bower, Grunt, Karma, and the HTML5 Boilerplate
-styles.  Built in testing support for: QUnit, Jasmine, and Mocha with Chai.
+**What is a peer to peer microblogging platform?**
+It’s like Twitter without a website, Twists (Tweets) are getting downloaded directly from your friends.
 
-Organize your application with a logical file structure, develop your
-Models/Collections/Views/Routers inside modules, and build knowing you have
-efficient code that will not bottleneck your users.
+Status
+------
 
-Thanks to our
-[Contributors](https://github.com/backbone-boilerplate/backbone-boilerplate/contributors)!  Special Thanks to: [cowboy](http://github.com/cowboy),
-[iros](http://github.com/iros), [nimbupani](http://github.com/nimbupani),
-[wookiehangover](http://github.com/wookiehangover), and
-[jugglinmike](http://github.com/jugglinmike) for helping me create this project.  Extra Special Thanks to: [Paul Guinan](http://bigredhair.com/work/paul.html)
-for giving me usage rights to his fantastic Boilerplate character.
+Be aware that Twisting is in Alpha. All the claims being made on this page are still in development. Although the maintainer is confident enough to put it up here, using Twisting is on your own risk.
 
-## Documentation ##
+Motivation
+----------
 
-View the Backbone Boilerplate documentation here:
+There are already several good Twister clients. Twisting hopes to improve on those clients with the follow goals:
 
-[GitHub Wiki](https://github.com/backbone-boilerplate/backbone-boilerplate/wiki)
+- Offer a smooth installation and startup experience. The goal is that every Twitter (or other microblogging user) can use the software. This means that during installation and starting Twisting the user should not be confused with technical messages, having to compile the code, or do other technical things. 
+- Organized codebase, based on recent web technologies. The main Twister client is written in pure HTML/CSS/Javascript, which is fine, but it is hard to maintain and even harder for newcomers to get into the codebase. By using npm/grunt modules, and Backbone as framework the code should be more easy to understand.
+- Have fun developing something new ;-D Yes, I admit that this is the main reason I started working on Twisting
 
-## Getting started ##
+Current features
+----------------
 
-The easiest way to get started is to install Git and clone the repository:
+- Logging in
+- Display feed / postboard
+- Display (and cache) avatars
+- Open urls in the browser
+- Display user profile
 
-``` bash
-# Using Git, fetch only the latest commits.  You won't need the full history
-# for your project.
-git clone --depth 1 https://github.com/backbone-boilerplate/backbone-boilerplate
+Screenshots
+-----------
 
-# Move the repository to your own project name.
-mv backbone-boilerplate my-project
-```
+![Twisting Screenshot](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/1.png)
 
-You will need to download and install [Node.js](http://nodejs.org/) if you want
-to use the commands in the following sections.
 
-## Updating dependencies ##
+Technology
+----------
 
-Third party packages may update independently from this main repo, so it's a
-good idea to update after fetching.
+**NodeWebkit / nw.js** The application is a web application integrated with nw.js. In the codebase the server-client model of nw.js is highly used, so the application won’t run in a browser without a lot of modifications, it makes the code better to read though. Nw.js is chosen because of its fast development speed and web development is the most known technology, and thus is more open for contributors.
+**Backbone** The architecture is based on Backbone Views / Models / Collections. Backbone is one of the most known Javascript frameworks.
+**Less** CSS gets generated by the use of Less. Switching to SASS is in the planning, because of it being more famous at the moment.
+**Grunt** In theory grunt is used for client side modules. At the moment it isn’t really used though. Should be better integrated or removed.
 
-``` bash
-# Install global dependencies.  Depending on your user account you may need to
-# gain elevated privileges using something like `sudo`.
-npm install -g grunt-cli bower
+Installation
+------------
 
-# Optionally install coveralls (integration is baked in with Travis CI).
-npm install -g coveralls
+Installation will be possible from on the first Beta release. For now it is only possible to run Twisting by installing from source.
 
-# Install NPM dependencies.
-npm install
+Installation from source
+------------------------
 
-# Install Bower dependencies.
-bower install
-```
+- Download the repo using git
+- Run `$ npm install` in the Twisting folder
+- Download [the latest NW.js release](http://nwjs.io/ "NW.js")
+- Copy the NW.js files into the Twisting root folder
+- Download [this zip file](https://dl.dropboxusercontent.com/u/1146818/Twister/twisting-twister-data.zip "Twisting Twister Data") with a Twister Windows build, or use your own
+- Install less: `$ npm install -g lessc`
+- Compile the Less files to css using: `$ lessc app/styles/main.less > app/styles/style.css`
+- Run nw.exe
 
-## Build process ##
-
-The build process consists of numerous Grunt plugin tasks that work together
-to optimize your application.
-
-``` bash
-# To run the build process, run the default Grunt task.
-grunt
-
-# Run a build and test the now optimized assets.
-grunt default server:release
-```
-
-## Running tests ##
-
-To run tests, simply add `.spec.js` files throughout your application and they
-will be automatically picked up by the runner.  You can find example test specs
-in the `test` directory.
-
-To run Karma as a daemon:
-*Which will automatically run your tests after you save.*
-
-``` bash
-grunt karma:daemon
-```
-
-To run Karma tests once and output the results:
-
-``` bash
-grunt karma:run
-```
-
-After either above command is run, code coverage reports will be available in
-the `test/coverage` folder.
-
-By default, the test runner is Mocha and Chai.  You can easily change this by
-editting the commented regions of the karma configuration in `Gruntfile.js`.
-
-## License ##
-Copyright Â© 2014 Tim Branyen (@tbranyen)  
-Licensed under the MIT license.

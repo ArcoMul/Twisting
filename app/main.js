@@ -8,6 +8,9 @@ require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
 };
 
+global.document = window.document;
+global.navigator = window.navigator;
+
 var $ = require('jquery'),
     Backbone = require('backbone'),
     Twister = require('./Twister'),

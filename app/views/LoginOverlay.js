@@ -8,6 +8,7 @@ var $ = require("jquery"),
     app = require("../app"),
     _ = require("underscore"),
     loginOverlayTemplate = _.template(require("../templates/overlay-login.html")),
+    UserModel = require("../models/User"),
     Twister = require("../Twister");
 
 Backbone.$ = $;
