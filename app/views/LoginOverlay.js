@@ -65,6 +65,7 @@ module.exports = Backbone.View.extend({
                                 return console.log('Error following all retrieved users');
                             }
                             console.log('Everybody followed, lets start!'); 
+                            app.changeUser(new UserModel({username: user}));
                             app.router.navigate('feed', {trigger: true});
                             self.destroy();
                         });

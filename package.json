@@ -5,7 +5,7 @@
   "window": {
     "title": "Twist It",
     "icon": "link.png",
-    "toolbar": true,
+    "toolbar": false,
     "frame": false,
     "width": 1024,
     "height": 768,

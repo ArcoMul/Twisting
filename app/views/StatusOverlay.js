@@ -8,6 +8,7 @@ var $ = require("jquery"),
     app = require("../app"),
     _ = require("underscore"),
     statusOverlayTemplate = _.template(require("../templates/overlay-status.html")),
+    UserModel = require("../models/User"),
     Twister = require("../Twister");
 
 Backbone.$ = $;
@@ -77,6 +78,7 @@ module.exports = Backbone.View.extend({
                 app.router.navigate('choose-account', {trigger: true});
                 self.remove();
             } else {
+                app.changeUser(new UserModel({username: accounts[0]}));
                 self.gatherInfo();
             }
         });

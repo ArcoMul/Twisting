@@ -3,8 +3,9 @@
     background-color: #FFFBF5;
     box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.1);
     z-index: 1;
-    -webkit-app-region: drag;
     -webkit-user-select: none;
+    display: flex;
+    justify-content: space-between;
 
     ul {
         list-style: none;
@@ -12,12 +13,22 @@
         margin: 0;
 
         &.left { 
-            float: left;
+            flex-shrink: 1;
             a { margin: 15px 0 15px 15px; }
         }
-        &.middle { margin: 0 50%; }
+        &.middle {
+            flex-grow: 2;
+            text-align: center;
+            -webkit-app-region: drag;
+            li {
+                margin: 0 auto;
+                display: inline-block;
+                float: none;
+                -webkit-app-region: no-drag;
+            }
+        }
         &.right {
-            float: right;
+            flex-shrink: 1;
             a { margin: 15px 15px 15px 0; }
         }
 
@@ -68,13 +79,22 @@
                     height: 30px;
                     margin: 19px;
                 }
+                &.mentions {
+                    color: #888888;
+                    &:hover {
+                        color: #333;
+                    }
+                }
                 &.messages span, &.settings span {
                     -webkit-mask: url(../svg/mail.svg);
-                    background-color: #000;
+                    background-color: #888888;
                     width: 20px;
                     height: 20px;
                     display: inline-block;
                     margin-top: 3px;
+                    &:hover {
+                        background-color: #333;
+                    }
                 }
                 &.settings span {
                     -webkit-mask: url(../svg/settings.svg);
@@ -84,8 +104,8 @@
                 display: block;
                 padding: 5px 15px;
                 text-decoration: none;
-                height: 25px;
-                margin: 15px;
+                height: 20px;
+                margin: 25px 10px;
                 border: 1px solid #E0E0E0;
                 border-radius: 25px;
                 line-height: 25px;
