@@ -210,7 +210,7 @@ module.exports = (function () {
             } else {
                 k = posts[0].k + 1;
             }
-            twisterRpc("newpostmsg", ['arco_test', k, text], function (err, data) {
+            twisterRpc("newpostmsg", [username, k, text], function (err, data) {
                 callback(err, data);
             });
         });

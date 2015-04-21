@@ -41,10 +41,9 @@ module.exports = Backbone.View.extend({
     login: function (e) {
         e.preventDefault();
         var self = this;
-        var user = this.$el.find("input[name=username]").val();
+        var username = this.$el.find("input[name=username]").val();
         var key = this.$el.find("input[name=key]").val();
-        console.log(user,key);
-        Twister.importUser(user, key, function (err) {
+        Twister.importUser(username, key, function (err) {
             if (err) {
                 return console.log('Error importing user');
             }
@@ -53,20 +52,21 @@ module.exports = Backbone.View.extend({
             var interval = setInterval(function () {
                 if (!dhtRequestFinished) return;
                 dhtRequestFinished = false;
-                Twister.getFollowersFromDht(user, function (err, followers) {
+                Twister.getFollowersFromDht(username, function (err, followers) {
                     if (err) {
                         return console.log('Error getting users from DHT');
                     }
                     console.log('DHT followers', followers);
                     if (followers.length > 0) {
                         clearInterval(interval);
+                        followers.push(username);
 
-                        Twister.follow(user, followers, function (err) {
+                        Twister.follow(username, followers, function (err) {
                             if (err) {
                                 return console.log('Error following all retrieved users');
                             }
                             console.log('Everybody followed, lets start!'); 
-                            app.changeUser(new UserModel({username: user}));
+                            app.changeUser(new UserModel({username: username}));
                             app.router.navigate('feed', {trigger: true});
                             self.destroy();
                         });
