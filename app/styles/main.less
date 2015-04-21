@@ -8,3 +8,58 @@
 @import "section-content.less";
 @import "section-preview.less";
 @import "content-posts.less";
+
+#window-controls {
+    -webkit-app-region: no-drag;
+    position: fixed;
+    right: 0;
+    width: 100px;
+    display: flex;
+    z-index: 9;
+    top: 0;
+    div {
+        -webkit-app-region: no-drag;
+        width: 30px;
+        height: 15px;
+        margin-right: 5px;
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+        color: #9E9992;
+        text-align: center;
+        line-height: 13px;
+        &:hover {
+            opacity: 0.7;
+        }
+        &.close {
+            background-color: #BE6C6C;
+            color: #fff;
+        }
+        &.minimize span {
+            width: 13px;
+            height: 3px;
+            background-color: #674A1D;
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
+            left: 2.5px;
+        }
+        &.scale span {
+            width: 7px;
+            height: 7px;
+            border: 2px solid #674A1D;
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
+            left: 2.5px;
+            background-color: #FFFBF5;
+            z-index: 1;
+            &:nth-child(2) {
+                background-color: transparent;
+                bottom: 3px;
+                left: 6px;
+                z-index: 0;
+            }
+        }
+    }
+}
