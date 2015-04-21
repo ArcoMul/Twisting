@@ -1,0 +1,59 @@
+.load-animation {
+    width: 80px;
+    height: 80px;
+    -webkit-mask: url(../svg/oval.svg);
+    background-color: #5E8AB2;
+    margin: 20px auto 0 auto;
+}
+
+.compose {
+    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.1);
+    background-color: #fffbf5;
+    padding: 20px;
+    color: #605e58;
+    margin-top: 30px;
+    font-family: 'Open Sans', sans-serif;
+
+    [contenteditable=true]:empty:before{
+        content: attr(placeholder);
+    }
+    
+    div[placeholder] {
+        border-bottom: 2px solid #C0D2E1;
+        line-height: 25px;
+        font-size: 14px;
+        color: #AEA89F;
+        cursor: text;
+        &:focus {
+            border-left: 0;
+            border-top: 0;
+            border-right: 0;
+            border-bottom: 2px solid #80A8CC;
+            outline: 0;
+        }
+        &:not(:empty) {
+            color: #605e58;
+            border-bottom: 2px solid #80A8CC;
+        }
+    }
+
+    div.info {
+        margin-top: 5px;
+        display: none;
+        span {
+            font-size: 13px;
+            color: #AEA89F;
+            line-height: 30px;
+        }
+        button {
+            float: right;
+            background-color: #80A8CC;
+            border: 0;
+            color: #fff;
+            padding: 0 11px;
+            font-size: 15px;
+            line-height: 30px;
+            right: 0;
+        }
+    }
+}

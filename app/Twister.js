@@ -201,6 +201,21 @@ module.exports = (function () {
         });
     }
 
+    var post = function (username, text, callback) {
+        var k;
+        getPosts(username, 1, function (err, posts) {
+            if (err) return callback(err);
+            if (posts.length == 0) {
+                k = 0;
+            } else {
+                k = posts[0].k + 1;
+            }
+            twisterRpc("newpostmsg", ['arco_test', k, text], function (err, data) {
+                callback(err, data);
+            });
+        });
+    }
+
     var startDeamon = function () {
         var path = dir.replace(/\\/g, "\\");
         var cmd = path + 'twister\\twisterd.exe -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir=' + path.replace('C:', '/cygdrive/c') + 'twister/data';
@@ -227,6 +242,7 @@ module.exports = (function () {
         importUser: importUser,
         getFollowersFromDht: getFollowersFromDht,
         follow: follow,
+        post: post,
         startDeamon: startDeamon,
         stopDeamon: stopDeamon,
         status: status
