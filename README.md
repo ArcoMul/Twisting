@@ -38,6 +38,8 @@ Current features
 - Display (and cache) avatars
 - Open urls in the browser
 - Display user profile
+- Poll for new Twists
+- Twist Twists!
 
 Screenshots
 -----------
@@ -63,6 +65,8 @@ Installation will be possible from on the first Beta release. For now it is only
 
 Installation from source
 ------------------------
+
+**Warning:**: this installation is still work in progress! There is no guarantee this works for everybody.
 
 - Download the repo using git
 - Run `$ npm install` in the Twisting folder
