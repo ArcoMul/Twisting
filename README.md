@@ -73,6 +73,7 @@ Installation from source
 - Download [the latest NW.js release](http://nwjs.io/ "NW.js")
 - Copy the NW.js files into the Twisting root folder
 - Download [this zip file](https://dl.dropboxusercontent.com/u/1146818/Twister/twisting-twister-data.zip "Twisting Twister Data") with a Twister Windows build, or use your own
+- Unpack the zip file and put the contents in the <repo>/twister/data folder
 - Install less: `$ npm install -g lessc`
 - Compile the Less files to css using: `$ lessc app/styles/main.less > app/styles/style.css`
 - Run nw.exe
