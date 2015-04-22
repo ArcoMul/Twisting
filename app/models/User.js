@@ -40,6 +40,10 @@ module.exports = Backbone.Model.extend({
         }, this);
     },
 
+    hasPost: function () {
+        return this.get('posts').length > 0;
+    },
+
     onAddPost: function (post) {
         var lowest_id = this.get('lowest_id');
         if (!lowest_id || post.get('twister_id') < lowest_id) {

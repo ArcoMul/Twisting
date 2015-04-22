@@ -26,10 +26,10 @@ module.exports = Backbone.Model.extend({
     },
 
     // Get posts
-    fetchPosts: function (amount, callback) {
+    fetchPosts: function (amount, includeMaxId, callback) {
 
         // Get all the posts of the users in this feed
-        this.get('users').fetchPosts(amount, function (err, posts) {
+        this.get('users').fetchPosts(amount, includeMaxId, function (err, posts) {
             if (err) return callback(err);
 
             // Sort before adding so that the 'add' events are called
@@ -46,7 +46,7 @@ module.exports = Backbone.Model.extend({
     // Get all users which don't have an avatar yet in memory. The others
     // will already be rendered on the page so don't need fetching
     fetchAvatars: function (avatarLoadForUserCallback) {
-        var usersWithoutAvatar = this.get('users').filter(function (user) { return user.get('avatar') == null});
+        var usersWithoutAvatar = this.get('users').filter(function (user) { return user.get('avatar') == null && user.hasPost()});
         async.eachSeries(usersWithoutAvatar, function (user, callback) {
             user.fetchAvatar(function (err) {
                 if (err) return callback(err);

@@ -23,7 +23,8 @@ module.exports = Backbone.View.extend({
         "click a": "navigate",
         "keypress .compose": "onTyping",
         "input .compose": "onTyping",
-        "click button": "onSubmit"
+        "click button": "onSubmit",
+        "click .newpost": "onNewPost"
     },
 
     initialize: function() {
@@ -32,8 +33,21 @@ module.exports = Backbone.View.extend({
         this.render();
 
         this.feed = new FeedModel();
-        this.feed.get('posts').on('add', function (post) {
-            this.$el.find('#content-posts').first().append(postTemplate({post: post}));
+        this.feed.get('posts').on('add', function (post, posts, info) {
+
+            // The first post defines the time of the lastest posted post
+            if (!this.dateOfLastPost) {
+                this.dateOfLastPost = post.get('time');
+            }
+            
+            // When a post is younger than the youngest post, show notification
+            if (post.get('time') > this.dateOfLastPost) {
+                this.$posts.prepend(postTemplate({post: post})).children().first().hide();
+                this.setNewPost(this.$posts.find('.post:hidden').length);
+            } else {
+                // Otherwise just add it
+                this.$posts.append(postTemplate({post: post}));
+            }
         }.bind(this));
 
         Twister.getFollowing(app.user.get('username'), function (err, usernames) {
@@ -43,18 +57,32 @@ module.exports = Backbone.View.extend({
                 this.feed.get('users').add(new UserModel({username: u}));
             }, this);
 
-            this.loadPosts();
+            // Get the first 10 posts
+            this.loadPosts(true);
+
+            // Every 10 seconds get latest posts
+            setInterval(this.loadPosts.bind(this), 10000);
         }.bind(this));
 
         $("#main-scrollable").scrollTop(0);
         $("#main-scrollable").scroll(this.scroll.bind(this));
     },
 
-    loadPosts: function () {
+    setNewPost: function (n) {
+        this.$newpost.text(n + ' new post' + (n > 1 ? 's' : ''));
+        this.$newpost.show();
+    },
+
+    onNewPost: function () {
+        this.$posts.find(".post:hidden").show();
+        this.$newpost.hide();
+    },
+
+    loadPosts: function (includeMaxId) {
         if (this.isLoading) return;
         this.isLoading = true;
         this.$loader.show();
-        this.feed.fetchPosts(10, function (err) {
+        this.feed.fetchPosts(10, includeMaxId, function (err) {
 
             this.$loader.hide();
 
@@ -65,7 +93,7 @@ module.exports = Backbone.View.extend({
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    this.$el.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                    this.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
                 }, this);
             }.bind(this));
 
@@ -104,25 +132,31 @@ module.exports = Backbone.View.extend({
         var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
         var indexJustOutOfScreen;
         var index = 0;
-        this.$el.find('#content-posts').children().each(function () {
+        this.$posts.children().each(function () {
             if ($(this).position().top > bottomOfScreen) {
                 indexJustOutOfScreen = index;
                 return false;
             }
             index++;
         });
-        if (indexJustOutOfScreen == this.$el.find('#content-posts').children().length - 1) {
-            this.loadPosts();
+        if (indexJustOutOfScreen == this.$posts.children().length - 1) {
+            this.loadPosts(true);
         }
     },
 
     render: function() {
         console.log("Render Feed");
+
+        // Render
         this.$el.html(postsContent());
+
+        // Save references to certain elements
         this.$input = this.$el.find('[contenteditable=true]');
         this.$info = this.$el.find('.info');
         this.$charcount = this.$el.find('.info span');
         this.$loader = this.$el.find('.load-animation');
+        this.$newpost = this.$el.find('.newpost');
+        this.$posts = this.$el.find('.posts');
         return this;
     }
 });

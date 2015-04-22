@@ -1,10 +1,11 @@
 "use strict";
 
-var _ = require("underscore");
-var rpc = require('json-rpc2');
-var fs = require("fs");
-var exec = require('child_process').exec;
-var dir = __dirname.replace('\app', '');
+var _ = require("underscore"),
+    rpc = require('json-rpc2'),
+    fs = require("fs"),
+    exec = require('child_process').exec,
+    dir = __dirname.replace('\app', ''),
+    config = require("./config.js");
 
 console.log('DIR', dir);
 
@@ -108,10 +109,10 @@ module.exports = (function () {
                         filename += ".png";
                     } else if (img == "img/genericPerson.png") {
                         // This is some sort of default image? Anyway, return like there is no image
-                        return callback(null, null);
+                        return callback(null, config.DEFAULT_AVATAR);
                     } else {
                         console.log('No jpg or png for', username, img);
-                        return callback(null, null);
+                        return callback(null, config.DEFAULT_AVATAR);
                     }
                     fs.writeFile(filename, base64, 'base64', function(err) {
                         if (err) {

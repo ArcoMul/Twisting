@@ -14,7 +14,7 @@ Backbone.$ = $;
 module.exports = Backbone.Collection.extend({
     model: UserModel,
 
-    fetchPosts: function (amount, callback) {
+    fetchPosts: function (amount, includeMaxId, callback) {
 
         // Build request object array
         var users = [];
@@ -22,7 +22,7 @@ module.exports = Backbone.Collection.extend({
         _.each(following, function (user) {
             var data = {};
             data.username = user.get('username');
-            if (user.get('lowest_id')) {
+            if (includeMaxId && user.get('lowest_id')) {
                 data.max_id = user.get('lowest_id') - 1;
             }
             users.push(data);
@@ -59,13 +59,18 @@ module.exports = Backbone.Collection.extend({
 
                 var user = this.findWhere({username: item.n});
                 var post = new PostModel({
+                    id: user + '_' + item.k,
                     user: user,
                     message: item.msg,
                     time: item.time,
                     retwist: retwist,
                     twister_id: item.k
                 });
-                console.log(post);
+
+                if (!user) {
+                    console.log('username:',item.n);
+                    console.log('post:', post);
+                }
 
                 user.addPost(post);
                 posts.push(post);

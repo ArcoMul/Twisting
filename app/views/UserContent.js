@@ -33,7 +33,7 @@ module.exports = Backbone.View.extend({
         this.feed = new FeedModel();
         this.feed.get('users').add(new UserModel({username: this.model.get('username')}));
         this.feed.get('posts').on('add', function (post) {
-            this.$el.children('#content-posts').first().append(postTemplate({post: post}));
+            this.$posts.append(postTemplate({post: post}));
         }.bind(this));
 
         this.loadPosts();
@@ -49,7 +49,10 @@ module.exports = Backbone.View.extend({
     loadPosts: function () {
         if (this.isLoading) return;
         this.isLoading = true;
-        this.feed.fetchPosts(10, function (err) {
+        this.$loader.show();
+        this.feed.fetchPosts(10, true, function (err) {
+
+            this.$loader.hide();
 
             // Fetch avatars of users of which we don't have one yet
             this.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
@@ -58,7 +61,7 @@ module.exports = Backbone.View.extend({
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    this.$el.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                    this.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
                 }, this);
             }.bind(this));
 
@@ -71,28 +74,25 @@ module.exports = Backbone.View.extend({
         var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
         var indexJustOutOfScreen;
         var index = 0;
-        this.$el.children('#content-posts').children().each(function () {
+        this.$posts.children().each(function () {
             if ($(this).position().top > bottomOfScreen) {
                 indexJustOutOfScreen = index;
                 return false;
             }
             index++;
         });
-        if (indexJustOutOfScreen == this.$el.children('#content-posts').children().length - 1) {
+        if (indexJustOutOfScreen == this.$posts.children().length - 1) {
             this.loadPosts();
         }
     },
 
     render: function() {
         console.log("Render user profile");
-        this.$el.html(postsContentTemplate({user: this.model}));
-        return this;
-    },
 
-    remove: function() {
-        $(window.document).unbind('scroll');
-        this.$el.empty().off();
-        this.stopListening();
+        this.$el.html(postsContentTemplate({user: this.model}));
+
+        this.$loader = this.$el.find('.load-animation');
+        this.$posts = this.$el.find('.posts');
         return this;
     }
 });
