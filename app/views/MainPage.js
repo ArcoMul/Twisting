@@ -42,14 +42,12 @@ module.exports = Backbone.View.extend({
         this.currentContextView.render();
     },
 
-    switchContentView: function (view) {
+    switchContentView: function (View, options) {
         if(this.currentContentView) {
             this.currentContentView.remove();
         }
         this.$content.html('<div />');
-        this.currentContentView = view;
-        this.currentContentView.setElement(this.$content.children().first());
-        this.currentContentView.render();
+        this.currentContentView = new View(_.extend({el: this.$content.children().first()}, options));
     },
 
     showOverlay: function (view) {

@@ -33,6 +33,8 @@ module.exports = Backbone.View.extend({
         console.log("Initialize feed");
         this.options = options;
 
+        this.render();
+
         this.feed = new FeedModel();
         this.feed.get('posts').on('add', function (post, posts, info) {
 
@@ -138,6 +140,7 @@ module.exports = Backbone.View.extend({
 
     navigate: function (e) {
         e.preventDefault();
+        e.stopPropagation();
         app.router.navigate($(e.target).attr('href'), {trigger: true});
     },
 
