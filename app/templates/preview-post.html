@@ -1,0 +1,13 @@
+<div class="post">
+    <div class="posts">
+        <% if (parentPosts) { %>
+            <% _.each(parentPosts, function (post) { %>
+            <%= postTemplate({post: post}) %>
+            <% }) %>
+        <% } %>
+        <%= postTemplate({post: options.post, className: 'main'}) %>
+        <% _.each(replies, function (post) { %>
+            <%= postTemplate({post: post}) %>
+        <% }) %>
+    </div>
+</div>

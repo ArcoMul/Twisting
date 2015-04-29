@@ -23,6 +23,8 @@ module.exports = Backbone.View.extend({
         this.render();
         this.$context = this.$el.children('#context-section');
         this.$content = this.$el.children('#content-section');
+        this.$preview = this.$el.children('#preview-section').children('.content');
+        this.$preview.css({left: this.$preview.width()});
         this.$overlay = $("#overlay-holder");
 
         $("#main-scrollable").scroll(function () {
@@ -54,6 +56,38 @@ module.exports = Backbone.View.extend({
         this.$overlay.html('<div />');
         view.setElement(this.$overlay.children().first());
         view.render();
+    },
+
+    openPreview: function (view) {
+        var self = this;
+        if (this.currentPreviewView) {
+            this.togglePreview(false, function () {
+                self.currentPreviewView.remove();
+
+                self.$preview.html('<div />');
+                self.currentPreviewView = view;
+                self.currentPreviewView.setElement(self.$preview.children().first());
+                self.currentPreviewView.render();
+                self.$preview.css({paddingTop: $("#main-scrollable").scrollTop()});    
+                self.togglePreview(true);
+            });
+            return;
+        }
+        this.$preview.html('<div />');
+        this.currentPreviewView = view;
+        this.currentPreviewView.setElement(this.$preview.children().first());
+        this.currentPreviewView.render();
+        this.$preview.css({paddingTop: $("#main-scrollable").scrollTop()});    
+        this.togglePreview(true);
+    },
+
+    togglePreview: function (visible, callback) {
+        this.$preview.animate({
+            left: visible ? 0 : this.$preview.width()
+        }, {
+            duration: 200,
+            complete: callback
+        });
     },
 
     render: function() {

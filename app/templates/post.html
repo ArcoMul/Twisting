@@ -1,6 +1,8 @@
+<% var className = className %>
+
 <% if (post.get('retwist')) { %>
 
-<div class="post retwist" data-id="<%=post.cid%>">
+<div class="post retwist <%= className %>" data-id="<%=post.cid%>">
     <div class="left">
         <% if (post.get('retwist').get('user').get('avatar')) { %>
             <img src="<%= post.get('retwist').get('user').get('avatar') %>" />
@@ -21,7 +23,7 @@
 
 <% } else { %>
 
-<div class="post" data-id="<%=post.cid%>">
+<div class="post <%= className %>" data-id="<%=post.cid%>">
     <div class="left">
         <% if (post.get('user').get('avatar')) { %>
             <img src="<%= post.get('user').get('avatar') %>" />

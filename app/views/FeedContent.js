@@ -12,6 +12,7 @@ var $ = require("jquery"),
     PostModel = require("../models/Post"),
     UserModel = require("../models/User"),
     FeedModel = require("../models/Feed"),
+    PostPreview = require("../views/PostPreview"),
     Twister = require("../Twister"),
     async = require("async");
 
@@ -24,13 +25,13 @@ module.exports = Backbone.View.extend({
         "keypress .compose": "onTyping",
         "input .compose": "onTyping",
         "click button": "onSubmit",
-        "click .newpost": "onNewPost"
+        "click .newpost": "onNewPost",
+        "click .post": "openPostDetail"
     },
 
-    initialize: function() {
+    initialize: function(options) {
         console.log("Initialize feed");
-
-        this.render();
+        this.options = options;
 
         this.feed = new FeedModel();
         this.feed.get('posts').on('add', function (post, posts, info) {
@@ -76,6 +77,18 @@ module.exports = Backbone.View.extend({
     onNewPost: function () {
         this.$posts.find(".post:hidden").show();
         this.$newpost.hide();
+    },
+    
+    openPostDetail: function (e) {
+        var id = $(e.currentTarget).attr('data-id'),
+            post = this.feed.get('posts').get(id);
+
+        // Show original twist, not the retwist itself
+        if (post.get('retwist')) {
+            post = post.get('retwist');
+        }
+
+        this.options.parent.openPreview(new PostPreview({post: post, feed: this.feed}));
     },
 
     loadPosts: function (includeMaxId) {

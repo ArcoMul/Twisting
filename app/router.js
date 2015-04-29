@@ -69,8 +69,8 @@ module.exports = Backbone.Router.extend({
     },
 
     feed: function () {
-        app.mainView.switchContextView(new FeedContextView());
-        app.mainView.switchContentView(new FeedContentView());
+        app.mainView.switchContextView(new FeedContextView({parent: app.mainView}));
+        app.mainView.switchContentView(new FeedContentView({parent: app.mainView}));
     },
 
     notYetImplemented: function () {

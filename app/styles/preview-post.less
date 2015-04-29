@@ -1,0 +1,43 @@
+#preview-section .post {
+    padding: 0 20px;
+
+    .posts .post {
+        padding: 10px 0;
+        &.main {
+            padding: 10px 0;
+            .right {
+                & > .username {
+                    font-size: 16px;
+                }
+                p {
+                    font-size: 15px;
+                    line-height: 22px;
+                }
+                .date {
+                    font-size: 14px;
+                    top: 11px;
+                }
+            }
+        }
+        .left {
+            flex-basis: 36px;
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        .right {
+            & > .username {
+                font-size: 14px;
+            }
+            .date {
+                top: 14px;
+                right: 0;
+                font-size: 12px;
+            }
+            p {
+                font-size: 13px;
+            }
+        }
+    }
+}

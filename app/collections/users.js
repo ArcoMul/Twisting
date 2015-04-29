@@ -37,45 +37,17 @@ module.exports = Backbone.Collection.extend({
             }
             var posts = [];
             _.each(posts_data, function (item) {
-
-                var retwist;
-                if(item.rt) {
-                    // If this is a retwist we might not know the user
-                    // in that case add it to the list of users
-                    var retwistUser = this.findWhere({username: item.rt.n});
-                    if (!retwistUser) {
-                        retwistUser = new UserModel({username: item.rt.n, following: false});
-                        this.add(retwistUser);
-                    }
-
-                    // Build the retwist post model
-                    retwist = new PostModel({
-                        user: retwistUser,
-                        message: item.rt.msg,
-                        time: item.rt.time,
-                        twister_id: item.rt.k
-                    });
-                }
-
-                var user = this.findWhere({username: item.n});
-                var post = new PostModel({
-                    id: user + '_' + item.k,
-                    user: user,
-                    message: item.msg,
-                    time: item.time,
-                    retwist: retwist,
-                    twister_id: item.k
-                });
-
-                if (!user) {
-                    console.log('username:',item.n);
-                    console.log('post:', post);
-                }
-
-                user.addPost(post);
+                var post = new PostModel().parse(item, this);
                 posts.push(post);
             }, this);
             callback(null, posts);
         }.bind(this));
+    },
+
+    newUser: function (data) {
+        var user = new UserModel(data);
+        this.add(user);
+        return user;
     }
+
 });

@@ -23,6 +23,7 @@ module.exports = (function () {
          
         // Call add function on the server 
         client.call(method, params, function(err, result) {
+            console.log('RESULT:', method, arguments);
             callback(err, result);
         });
     }
@@ -202,6 +203,18 @@ module.exports = (function () {
         });
     }
 
+    var getReplies = function (username, k, callback) {
+        twisterRpc("dhtget", [username, "replies" + k, "m"], function (err, data) {
+            callback(err, data);
+        });
+    }
+
+    var getPost = function (username, k, callback) {
+        twisterRpc("dhtget", [username, "post" + k, "s"], function (err, data) {
+            callback(err, data);
+        });
+    }
+
     var follow = function (username, users, callback) {
         twisterRpc("follow", [username, users], function (err, data) {
             callback(err, data);
@@ -249,6 +262,8 @@ module.exports = (function () {
         importUser: importUser,
         getFollowersFromDht: getFollowersFromDht,
         getTrendingHashtags: getTrendingHashtags,
+        getReplies: getReplies,
+        getPost: getPost,
         follow: follow,
         post: post,
         startDeamon: startDeamon,
