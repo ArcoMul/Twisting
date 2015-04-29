@@ -19,10 +19,15 @@ module.exports = Backbone.View.extend({
     currentContentView: null,
 
     initialize: function() {
+        var self = this;
         this.render();
         this.$context = this.$el.children('#context-section');
         this.$content = this.$el.children('#content-section');
         this.$overlay = $("#overlay-holder");
+
+        $("#main-scrollable").scroll(function () {
+            self.$context.children().first().css({top: $(this).scrollTop()});    
+        });
     },
 
     switchContextView: function (view) {

@@ -15,7 +15,7 @@ module.exports = Backbone.View.extend({
     },
 
     initialize: function() {
-        this.render();
+
     },
 
     navigate: function (e) {

@@ -196,6 +196,12 @@ module.exports = (function () {
         });
     }
 
+    var getTrendingHashtags = function (count, callback) {
+        twisterRpc("gettrendinghashtags", [count], function (err, data) {
+            callback(err, data);
+        });
+    }
+
     var follow = function (username, users, callback) {
         twisterRpc("follow", [username, users], function (err, data) {
             callback(err, data);
@@ -242,6 +248,7 @@ module.exports = (function () {
         getUsers: getUsers,
         importUser: importUser,
         getFollowersFromDht: getFollowersFromDht,
+        getTrendingHashtags: getTrendingHashtags,
         follow: follow,
         post: post,
         startDeamon: startDeamon,

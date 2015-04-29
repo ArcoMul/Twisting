@@ -28,8 +28,6 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         console.log("Initialize user profile");
         
-        this.render();
-
         this.feed = new FeedModel();
         this.feed.get('users').add(new UserModel({username: this.model.get('username')}));
         this.feed.get('posts').on('add', function (post) {

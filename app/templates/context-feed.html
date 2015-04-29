@@ -1,1 +1,16 @@
-<h1>Feed</h1>
+<div class="feed">
+    <h1>Feed</h1>
+    <p>Live feed of the Twists of all the accounts you follow</p>
+
+    <h2>Today</h2>
+    <p>There were <span>24 Twists</span> posted in your feed, where <span>2 mentioned</span> you. <span>3 Accounts</span> followed you, and you received <span>5 messages</span></p>
+
+    <% if (options.tags && _.size(options.tags) > 0) { %>
+    <h2>Top trends</h2>
+    <p class="toptrends">
+        <% _.each(options.tags, function (tag) { %>
+        <a href="/tags/<%= tag %>">#<%= tag %></a>
+        <% }) %>
+    </p>
+    <% } %>
+</div>

@@ -5,6 +5,7 @@ var $ = require("jquery"),
     Backbone = require("backbone"),
     app = require("../app"),
     _ = require("underscore"),
+    Twister = require("../Twister"),
     feedContextTemplate = _.template(require("../templates/context-feed.html"));
 
 Backbone.$ = $;
@@ -16,7 +17,15 @@ module.exports = Backbone.View.extend({
     },
 
     initialize: function() {
-        this.render();
+        var self = this;
+
+        this.options = {};
+
+        Twister.getTrendingHashtags(10, function (err, tags) {
+            if (err) return console.error('Error getting hashtags:', err);
+            self.options.tags = tags;
+            self.render();
+        });
     },
 
     navigate: function (e) {
@@ -25,7 +34,7 @@ module.exports = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.html(feedContextTemplate());
+        this.$el.html(feedContextTemplate({_: _, options: this.options}));
         return this;
     }
 });
