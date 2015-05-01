@@ -66,6 +66,21 @@ module.exports = (function () {
         });
     }
 
+    var getUserStatus = function (username, callback) {
+        twisterRpc("dhtget", [username, 'status', 's'], function (err, data) {
+            callback(err, data[0].p.v.userpost);
+        });
+    }
+
+    var getPostFromDht = function (username, k, callback) {
+        twisterRpc("dhtget", [username, 'post' + k, 's', 1000], function (err, data) {
+            if (data.length == 0) {
+                return callback(err, null);
+            }
+            callback(err, data[0].p.v.userpost);
+        });
+    }
+
     var getFollowing = function (username, callback)
     {
         twisterRpc("getfollowing", [username], function (err, data) {
@@ -253,6 +268,8 @@ module.exports = (function () {
 
     return {
         getPosts: getPosts,
+        getPostFromDht: getPostFromDht,
+        getUserStatus: getUserStatus,
         getFollowing: getFollowing,
         getAvatar: getAvatar,
         getStatus: getStatus,

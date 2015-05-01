@@ -64,7 +64,7 @@ module.exports = Backbone.View.extend({
             this.loadPosts(true);
 
             // Every 10 seconds get latest posts
-            setInterval(this.loadPosts.bind(this), 10000);
+            this.timer = setInterval(this.loadPosts.bind(this), 10000);
         }.bind(this));
 
         $("#main-scrollable").scrollTop(0);
@@ -97,7 +97,7 @@ module.exports = Backbone.View.extend({
         if (this.isLoading) return;
         this.isLoading = true;
         this.$loader.show();
-        this.feed.fetchPosts(10, includeMaxId, function (err) {
+        this.feed.fetchPosts(10, {includeMaxId: includeMaxId}, function (err) {
 
             this.$loader.hide();
 
@@ -174,6 +174,11 @@ module.exports = Backbone.View.extend({
         this.$newpost = this.$el.find('.newpost');
         this.$posts = this.$el.find('.posts');
         return this;
+    },
+
+    remove: function() {
+        clearInterval(this.timer);
+        Backbone.View.prototype.remove.apply(this, arguments);
     }
 });
 

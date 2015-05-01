@@ -19,7 +19,8 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
-    posts: null,
+    user: null,
+    feed: null,
 
     events: {
         "click a": "navigate",
@@ -27,16 +28,26 @@ module.exports = Backbone.View.extend({
 
     initialize: function() {
         console.log("Initialize user profile");
+
+        var self = this;
         
         this.render();
-        
+
+        this.user = new UserModel({username: this.model.get('username')});
+
         this.feed = new FeedModel();
-        this.feed.get('users').add(new UserModel({username: this.model.get('username')}));
+        this.feed.get('users').add(this.user);
         this.feed.get('posts').on('add', function (post) {
             this.$posts.append(postTemplate({post: post}));
         }.bind(this));
 
-        this.loadPosts();
+        Twister.getFollowing(app.user.get('username'), function (err, usernames) {
+            if (usernames.indexOf(self.user.get('username')) != -1) {
+                return self.loadPosts();
+            }
+            self.user.set('following', false);
+            self.loadPosts();
+        });
 
         $("#main-scrollable").scroll(this.scroll.bind(this));
     },
@@ -50,7 +61,7 @@ module.exports = Backbone.View.extend({
         if (this.isLoading) return;
         this.isLoading = true;
         this.$loader.show();
-        this.feed.fetchPosts(10, true, function (err) {
+        this.feed.fetchPosts(10, {includeMaxId: true, includeNotFollowers: true}, function (err) {
 
             this.$loader.hide();
 

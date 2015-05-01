@@ -57,7 +57,8 @@ var PostModel = module.exports = Backbone.Model.extend({
             time: item.time,
             retwist: retwist,
             reply: item.reply ? {username: item.reply.n, twister_id: item.reply.k} : undefined,
-            twister_id: item.k
+            twister_id: item.k,
+            last_twister_id: item.lastk
         });
 
         user.addPost(this);

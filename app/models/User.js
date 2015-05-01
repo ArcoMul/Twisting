@@ -49,6 +49,11 @@ module.exports = Backbone.Model.extend({
         if (!lowest_id || post.get('twister_id') < lowest_id) {
             this.set('lowest_id', post.get('twister_id'));
         }
+
+        // TODO: dont assume twister_ids are in the right order
+        if (!this.get('last_twister_id') || post.get('last_twister_id') < this.get('last_twister_id')) {
+            this.set('last_twister_id', post.get('last_twister_id'));
+        }
     },
 
     fetchPosts: function (amount, callback) {
@@ -78,5 +83,12 @@ module.exports = Backbone.Model.extend({
             this.set('avatar', avatar);
             callback();
         }.bind(this));
+    },
+
+    getStatus: function (callback) {
+        Twister.getUserStatus(this.get('username'), function (err, post) {
+            // Just return the post, it has to be added to the user from the user collection
+            callback(err, post);
+        });
     }
 });

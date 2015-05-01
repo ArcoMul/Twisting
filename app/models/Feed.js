@@ -26,10 +26,10 @@ module.exports = Backbone.Model.extend({
     },
 
     // Get posts
-    fetchPosts: function (amount, includeMaxId, callback) {
+    fetchPosts: function (amount, options, callback) {
 
         // Get all the posts of the users in this feed
-        this.get('users').fetchPosts(amount, includeMaxId, function (err, posts) {
+        this.get('users').fetchPosts(amount, options, function (err, posts) {
             if (err) return callback(err);
 
             // Sort before adding so that the 'add' events are called
