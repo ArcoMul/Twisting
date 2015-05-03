@@ -35,7 +35,7 @@ module.exports = Backbone.View.extend({
             if (status == Twister.status.NOCONNECTION) {
                 self.startDeamon();
             } else {
-                self.checkAccounts();
+                self.gatherInfo();
             }
         });
     },
@@ -59,29 +59,10 @@ module.exports = Backbone.View.extend({
             Twister.getStatus(function (status) {
                 if (status != Twister.status.NOCONNECTION) {
                     clearInterval(check);
-                    self.checkAccounts();
+                    self.gatherInfo();
                 }
             });
         }, 1000);
-    },
-
-    checkAccounts: function () {
-        var self = this;
-        if (app.user) return this.gatherInfo();
-        self.setText("Looking for accounts");
-        Twister.getUsers(function (err, accounts) {
-            console.log('status users', accounts);
-            if (accounts.length == 0) {
-                app.router.navigate('login', {trigger: true});
-                self.remove();
-            } else if (accounts.length > 1) {
-                app.router.navigate('choose-account', {trigger: true});
-                self.remove();
-            } else {
-                app.changeUser(new UserModel({username: accounts[0]}));
-                self.gatherInfo();
-            }
-        });
     },
 
     gatherInfo: function () {
@@ -109,6 +90,7 @@ module.exports = Backbone.View.extend({
     },
 
     checkStatus: function () {
+        var self = this;
         var time = new Date().getTime() / 1000;
         if (!this.latestInfo) {
             this.setText("Fetching network information");
@@ -119,11 +101,51 @@ module.exports = Backbone.View.extend({
         } else if (this.latestBlock.time < time - (2 * 3600)) {
             this.setText("Downloading latest blocks");
         } else {
-            // Ready to go!
+            // Everything is fine, stop checking for new info
             clearInterval(this.infoTimer); 
-            app.router.navigate('feed', {trigger: true});
-            this.remove();
+
+            // See if there is already an account
+            this.checkAccounts(function () {
+                // Seems like we are good to go    
+                app.router.navigate('feed', {trigger: true});
+                self.remove();
+            });
         }
+    },
+
+    /**
+     * Checks if there are known users
+     * If there are multiple a dialog will be shown to choose one
+     * If there is one user that one is used immideately
+     * 
+     * callback: will be executed if there is only one user so that 
+     * t         the next step can be executed immideately
+     */
+    checkAccounts: function (callback) {
+        var self = this;
+
+        // If there is already an user choosen, nothing to do here
+        if (app.user) return callback();
+
+        self.setText("Looking for accounts");
+
+        // Get the users from the Twister wallet
+        Twister.getUsers(function (err, accounts) {
+            // No accounts? Login so that we get one
+            if (accounts.length == 0) {
+                app.router.navigate('login', {trigger: true});
+                self.remove();
+            // More than one account? Make the user choose one
+            } else if (accounts.length > 1) {
+                app.router.navigate('choose-account', {trigger: true});
+                self.remove();
+
+            // Only one account? Choose that one directly
+            } else {
+                app.changeUser(new UserModel({username: accounts[0]}));
+                callback();
+            }
+        });
     },
 
     renderInfo: function () {
