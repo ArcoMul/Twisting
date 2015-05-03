@@ -87,29 +87,43 @@ module.exports = Backbone.View.extend({
     gatherInfo: function () {
         var self = this;
 
-        self.setText("Waiting for a connection");
+        self.setText("Fetching network information");
 
-        var infoInterval, blockInterval;
         // Twister is started, let's gather info on its status
-        infoInterval = setInterval(function () {
+        this.infoTimer = setInterval(function () {
+
+            // Retrieve latest info
             Twister.getInfo(function (err, info) {
                 self.latestInfo = info;
                 self.renderInfo();
-                if (info.connections > 0) {
-                    clearInterval(infoInterval); 
-                    clearInterval(blockInterval); 
-                    self.remove();
-                    app.router.navigate('feed', {trigger: true});
-                }
             });
-        }, 1000);
 
-        blockInterval = setInterval(function () {
+            // Retrieve latest blockchain info
             Twister.getBestBlock(function (err, block) {
                 self.latestBlock = block;
                 self.renderInfo();
             });
+
+            self.checkStatus();
         }, 1000);
+    },
+
+    checkStatus: function () {
+        var time = new Date().getTime() / 1000;
+        if (!this.latestInfo) {
+            this.setText("Fetching network information");
+        } else if (this.latestInfo.connections == 0) {
+            this.setText("Waiting for a connection");
+        } else if (!this.latestBlock) {
+            this.setText("Fetching blockchain information");
+        } else if (this.latestBlock.time < time - (2 * 3600)) {
+            this.setText("Downloading latest blocks");
+        } else {
+            // Ready to go!
+            clearInterval(this.infoTimer); 
+            app.router.navigate('feed', {trigger: true});
+            this.remove();
+        }
     },
 
     renderInfo: function () {
