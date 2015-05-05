@@ -4,6 +4,7 @@
 var $ = require("jquery"),
     Backbone = require("backbone"),
     app = require("../app"),
+    twemoji = require('twemoji'),
     moment = require("moment");
 
 Backbone.$ = $;
@@ -71,6 +72,11 @@ var PostModel = module.exports = Backbone.Model.extend({
         var msg = this.get('message').replace( /(https?:\/\/[^\s]+)/g, function(url) { return '<a href="'+url+'">'+url+'</a>' });
         msg = msg.replace( /(^|[^#\w])#(\w{1,15})\b/g, '$1<a href="hashtag/$2">#$2</a>' );
         msg = msg.replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a class="username" href="user/$2">$2</a>' );
+        msg = twemoji.parse(msg, {
+            base: '',
+            folder: 'node_modules/twemoji/svg',
+            ext: '.svg'
+        });
         return msg;
     },
 
