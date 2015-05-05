@@ -22,13 +22,7 @@ module.exports = Backbone.View.extend({
     user: null,
     feed: null,
 
-    events: {
-        "click a": "navigate",
-    },
-
     initialize: function() {
-        console.log("Initialize user profile");
-
         var self = this;
         
         this.render();
@@ -49,12 +43,8 @@ module.exports = Backbone.View.extend({
             self.loadPosts();
         });
 
+        $("#main-scrollable").scrollTop(0);
         $("#main-scrollable").scroll(this.scroll.bind(this));
-    },
-
-    navigate: function (e) {
-        e.preventDefault();
-        app.router.navigate($(e.target).attr('href'), {trigger: true});
     },
 
     loadPosts: function () {
@@ -98,10 +88,7 @@ module.exports = Backbone.View.extend({
     },
 
     render: function() {
-        console.log("Render user profile");
-
         this.$el.html(postsContentTemplate({user: this.model}));
-
         this.$loader = this.$el.find('.load-animation');
         this.$posts = this.$el.find('.posts');
         return this;

@@ -21,7 +21,6 @@ Backbone.$ = $;
 module.exports = Backbone.View.extend({
 
     events: {
-        "click a": "navigate",
         "keypress .compose": "onTyping",
         "input .compose": "onTyping",
         "click button": "onSubmit",
@@ -95,26 +94,31 @@ module.exports = Backbone.View.extend({
 
     loadPosts: function (includeMaxId) {
         if (this.isLoading) return;
+        var self = this;
         this.isLoading = true;
         this.$loader.show();
         this.feed.fetchPosts(10, {includeMaxId: includeMaxId}, function (err) {
+            if (err) return console.error('Error fetching posts in feed:', err);
 
-            this.$loader.hide();
+            // View is removed while posts where fetched
+            if (!self) return;
+
+            self.$loader.hide();
 
             // Fetch avatars of users of which we don't have one yet
-            this.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
+            self.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
                 if (!user.get('avatar')) {
                     console.log(user.get('username'), 'does not have an avatar');
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    this.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
-                }, this);
-            }.bind(this));
+                    self.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                });
+            });
 
             // Allowed to load the next page
-            this.isLoading = false;
-        }.bind(this));
+            self.isLoading = false;
+        });
     },
 
     onTyping: function (e) {
@@ -138,31 +142,16 @@ module.exports = Backbone.View.extend({
         }.bind(this));
     },
 
-    navigate: function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        app.router.navigate($(e.target).attr('href'), {trigger: true});
-    },
-
     scroll: function (e) {
         var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
-        var indexJustOutOfScreen;
-        var index = 0;
-        this.$posts.children().each(function () {
-            if ($(this).position().top > bottomOfScreen) {
-                indexJustOutOfScreen = index;
-                return false;
-            }
-            index++;
-        });
-        if (indexJustOutOfScreen == this.$posts.children().length - 1) {
+        var totalHeight = $("#main-scrollable")[0].scrollHeight;
+
+        if (bottomOfScreen > totalHeight - 200) {
             this.loadPosts(true);
         }
     },
 
     render: function() {
-        console.log("Render Feed");
-
         // Render
         this.$el.html(postsContent());
 

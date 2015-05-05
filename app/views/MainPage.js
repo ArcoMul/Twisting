@@ -1,7 +1,8 @@
 "use strict";
 
 // External dependencies.
-var $ = require("jquery"),
+var gui = window.require('nw.gui'),
+    $ = require("jquery"),
     Backbone = require("backbone"),
     app = require("../app"),
     _ = require("underscore"),
@@ -18,6 +19,10 @@ module.exports = Backbone.View.extend({
     currentContextView: null,
     currentContentView: null,
 
+    events: {
+        "click a": "navigate",
+    },
+
     initialize: function() {
         var self = this;
         this.render();
@@ -30,6 +35,27 @@ module.exports = Backbone.View.extend({
         $("#main-scrollable").scroll(function () {
             self.$context.children().first().css({top: $(this).scrollTop()});    
         });
+        $(window).resize(function () {
+            this.$preview.css({left: this.$preview.width()});
+        });
+    },
+
+    navigate: function (e) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        var url = $(e.target).attr('href');
+        if (this.isExternal(url)) {
+            gui.Shell.openExternal(url);
+        } else {
+            app.router.navigate(url, {trigger: true});
+        }
+    },
+
+    isExternal: function (url) {
+        var match = url.match(/^([^:\/?#]+:)?(?:\/\/([^\/?#]*))?([^?#]+)?(\?[^#]*)?(#.*)?/);
+        if (typeof match[1] === "string" && match[1].length > 0 && match[1].toLowerCase() !== window.location.protocol) return true;
+        if (typeof match[2] === "string" && match[2].length > 0 && match[2].replace(new RegExp(":("+{"http:":80,"https:":443}[window.location.protocol]+")?$"), "") !== window.location.host) return true;
+        return false;
     },
 
     switchContextView: function (view) {
@@ -40,6 +66,7 @@ module.exports = Backbone.View.extend({
         this.currentContextView = view;
         this.currentContextView.setElement(this.$context.children().first());
         this.currentContextView.render();
+        this.togglePreview(false);
     },
 
     switchContentView: function (View, options) {
