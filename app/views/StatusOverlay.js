@@ -17,10 +17,6 @@ module.exports = Backbone.View.extend({
 
     posts: null,
 
-    events: {
-        "click a": "navigate",
-    },
-
     initialize: function(options) {
         var self = this;
         console.log("Initialize status overlay");
@@ -38,11 +34,6 @@ module.exports = Backbone.View.extend({
                 self.gatherInfo();
             }
         });
-    },
-
-    navigate: function (e) {
-        e.preventDefault();
-        app.router.navigate($(e.target).attr('href'), {trigger: true});
     },
 
     startDeamon: function () {
@@ -66,24 +57,46 @@ module.exports = Backbone.View.extend({
     },
 
     gatherInfo: function () {
+        // Prevent starting the timer twice by accident
+        if(this.infoTimer) return;
+
         var self = this;
 
         self.setText("Fetching network information");
+
+        var count = 0;
 
         // Twister is started, let's gather info on its status
         this.infoTimer = setInterval(function () {
 
             // Retrieve latest info
             Twister.getInfo(function (err, info) {
+                if(!self) return;
                 self.latestInfo = info;
                 self.renderInfo();
             });
 
             // Retrieve latest blockchain info
             Twister.getBestBlock(function (err, block) {
+                if(!self) return;
                 self.latestBlock = block;
                 self.renderInfo();
+
+                // Increase the counter only when we actually get a response
+                // otherwise it might not be the connection, but the deamon
+                // unresponsive
+                count++;
             });
+
+            // After 10, 30, and 60 seconds force a connection to the offical Twister seeders
+            // in case this client can't find a connection
+            if (count == 10) {
+                Twister.addNode('seed.twister.net.co', 'onetry');
+            } else if (count == 30) {
+                Twister.addNode('seed2.twister.net.co', 'onetry');
+            } else if (count == 60) {
+                Twister.addNode('seed3.twister.net.co', 'onetry');
+            }
 
             self.checkStatus();
         }, 1000);

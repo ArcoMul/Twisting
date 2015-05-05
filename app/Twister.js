@@ -35,6 +35,12 @@ module.exports = (function () {
         }
     }
 
+    var addNode = function (server, mode) {
+        twisterRpc('addnode', [server, mode], function (err) {
+            if (err) return console.error('Error adding node:', err); 
+        });
+    }
+
     // getposts <count> '[{"username":username,"max_id":max_id,"since_id":since_id},...]' [flags]
     var getPosts = function (username, amount, callback) {
         var users = [];
@@ -267,6 +273,7 @@ module.exports = (function () {
     }
 
     return {
+        addNode: addNode,
         getPosts: getPosts,
         getPostFromDht: getPostFromDht,
         getUserStatus: getUserStatus,
