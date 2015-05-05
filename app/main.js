@@ -38,7 +38,6 @@ $(window.document).on('keypress', function (e) {
 
 var win = gui.Window.get();
 win.on('close', function() {
-    console.log('Application closing!');
     this.hide(); // Pretend to be closed already
     Twister.stopDeamon(function (err, data) {
         // TODO: application should always quit, no matter what

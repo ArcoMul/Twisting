@@ -43,38 +43,22 @@ module.exports = Backbone.View.extend({
         var self = this;
         var username = this.$el.find("input[name=username]").val();
         var key = this.$el.find("input[name=key]").val();
+
+        // Insert the given details into the wallet
         Twister.importUser(username, key, function (err) {
             if (err) {
                 return console.log('Error importing user');
             }
 
-            var dhtRequestFinished = true;
-            var interval = setInterval(function () {
-                if (!dhtRequestFinished) return;
-                dhtRequestFinished = false;
-                Twister.getFollowersFromDht(username, function (err, followers) {
-                    if (err) {
-                        return console.log('Error getting users from DHT');
-                    }
-                    console.log('DHT followers', followers);
-                    if (followers.length > 0) {
-                        clearInterval(interval);
-                        followers.push(username);
+            // Get the followers of this user
+            Twister.followFollowersFromDht(username, function (err) {
+                if (err) return console.log('Error following all retrieved users');
 
-                        Twister.follow(username, followers, function (err) {
-                            if (err) {
-                                return console.log('Error following all retrieved users');
-                            }
-                            console.log('Everybody followed, lets start!'); 
-                            app.changeUser(new UserModel({username: username}));
-                            app.router.navigate('feed', {trigger: true});
-                            self.destroy();
-                        });
-                    } else {
-                        dhtRequestFinished = true;
-                    }
-                });
-            }, 500);
+                // Followers are followed, let's start!
+                app.changeUser(new UserModel({username: username}));
+                app.router.navigate('feed', {trigger: true});
+                self.destroy();
+            });
         });
     },
 

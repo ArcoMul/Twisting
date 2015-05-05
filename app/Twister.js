@@ -218,6 +218,35 @@ module.exports = (function () {
         });
     }
 
+    /**
+     * This function starts requesting the followers of the given user
+     * from DHT, when they are received all these followers are followed
+     * It is a function to run once in a while to make sure all the right
+     * users are followed. (In case of another client running for this user)
+     * or when the initial follow call fails.
+     */
+    var followFollowersFromDht = function (username, callback) {
+        var dhtRequestFinished = true;
+        var interval = setInterval(function () {
+            if (!dhtRequestFinished) return;
+            dhtRequestFinished = false;
+            getFollowersFromDht(username, function (err, followers) {
+                if (err) {
+                    return console.error('Error getting followers from DHT');
+                }
+                if (followers.length > 0) {
+                    clearInterval(interval);
+                    followers.push(username);
+                    follow(username, followers, function (err) {
+                        if (callback) callback(err);
+                    });
+                } else {
+                    dhtRequestFinished = true;
+                }
+            });
+        }, 1000);
+    }
+
     var getTrendingHashtags = function (count, callback) {
         twisterRpc("gettrendinghashtags", [count], function (err, data) {
             callback(err, data);
@@ -285,6 +314,7 @@ module.exports = (function () {
         getUsers: getUsers,
         importUser: importUser,
         getFollowersFromDht: getFollowersFromDht,
+        followFollowersFromDht: followFollowersFromDht,
         getTrendingHashtags: getTrendingHashtags,
         getReplies: getReplies,
         getPost: getPost,

@@ -120,7 +120,16 @@ module.exports = Backbone.View.extend({
             // See if there is already an account
             this.checkAccounts(function () {
                 // Seems like we are good to go    
+
+                // First tell Twister to follow all the followers from DHT
+                //  so that we are sure new followers added in other clients
+                //  are also followed here
+                Twister.followFollowersFromDht(app.user.get('username'));
+
+                // Go to the feed of this user
                 app.router.navigate('feed', {trigger: true});
+
+                // Remove the overlay 
                 self.remove();
             });
         }
