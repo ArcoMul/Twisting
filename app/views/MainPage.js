@@ -33,10 +33,10 @@ module.exports = Backbone.View.extend({
         this.$overlay = $("#overlay-holder");
 
         $("#main-scrollable").scroll(function () {
-            self.$context.children().first().css({top: $(this).scrollTop()});    
+            self.scroll();
         });
         $(window).resize(function () {
-            this.$preview.css({left: this.$preview.width()});
+            self.$preview.css({left: self.$preview.width()});
         });
     },
 
@@ -56,6 +56,21 @@ module.exports = Backbone.View.extend({
         if (typeof match[1] === "string" && match[1].length > 0 && match[1].toLowerCase() !== window.location.protocol) return true;
         if (typeof match[2] === "string" && match[2].length > 0 && match[2].replace(new RegExp(":("+{"http:":80,"https:":443}[window.location.protocol]+")?$"), "") !== window.location.host) return true;
         return false;
+    },
+
+    scroll: function () {
+        this.$context.children().first().css({top: $("#main-scrollable").scrollTop()});    
+
+        var scrollTop = $("#main-scrollable").scrollTop();
+        var scrollHeight = $("#main-scrollable").height();
+        var previewTop = parseInt(this.$preview.css('padding-top'));
+        var previewContentHeight = this.$preview.children().first().height();
+        if (previewTop > scrollTop || previewContentHeight < scrollHeight) {
+            this.$preview.css({paddingTop: scrollTop});
+        } else if (previewTop + previewContentHeight < scrollTop + scrollHeight) {
+            this.$preview.css({paddingTop: scrollTop + scrollHeight - previewContentHeight });
+        }
+
     },
 
     switchContextView: function (view) {
