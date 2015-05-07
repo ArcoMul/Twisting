@@ -13,6 +13,7 @@ var $ = require("jquery"),
     PostModel = require("../models/Post"),
     UserModel = require("../models/User"),
     FeedModel = require("../models/Feed"),
+    PostPreview = require("../views/PostPreview"),
     Twister = require("../Twister");
 
 Backbone.$ = $;
@@ -22,8 +23,13 @@ module.exports = Backbone.View.extend({
     user: null,
     feed: null,
 
-    initialize: function() {
+    events: {
+        "click .post": "openPostDetail"
+    },
+
+    initialize: function(options) {
         var self = this;
+        this.options = options;
         
         this.render();
 
@@ -73,18 +79,23 @@ module.exports = Backbone.View.extend({
 
     scroll: function (e) {
         var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
-        var indexJustOutOfScreen;
-        var index = 0;
-        this.$posts.children().each(function () {
-            if ($(this).position().top > bottomOfScreen) {
-                indexJustOutOfScreen = index;
-                return false;
-            }
-            index++;
-        });
-        if (indexJustOutOfScreen == this.$posts.children().length - 1) {
+        var totalHeight = $("#main-scrollable")[0].scrollHeight;
+
+        if (bottomOfScreen > totalHeight - 200) {
             this.loadPosts();
         }
+    },
+
+    openPostDetail: function (e) {
+        var id = $(e.currentTarget).attr('data-id'),
+            post = this.feed.get('posts').get(id);
+
+        // Show original twist, not the retwist itself
+        if (post.get('retwist')) {
+            post = post.get('retwist');
+        }
+
+        this.options.parent.openPreview(new PostPreview({post: post, feed: this.feed}));
     },
 
     render: function() {

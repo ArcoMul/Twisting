@@ -52,8 +52,8 @@ module.exports = Backbone.Router.extend({
     
     user: function(user) {
         var user = new UserModel({username: user});
-        app.mainView.switchContextView(new UserContextView({model: user}));
-        app.mainView.switchContentView(UserContentView, {model: user});
+        app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
+        app.mainView.switchContentView(UserContentView, {model: user, parent: app.mainView});
     },
 
     feed: function () {

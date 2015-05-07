@@ -29,7 +29,7 @@ module.exports = Backbone.View.extend({
     },
 
     initialize: function(options) {
-        console.log("Initialize feed");
+        var self = this;
         this.options = options;
 
         this.render();
@@ -53,8 +53,6 @@ module.exports = Backbone.View.extend({
         }.bind(this));
 
         Twister.getFollowing(app.user.get('username'), function (err, usernames) {
-            console.log('Followers', usernames);
-
             _.each(usernames, function (u) {
                 this.feed.get('users').add(new UserModel({username: u}));
             }, this);
@@ -62,8 +60,8 @@ module.exports = Backbone.View.extend({
             // Get the first 10 posts
             this.loadPosts(true);
 
-            // Every 10 seconds get latest posts
-            this.timer = setInterval(this.loadPosts.bind(this), 10000);
+            // Every 30 seconds get latest posts
+            if(!this.timer) this.timer = setInterval(this.loadPosts.bind(this, false, true), 30000);
         }.bind(this));
 
         $("#main-scrollable").scrollTop(0);
@@ -92,18 +90,23 @@ module.exports = Backbone.View.extend({
         this.options.parent.openPreview(new PostPreview({post: post, feed: this.feed}));
     },
 
-    loadPosts: function (includeMaxId) {
+    loadPosts: function (includeMaxId, isPolling) {
         if (this.isLoading) return;
         var self = this;
-        this.isLoading = true;
-        this.$loader.show();
+
+        // Polling call can be done at the same time as a scroll call
+        if (!isPolling) {
+            this.isLoading = true;
+            this.$loader.show();
+        }
+
         this.feed.fetchPosts(10, {includeMaxId: includeMaxId}, function (err) {
             if (err) return console.error('Error fetching posts in feed:', err);
 
             // View is removed while posts where fetched
             if (!self) return;
 
-            self.$loader.hide();
+            if(!isPolling) self.$loader.hide();
 
             // Fetch avatars of users of which we don't have one yet
             self.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
@@ -117,7 +120,7 @@ module.exports = Backbone.View.extend({
             });
 
             // Allowed to load the next page
-            self.isLoading = false;
+            if (!isPolling) self.isLoading = false;
         });
     },
 
