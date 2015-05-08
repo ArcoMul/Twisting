@@ -20,6 +20,12 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
+    isLoading: false,
+    dateOfLastPost: null,
+    feed: null,
+    pollingTimer: null,
+    timeUpdateTimer: null,
+
     events: {
         "keypress .compose": "onTyping",
         "input .compose": "onTyping",
@@ -38,34 +44,36 @@ module.exports = Backbone.View.extend({
         this.feed.get('posts').on('add', function (post, posts, info) {
 
             // The first post defines the time of the lastest posted post
-            if (!this.dateOfLastPost) {
-                this.dateOfLastPost = post.get('time');
+            if (!self.dateOfLastPost) {
+                self.dateOfLastPost = post.get('time');
             }
             
             // When a post is younger than the youngest post, show notification
-            if (post.get('time') > this.dateOfLastPost) {
-                this.$posts.prepend(postTemplate({post: post})).children().first().hide();
-                this.setNewPost(this.$posts.find('.post:hidden').length);
+            if (post.get('time') > self.dateOfLastPost) {
+                self.$posts.prepend(postTemplate({post: post})).children().first().hide();
+                self.setNewPost(self.$posts.find('.post:hidden').length);
             } else {
                 // Otherwise just add it
-                this.$posts.append(postTemplate({post: post}));
+                self.$posts.append(postTemplate({post: post}));
             }
-        }.bind(this));
+        });
 
         Twister.getFollowing(app.user.get('username'), function (err, usernames) {
             _.each(usernames, function (u) {
-                this.feed.get('users').add(new UserModel({username: u}));
-            }, this);
+                self.feed.get('users').add(new UserModel({username: u}));
+            });
 
             // Get the first 10 posts
-            this.loadPosts(true);
+            self.loadPosts(true);
 
             // Every 30 seconds get latest posts
-            if(!this.timer) this.timer = setInterval(this.loadPosts.bind(this, false, true), 30000);
-        }.bind(this));
+            if(!self.pollingTimer) self.pollingTimer = setInterval(self.loadPosts.bind(self, false, true), 30000);
+        });
+
+        if (!this.timeUpdateTimer) this.timeUpdateTimer = setInterval(this.updateTime.bind(this), 60000);
 
         $("#main-scrollable").scrollTop(0);
-        $("#main-scrollable").scroll(this.scroll.bind(this));
+        this.options.parent.on('scroll', this.scroll, this);
     },
 
     setNewPost: function (n) {
@@ -100,7 +108,7 @@ module.exports = Backbone.View.extend({
             this.$loader.show();
         }
 
-        this.feed.fetchPosts(10, {includeMaxId: includeMaxId}, function (err) {
+        this.feed.fetchPosts(10, {includeMaxId: includeMaxId, includeNotFollowers: false}, function (err) {
             if (err) return console.error('Error fetching posts in feed:', err);
 
             // View is removed while posts where fetched
@@ -149,9 +157,19 @@ module.exports = Backbone.View.extend({
         var bottomOfScreen = $("#main-scrollable").height() + $("#main-scrollable").scrollTop();
         var totalHeight = $("#main-scrollable")[0].scrollHeight;
 
-        if (bottomOfScreen > totalHeight - 200) {
+        if (bottomOfScreen > totalHeight - 200 && this.feed.get('posts').length > 0) {
             this.loadPosts(true);
         }
+    },
+
+    updateTime: function () {
+        var self = this;
+        this.$posts.children().each(function () {
+            var id = $(this).attr('data-id'),
+                post = self.feed.get('posts').get(id);
+
+            $(this).find('.date').text(post.getTimeAgo());
+        });
     },
 
     render: function() {
@@ -169,7 +187,9 @@ module.exports = Backbone.View.extend({
     },
 
     remove: function() {
-        clearInterval(this.timer);
+        this.options.parent.off(null, null, this);
+        clearInterval(this.pollingTimer);
+        clearInterval(this.timeUpdateTimer);
         Backbone.View.prototype.remove.apply(this, arguments);
     }
 });

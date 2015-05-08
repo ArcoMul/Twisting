@@ -53,11 +53,23 @@ module.exports = Backbone.Collection.extend({
      */
     fetchPostsFromDht: function (amount, options, callback) {
         var self = this,
-            posts = [],
-            notFollowing = this.filter(function (user) { return user.get('following') == false });
+            posts = [];
+
+        // All the users in this collection which are NOT followed
+        var notFollowing = this.filter(function (user) { return user.get('following') == false });
+
+        // Loop through the users which should still be included
+        // although they are not followed. Only include them
+        // if they indeed are not followed
+        var notFollowingFiltered = [];
+        _.each(options.includeNotFollowers, function (user) {
+            if (notFollowing.indexOf(user) != -1) {
+                notFollowingFiltered.push(user);
+            }
+        });
 
         // Loop one by one, because DHT can't handle too many calls at once
-        async.eachSeries(notFollowing, function (user, callback) {
+        async.eachSeries(notFollowingFiltered, function (user, callback) {
             self.fetchPostFromDht(user, posts, amount, callback);
         }, function (result) {
             callback(null, posts);

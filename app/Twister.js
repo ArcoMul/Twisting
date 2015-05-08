@@ -91,58 +91,72 @@ module.exports = (function () {
     {
         twisterRpc("getfollowing", [username], function (err, data) {
             if (err) callback(err);
-            console.log("getfollowing", arguments);
             callback (err, data);
         });
     }
 
-    var getAvatar = function (username, callback)
+    var getAvatarFromDisk = function (username, callback)
     {
         var filename = "app/avatars/" + username;
-
-        // TODO: don't check for both file in this spagetti code
         fs.exists(filename + ".png", function (result) {
             // It excists, return the path
             if (result) {
                 filename += ".png";
                 return callback(null, filename);
             }
-
             fs.exists(filename + ".jpg", function (result) {
                 // It excists, return the path
                 if (result) {
                     filename += ".jpg";
                     return callback(null, filename);
                 }
+                callback (null, null);
+            });
+        });
+    }
 
-                twisterRpc("dhtget", [username, "avatar", "s"], function (err, data) {
-                    if (err) return callback(err);
-                    if (!data || data.length == 0 || !data[0]) return callback();
+    var getAvatarFromDHT = function (username, callback)
+    {
+        var filename = "app/avatars/" + username;
+        twisterRpc("dhtget", [username, "avatar", "s"], function (err, data) {
+            if (err) return callback(err);
+            if (!data || data.length == 0 || !data[0]) return callback();
 
-                    var img = data[0].p.v;
+            var img = data[0].p.v;
 
-                    // Got an avatar, cache it on the filesystem
-                    var base64;
-                    if (img.indexOf("data:image/jpeg;base64,") != -1) {
-                        base64 = img.replace(/^data:image\/jpeg;base64,/, "");
-                        filename += ".jpg";
-                    } else if (img.indexOf("data:image/png;base64,") != -1) {
-                        base64 = img.replace(/^data:image\/png;base64,/, "");
-                        filename += ".png";
-                    } else if (img == "img/genericPerson.png") {
-                        // This is some sort of default image? Anyway, return like there is no image
-                        return callback(null, config.DEFAULT_AVATAR);
-                    } else {
-                        console.log('No jpg or png for', username, img);
-                        return callback(null, config.DEFAULT_AVATAR);
-                    }
-                    fs.writeFile(filename, base64, 'base64', function(err) {
-                        if (err) {
-                            console.log('Error saving avatar:', err);
-                        }
-                        callback (err, filename);
-                    });
-                });
+            // Got an avatar, cache it on the filesystem
+            var base64;
+            if (img.indexOf("data:image/jpeg;base64,") != -1) {
+                base64 = img.replace(/^data:image\/jpeg;base64,/, "");
+                filename += ".jpg";
+            } else if (img.indexOf("data:image/png;base64,") != -1) {
+                base64 = img.replace(/^data:image\/png;base64,/, "");
+                filename += ".png";
+            } else if (img == "img/genericPerson.png") {
+                // This is some sort of default image? Anyway, return like there is no image
+                return callback(null, config.DEFAULT_AVATAR);
+            } else {
+                console.log('No jpg or png for', username, img);
+                return callback(null, config.DEFAULT_AVATAR);
+            }
+            fs.writeFile(filename, base64, 'base64', function(err) {
+                if (err) {
+                    console.log('Error saving avatar:', err);
+                }
+                callback (err, filename);
+            });
+        });
+    }
+
+    var getAvatar = function (username, callback) {
+        // Try disk
+        getAvatarFromDisk(username, function (err, filename) {
+            if (err) return callback(err, filename);
+            if (filename) return callback(null, filename);
+
+            // Try DHT
+            getAvatarFromDHT(username, function (err, filename) {
+                return callback(err, filename);
             });
         });
     }
@@ -308,6 +322,8 @@ module.exports = (function () {
         getPostFromDht: getPostFromDht,
         getUserStatus: getUserStatus,
         getFollowing: getFollowing,
+        getAvatarFromDisk: getAvatarFromDisk,
+        getAvatarFromDHT: getAvatarFromDHT,
         getAvatar: getAvatar,
         getStatus: getStatus,
         getInfo: getInfo,

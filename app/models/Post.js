@@ -36,11 +36,14 @@ var PostModel = module.exports = Backbone.Model.extend({
 
             // Build the retwist post model
             retwist = new PostModel({
+                id: retwistUser.get('username') + '_' + item.rt.k,
                 user: retwistUser,
                 message: item.rt.msg,
                 time: item.rt.time,
                 twister_id: item.rt.k
             });
+
+            retwistUser.addPost(retwist);
         }
 
         var user = users.findWhere({username: item.n});
@@ -52,7 +55,7 @@ var PostModel = module.exports = Backbone.Model.extend({
         }
 
         this.set({
-            id: user + '_' + item.k,
+            id: user.get('username') + '_' + item.k,
             user: user,
             message: item.msg,
             time: item.time,
@@ -69,9 +72,13 @@ var PostModel = module.exports = Backbone.Model.extend({
 
     getMessageRegexed: function () {
         if (!this.get('message')) return "";
+        // Urls
         var msg = this.get('message').replace( /(https?:\/\/[^\s]+)/g, function(url) { return '<a href="'+url+'">'+url+'</a>' });
-        msg = msg.replace( /(^|[^#\w])#(\w{1,15})\b/g, '$1<a href="hashtag/$2">#$2</a>' );
-        msg = msg.replace( /(^|[^@\w])@(\w{1,15})\b/g, '$1<a class="username" href="user/$2">$2</a>' );
+        // Hashtags
+        msg = msg.replace( /(^|[^#\w])#(\w{1,30})\b/g, '$1<a href="hashtag/$2">#$2</a>' );
+        // Mentions
+        msg = msg.replace( /(^|[^@\w])@(\w{1,30})\b/g, '$1<a class="username" href="user/$2">$2</a>' );
+        // Emojis
         msg = twemoji.parse(msg, {
             base: '',
             folder: 'node_modules/twemoji/svg',

@@ -50,31 +50,32 @@ module.exports = Backbone.View.extend({
         });
 
         $("#main-scrollable").scrollTop(0);
-        $("#main-scrollable").scroll(this.scroll.bind(this));
+        this.options.parent.on('scroll', this.scroll, this);
     },
 
     loadPosts: function () {
+        var self = this;
         if (this.isLoading) return;
         this.isLoading = true;
         this.$loader.show();
-        this.feed.fetchPosts(10, {includeMaxId: true, includeNotFollowers: true}, function (err) {
+        this.feed.fetchPosts(10, {includeMaxId: true, includeNotFollowers: [this.user]}, function (err) {
 
-            this.$loader.hide();
+            self.$loader.hide();
 
             // Fetch avatars of users of which we don't have one yet
-            this.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
+            self.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
                 if (!user.get('avatar')) {
                     console.log(user.get('username'), 'does not have an avatar');
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    this.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
-                }, this);
-            }.bind(this));
+                    self.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                });
+            });
 
             // Allowed to load the next page
-            this.isLoading = false;
-        }.bind(this));
+            self.isLoading = false;
+        });
     },
 
     scroll: function (e) {
@@ -103,5 +104,10 @@ module.exports = Backbone.View.extend({
         this.$loader = this.$el.find('.load-animation');
         this.$posts = this.$el.find('.posts');
         return this;
+    },
+
+    remove: function () {
+        this.options.parent.off(null, null, this);
+        Backbone.View.prototype.remove.apply(this, arguments);
     }
 });

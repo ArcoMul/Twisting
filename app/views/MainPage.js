@@ -43,7 +43,7 @@ module.exports = Backbone.View.extend({
     navigate: function (e) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        var url = $(e.target).attr('href');
+        var url = $(e.currentTarget).attr('href');
         if (this.isExternal(url)) {
             gui.Shell.openExternal(url);
         } else {
@@ -71,6 +71,7 @@ module.exports = Backbone.View.extend({
             this.$preview.css({paddingTop: scrollTop + scrollHeight - previewContentHeight });
         }
 
+        this.trigger('scroll');
     },
 
     switchContextView: function (view) {

@@ -73,16 +73,28 @@ module.exports = Backbone.Model.extend({
         });
     },
 
-    fetchAvatar: function (callback) {
-        Twister.getAvatar(this.get('username'), function (err, avatar) {
+    fetchAvatarFromDisk: function (callback) {
+        var self = this;
+        Twister.getAvatarFromDisk(this.get('username'), function (err, avatar) {
             if (err) {
                 console.log('Error getting avatar for user:', self.get('username'), err);
-                callback(err);
-                return;
+                return callback(err);
             }
-            this.set('avatar', avatar);
+            self.set('avatar', avatar);
             callback();
-        }.bind(this));
+        });
+    },
+
+    fetchAvatar: function (callback) {
+        var self = this;
+        Twister.getAvatarFromDHT(this.get('username'), function (err, avatar) {
+            if (err) {
+                console.log('Error getting avatar for user:', self.get('username'), err);
+                return callback(err);
+            }
+            self.set('avatar', avatar);
+            callback();
+        });
     },
 
     getStatus: function (callback) {
