@@ -1,6 +1,6 @@
 #main-menu {
     margin: 0;
-    background-color: #FFFBF5;
+    background-color: @foreground-color;
     box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.1);
     z-index: 1;
     -webkit-user-select: none;
@@ -41,7 +41,7 @@
             }
             &.bold a {
                 background-color: #80A8CC;
-                color: #FFFBF5;
+                color: @foreground-color;
                 border: 0;
                 width: 27px;
                 height: 27px;
@@ -71,7 +71,7 @@
                 }
                 &.feed {
                     -webkit-mask: url(../svg/twister.svg);
-                    background-color: #6992B8;
+                    background-color: @emphasis-color;
                     border-radius: 0;
                     padding: 0;
                     width: 35px;
@@ -109,7 +109,7 @@
                 border: 1px solid #E0E0E0;
                 border-radius: 25px;
                 line-height: 25px;
-                background-color: #FFFBF5;
+                background-color: @foreground-color;
                 width: 125px;
                 color: #605e58;
                 font-weight: lighter;

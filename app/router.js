@@ -12,7 +12,7 @@ var Backbone = require("backbone"),
     StatusOverlayView = require("./views/StatusOverlay"),
     LoginOverlayView = require("./views/LoginOverlay"),
     AccountsOverlayView = require("./views/AccountsOverlay"),
-    NotYetImplementedView = require("./views/NotYetImplemented");
+    NotYetImplementedOverlayView = require("./views/NotYetImplementedOverlay");
 
 Backbone.$ = $;
 
@@ -30,6 +30,10 @@ module.exports = Backbone.Router.extend({
         "choose-account": "chooseAccount",
         "user/:user": "user",
         "feed": "feed",
+        "mentions": "notYetImplemented",
+        "messages": "notYetImplemented",
+        "tags": "notYetImplemented",
+        "tags/:tag": "notYetImplemented",
         "settings": "notYetImplemented",
         "logout": "notYetImplemented"
     },
@@ -62,7 +66,6 @@ module.exports = Backbone.Router.extend({
     },
 
     notYetImplemented: function () {
-        var view = new NotYetImplementedView();
-        view.render();
+        app.mainView.showOverlay(new NotYetImplementedOverlayView()); 
     }
 });
