@@ -288,7 +288,8 @@ module.exports = (function () {
 
     var startDeamon = function () {
         var path = dir.replace(/\\/g, "\\");
-        var cmd = '"' + path + '\\twister\\twisterd.exe" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + path.replace('C:', '/cygdrive/c') + '\\twister/data"';
+        var datadir = ('/cygdrive/' + path).replace(':', '');
+        var cmd = '"' + path + '\\twister\\twisterd.exe" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir + '\\twister/data"';
         console.log('Execute:', cmd);
         exec(cmd, function (error, stdout, stderr) {
             console.log(arguments);
