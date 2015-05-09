@@ -1,11 +1,15 @@
-/dist/
-/node_modules/
-/vendor/bower/
-/test/coverage/
-
-.DS_Store
+### NodeJS ###
+node_modules/
+src/node_modules/
 npm-debug.log
 
+### Bower ###
+src/vendor/bower/
+
+### Windows ###
+.DS_Store
+
+### Executables and data files ###
 *.dll
 *.exe
 *.dat
@@ -19,6 +23,11 @@ Session.vim
 .netrwhist
 *~
 
+### Less ###
 *.css
-app/avatars/
-twister/
+
+### Custom ###
+src/app/avatars/
+twister-data/
+builds/
+cache/

@@ -4,16 +4,18 @@ var _ = require("underscore"),
     rpc = require('json-rpc2'),
     fs = require("fs"),
     exec = require('child_process').exec,
-    dir = __dirname.replace('\app', ''),
+    path = require('path'),
     config = require("./config.js");
-
-console.log('DIR', dir);
 
 module.exports = (function () {
 
     var status = {
         NOCONNECTION: "Have no response object"
     };
+
+    var getDataDir = function () {
+        return path.dirname( process.execPath ) + '\\twister-data';
+    }
 
     var twisterRpc = function (method, params, callback) {
 
@@ -97,7 +99,7 @@ module.exports = (function () {
 
     var getAvatarFromDisk = function (username, callback)
     {
-        var filename = "app/avatars/" + username;
+        var filename = getDataDir() + "/avatars/" + username;
         fs.exists(filename + ".png", function (result) {
             // It excists, return the path
             if (result) {
@@ -117,7 +119,7 @@ module.exports = (function () {
 
     var getAvatarFromDHT = function (username, callback)
     {
-        var filename = "app/avatars/" + username;
+        var filename = getDataDir() + "/avatars/" + username;
         twisterRpc("dhtget", [username, "avatar", "s"], function (err, data) {
             if (err) return callback(err);
             if (!data || data.length == 0 || !data[0]) return callback();
@@ -301,9 +303,9 @@ module.exports = (function () {
     }
 
     var startDeamon = function () {
-        var path = dir.replace(/\\/g, "\\");
-        var datadir = ('/cygdrive/' + path).replace(':', '');
-        var cmd = '"' + path + '\\twister\\twisterd.exe" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir + '\\twister/data"';
+        var datadir = getDataDir();
+        var datadir_cygwin = ('/cygdrive/' + datadir).replace(':', '');
+        var cmd = '"' + datadir + '\\twisterd.exe" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir_cygwin + '\\data"';
         console.log('Execute:', cmd);
         exec(cmd, function (error, stdout, stderr) {
             console.log(arguments);
