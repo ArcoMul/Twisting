@@ -14,7 +14,7 @@ module.exports = (function () {
     };
 
     var getDataDir = function () {
-        return path.dirname( process.execPath ) + '\\twister-data';
+        return path.dirname( process.execPath ).replace(/\\/g,"/") + '/twister-data';
     }
 
     var twisterRpc = function (method, params, callback) {
@@ -305,7 +305,7 @@ module.exports = (function () {
     var startDeamon = function () {
         var datadir = getDataDir();
         var datadir_cygwin = ('/cygdrive/' + datadir).replace(':', '');
-        var cmd = '"' + datadir + '\\twisterd.exe" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir_cygwin + '\\data"';
+        var cmd = '"' + datadir + '/twisterd.exe" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir_cygwin + '/data"';
         console.log('Execute:', cmd);
         exec(cmd, function (error, stdout, stderr) {
             console.log(arguments);
