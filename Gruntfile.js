@@ -19,6 +19,7 @@ module.exports = function(grunt) {
         nodewebkit: {
             options: {
                 platforms: platforms,
+                version: 'v0.12.1',
                 buildDir: './builds'
             },
             src: ['./src/**/*', '!./src/twister-data/**/*', '!./src/*.exe', '!./src/*.pak', '!./src/*.dll']
