@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                 platforms: platforms,
                 buildDir: './builds'
             },
-            src: './src/**/*'
+            src: ['./src/**/*', '!./src/twister-data/**/*', '!./src/*.exe', '!./src/*.pak', '!./src/*.dll']
         },
         copy: {
             twister: destinations
