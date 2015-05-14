@@ -9,6 +9,8 @@ var Backbone = require("backbone"),
     UserContextView = require("./views/UserContext"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
+    MentionsContentView = require("./views/MentionsContent"),
+    MentionsContextView = require("./views/MentionsContext"),
     StatusOverlayView = require("./views/StatusOverlay"),
     LoginOverlayView = require("./views/LoginOverlay"),
     AccountsOverlayView = require("./views/AccountsOverlay"),
@@ -30,7 +32,7 @@ module.exports = Backbone.Router.extend({
         "choose-account": "chooseAccount",
         "user/:user": "user",
         "feed": "feed",
-        "mentions": "notYetImplemented",
+        "mentions": "mentions",
         "messages": "notYetImplemented",
         "tags": "notYetImplemented",
         "tags/:tag": "notYetImplemented",
@@ -63,6 +65,11 @@ module.exports = Backbone.Router.extend({
     feed: function () {
         app.mainView.switchContextView(new FeedContextView({parent: app.mainView}));
         app.mainView.switchContentView(FeedContentView, {parent: app.mainView});
+    },
+
+    mentions: function () {
+        app.mainView.switchContextView(new MentionsContextView({parent: app.mainView}));
+        app.mainView.switchContentView(MentionsContentView, {parent: app.mainView});
     },
 
     notYetImplemented: function () {

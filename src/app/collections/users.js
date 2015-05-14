@@ -122,6 +122,45 @@ module.exports = Backbone.Collection.extend({
         }.bind(this));
     },
 
+    fetchMentions: function (amount, options, callback) {
+        var self = this;
+        this.each(function (user) {
+            async.parallel([
+                function (callback) {
+                    Twister.getMentions(user.get('username'), amount, null, function (err, mentions_data) {
+                        if (err) {
+                            console.error('Error getting mentions for user ', err);
+                            return callback(err);
+                        }
+                        var posts = [];
+                        _.each(mentions_data, function (item) {
+                            var post = new PostModel().parse(item.userpost, self);
+                            posts.push(post);
+                        });
+                        callback(null, posts);
+                    });
+                },
+                function (callback) {
+                    Twister.getMentionsFromDHT(user.get('username'), function (err, mentions_data) {
+                        if (err) {
+                            console.error('Error getting mentions for user ', err);
+                            return callback(err);
+                        }
+                        var posts = [];
+                        _.each(mentions_data, function (item) {
+                            var post = new PostModel().parse(item.p.v.userpost, self);
+                            posts.push(post);
+                        });
+                        callback(null, posts);
+                    });
+                }
+            ], function (err, results) {
+                if (err) return callback(err);
+                callback(null, results[0].concat(results[1]));
+            });
+        });
+    },
+
     newUser: function (data) {
         var user = new UserModel(data);
         this.add(user);

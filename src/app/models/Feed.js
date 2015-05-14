@@ -43,6 +43,22 @@ module.exports = Backbone.Model.extend({
         }.bind(this));
     },
 
+    fetchMentions: function (amount, options, callback) {
+        var self = this;
+        this.get('users').fetchMentions(amount, options, function (err, mentions) {
+            if (err) return callback(err);
+
+            // Sort before adding so that the 'add' events are called
+            // in the right order
+            mentions = _.sortBy(mentions, function (post) {
+                return post.get('time') * -1;
+            });
+            self.get('posts').add(mentions);
+
+            callback();
+        });
+    },
+
     getOrignalPostsOfUser: function (user) {
         return user.get('posts').filter(function (post) { return !post.get('retwist') });
     },

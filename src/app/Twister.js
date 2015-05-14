@@ -281,6 +281,22 @@ module.exports = (function () {
         });
     }
 
+    // options.max_id
+    // options.since_id
+    var getMentions = function (username, n, options, callback) {
+        var params = [username, n];
+        if (options) params.push(JSON.stringify(options));
+        twisterRpc("getmentions", params, function (err, data) {
+            callback(err, data);
+        });
+    }
+
+    var getMentionsFromDHT = function (username, callback) {
+        twisterRpc("dhtget", [username, "mention", "m"], function (err, data) {
+            callback(err, data);
+        });
+    }
+
     var follow = function (username, users, callback) {
         twisterRpc("follow", [username, users], function (err, data) {
             callback(err, data);
@@ -337,6 +353,8 @@ module.exports = (function () {
         getTrendingHashtags: getTrendingHashtags,
         getReplies: getReplies,
         getPost: getPost,
+        getMentions: getMentions,
+        getMentionsFromDHT: getMentionsFromDHT,
         follow: follow,
         post: post,
         startDeamon: startDeamon,
