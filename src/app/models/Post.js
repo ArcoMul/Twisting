@@ -31,7 +31,7 @@ var PostModel = module.exports = Backbone.Model.extend({
             // If this is a retwist we might not know the user
             // in that case add it to the list of users
             if (!retwistUser) {
-                retwistUser = users.newUser({username: item.rt.n, following: false});
+                retwistUser = users.newUser({username: item.rt.n, isFollowing: false});
             }
 
             // Build the retwist post model
@@ -51,7 +51,7 @@ var PostModel = module.exports = Backbone.Model.extend({
         // Maybe the user doens't excist yet when we are parsing a 
         // parent post of a reply for example
         if (!user) {
-            user = users.newUser({username: item.n, following: false});
+            user = users.newUser({username: item.n, isFollowing: false});
         }
 
         this.set({

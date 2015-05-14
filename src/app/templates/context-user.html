@@ -1,1 +1,24 @@
-<h1>@<%=user.get('username')%></h1>
+<div class="user">
+    <div class="avatar-holder">
+        <img src="<%= user.get('avatar') ? user.get('avatar') : user.getDefaultAvatar() %>" />
+    </div>
+    <img class="avatar" src="<%= user.get('avatar') ? user.get('avatar') : user.getDefaultAvatar() %>" />
+    <% if (user.get('fullname')) { %>
+        <h1><%= user.get('fullname') %></h1>
+    <% } %>
+    <h2><%=user.get('username')%></h2>
+    <% if (user.get('following')) { %>
+        <p><%= user.get('following').length %> Following</p>
+    <% } %>
+    <% if (app.user.isFollowing(user.get('username'))) { %>
+        <button class="following"></button>
+    <% } else { %>
+        <button>Follow</button>
+    <% } %>
+    <% if (user.get('location')) { %>
+        <p><%= user.get('location') %></p>
+    <% } %>
+    <% if (user.get('bio')) { %>
+        <p><%= user.get('bio') %></p>
+    <% } %>
+</div>

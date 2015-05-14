@@ -1,12 +1,13 @@
 "use strict";
 
 // External dependencies.
-var $ = require("jquery");
-var _ = require("underscore");
-var Backbone = require("backbone");
-var Twister = require("../Twister");
-var PostsCollection = require("../collections/posts");
-var PostModel = require("../models/Post");
+var $ = require("jquery"),
+    _ = require("underscore"),
+    Backbone = require("backbone"),
+    Twister = require("../Twister"),
+    PostsCollection = require("../collections/posts"),
+    config = require("../config"),
+    PostModel = require("../models/Post");
 
 Backbone.$ = $;
 
@@ -17,7 +18,7 @@ module.exports = Backbone.Model.extend({
         posts: null,
         avatar: null,
         lowest_id: null,
-        following: true,
+        isFollowing: true,
     },
 
     initialize: function () {
@@ -54,6 +55,66 @@ module.exports = Backbone.Model.extend({
         if (!this.get('last_twister_id') || post.get('last_twister_id') < this.get('last_twister_id')) {
             this.set('last_twister_id', post.get('last_twister_id'));
         }
+    },
+
+    getDefaultAvatar: function () {
+        return config.DEFAULT_AVATAR;
+    },
+
+    isFollowing: function (username) {
+        if (!this.get('following')) {
+            return false;
+        }
+        return this.get('following').indexOf(username) != -1;
+    },
+
+    follow: function (username, callback) {
+        var self = this;
+        Twister.follow(this.get('username'), [username], function (err) {
+            if (err) return callback(err);
+
+            var following = self.get('following');
+            following.push(username);
+            self.set('following', following);
+            callback();
+        });
+    },
+
+    unfollow: function (username, callback) {
+        var self = this;
+        Twister.unfollow(this.get('username'), [username], function (err) {
+            if (err) return callback(err);
+
+            var following = self.get('following');
+            var index = following.indexOf(username);
+            if (index == -1) return callback();
+
+            following.splice(index, 1);
+            self.set('following', following);
+
+            callback();
+        });
+    },
+
+    fetchFollowing: function (callback) {
+        if (this.get('following')) return callback();
+
+        var self = this;
+        Twister.getFollowing(this.get('username'), function (err, usernames) {
+            if (err) return callback(err);
+
+            if (usernames.length == 0) {
+                Twister.getFollowingFromDht(self.get('username'), function (err, usernames) {
+                    if (err) return callback(err);
+                    self.set('following', usernames);
+                    callback(null, self);
+                });
+                return;
+            }
+
+            self.set('following', usernames);
+            callback(null, self);
+        });
     },
 
     fetchPosts: function (amount, callback) {
@@ -93,6 +154,15 @@ module.exports = Backbone.Model.extend({
                 return callback(err);
             }
             self.set('avatar', avatar);
+            callback();
+        });
+    },
+
+    fetchProfile: function (callback) {
+        var self = this;
+        Twister.getProfile(this.get('username'), function (err, data) {
+            if (err) return callback(err);
+            self.set(data[0].p.v);
             callback();
         });
     },

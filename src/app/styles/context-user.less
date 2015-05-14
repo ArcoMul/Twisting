@@ -1,0 +1,61 @@
+#context-section .user {
+    .avatar-holder {
+        overflow: hidden;
+        img {
+            width: 104%;
+            -webkit-filter: blur(5px);
+            margin-left: -2%;
+            margin-top: -2%;
+        }
+        &::after {
+            content: "";
+            height: 10px;
+            width: 100%;
+            margin-top: -10px;
+            display: block;
+            background-color: #80A8CC;
+            z-index: 1;
+            position: relative;
+        }
+    }
+    img.avatar {
+        border-radius: 100%;
+        margin-top: -102px;
+        position: relative;
+        border: 5px #fff solid;
+        z-index: 2;
+        width: 120px;
+        height: 120px;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+        background-color: #fff;
+    }
+    h1 {
+        font-weight: bold;
+        padding-top: 0;
+        font-size: 30px;
+        padding-bottom: 3px;
+    }
+    h2 {
+        font-weight: normal;
+        padding-top: 0;
+        &::before {
+            content: "@";
+            font-weight: 200;
+            font-size: 17px;
+            opacity: 0.8;
+        }
+    }
+    button.following {
+        background-color: #14AD21;
+        &::after {
+            content: "✔ Following";
+        }
+        &:hover {
+            background-color: #AB0101;
+            &::after {
+                content: "Unfollow";
+            }
+        }
+    }
+}
+

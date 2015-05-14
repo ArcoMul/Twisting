@@ -56,7 +56,7 @@ module.exports = Backbone.Collection.extend({
             posts = [];
 
         // All the users in this collection which are NOT followed
-        var notFollowing = this.filter(function (user) { return user.get('following') == false });
+        var notFollowing = this.filter(function (user) { return user.get('isFollowing') == false });
 
         // Loop through the users which should still be included
         // although they are not followed. Only include them
@@ -92,7 +92,7 @@ module.exports = Backbone.Collection.extend({
 
         // Build request object array
         var users = [];
-        var following = this.filter(function (user) { return user.get('following') });
+        var following = this.filter(function (user) { return user.get('isFollowing') });
 
         // Probably only fetching posts using DHT
         if (following.length == 0) return;

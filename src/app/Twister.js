@@ -224,9 +224,8 @@ module.exports = (function () {
         });
     }
 
-    var getFollowersFromDht = function (username, callback) {
+    var getFollowingFromDht = function (username, callback) {
         twisterRpc("dhtget", [username, "following1", "s"], function (err, data) {
-            console.log("getfollowersfromdht data", err, data);
             if (err) return callback(err);
             if (!data) callback(null, null);
             if (data.length == 0) callback(null, data);
@@ -246,7 +245,7 @@ module.exports = (function () {
         var interval = setInterval(function () {
             if (!dhtRequestFinished) return;
             dhtRequestFinished = false;
-            getFollowersFromDht(username, function (err, followers) {
+            getFollowingFromDht(username, function (err, followers) {
                 if (err) {
                     return console.error('Error getting followers from DHT');
                 }
@@ -297,8 +296,20 @@ module.exports = (function () {
         });
     }
 
+    var getProfile = function (username, callback) {
+        twisterRpc("dhtget", [username, "profile", "s"], function (err, data) {
+            callback(err, data);
+        });
+    }
+
     var follow = function (username, users, callback) {
         twisterRpc("follow", [username, users], function (err, data) {
+            callback(err, data);
+        });
+    }
+
+    var unfollow = function (username, users, callback) {
+        twisterRpc("unfollow", [username, users], function (err, data) {
             callback(err, data);
         });
     }
@@ -348,14 +359,16 @@ module.exports = (function () {
         getBestBlock: getBestBlock,
         getUsers: getUsers,
         importUser: importUser,
-        getFollowersFromDht: getFollowersFromDht,
+        getFollowingFromDht: getFollowingFromDht,
         followFollowersFromDht: followFollowersFromDht,
         getTrendingHashtags: getTrendingHashtags,
         getReplies: getReplies,
         getPost: getPost,
         getMentions: getMentions,
         getMentionsFromDHT: getMentionsFromDHT,
+        getProfile: getProfile,
         follow: follow,
+        unfollow: unfollow,
         post: post,
         startDeamon: startDeamon,
         stopDeamon: stopDeamon,

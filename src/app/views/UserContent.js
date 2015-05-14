@@ -45,7 +45,7 @@ module.exports = Backbone.View.extend({
             if (usernames.indexOf(self.user.get('username')) != -1) {
                 return self.loadPosts();
             }
-            self.user.set('following', false);
+            self.user.set('isFollowing', false);
             self.loadPosts();
         });
 
