@@ -14,6 +14,10 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
+    events: {
+        "click button": "openPost"
+    },
+
     initialize: function(options) {
         var self = this;
 
@@ -61,11 +65,24 @@ module.exports = Backbone.View.extend({
         });
     },
 
+    openPost: function () {
+        console.log('openPost');
+        app.router.navigate('/users/' + this.post.get('user').get('username') + '/posts/' + this.post.get('twister_id'), {testtest: 123});
+        app.router.postDetail(
+            this.post.get('user'),
+            this.post);
+            // this.parentPosts,
+            //this.replies);
+    },
+
     render: function() {
         this.$el.html(postPreviewTemplate({
             postTemplate: postTemplate,
             post: this.post
         }));
+        var $postsTop = this.$el.find('.posts.top');
+        $postsTop.children().first().css('marginTop', -$postsTop[0].scrollHeight + $postsTop.height());
+        console.log($postsTop, $postsTop.children().first(), -$postsTop.scrollHeight + $postsTop.height(), $postsTop[0].scrollHeight, $postsTop.height());
         return this;
     }
 });

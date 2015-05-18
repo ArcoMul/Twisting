@@ -1,13 +1,8 @@
-<div class="post">
-    <div class="posts">
-        <% if (parentPosts) { %>
-            <% _.each(parentPosts, function (post) { %>
-            <%= postTemplate({post: post}) %>
-            <% }) %>
-        <% } %>
-        <%= postTemplate({post: options.post, className: 'main'}) %>
-        <% _.each(replies, function (post) { %>
 <div class="post-preview">
+    <div class="title">
+        Post of <a class="username" href="<%= post.get('user').getUrl() %>"><%= post.get('user').get('username') %></a>
+    </div>
+    <div class="posts top">
         <% 
         var html = '';
         var current = post;
@@ -17,9 +12,16 @@
         }
         %>
         <%= html %>
+    </div>
+    <div class="posts middle">
         <%= postTemplate({post: post, className: 'main'}) %>
+    </div>
+    <div class="posts bottom">
         <% _.each(post.get('replies'), function (post) { %>
             <%= postTemplate({post: post}) %>
         <% }) %>
+    </div>
+    <div class="footer">
+        <button>More...</button>
     </div>
 </div>

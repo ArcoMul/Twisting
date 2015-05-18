@@ -62,6 +62,11 @@ module.exports = Backbone.View.extend({
         this.$context.children().first().css({top: $("#main-scrollable").scrollTop()});    
 
         var scrollTop = $("#main-scrollable").scrollTop();
+        this.$preview.css({paddingTop: scrollTop});
+
+        this.trigger('scroll');
+
+        return;
         var scrollHeight = $("#main-scrollable").height();
         var previewTop = parseInt(this.$preview.css('padding-top'));
         var previewContentHeight = this.$preview.children().first().height();
