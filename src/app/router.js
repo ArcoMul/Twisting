@@ -21,7 +21,7 @@ Backbone.$ = $;
 // Defining the application router.
 module.exports = Backbone.Router.extend({
 
-    navigate: function (url) {
+    load: function (url) {
         Backbone.history.loadUrl(url);
     },
 

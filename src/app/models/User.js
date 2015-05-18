@@ -26,6 +26,10 @@ module.exports = Backbone.Model.extend({
         this.get('posts').on('add', this.onAddPost.bind(this));
     },
 
+    getUrl: function () {
+        return '/users/' + this.get('username');
+    },
+
     addPost: function (post) {
         // Add posts to user
         this.get('posts').add(post);

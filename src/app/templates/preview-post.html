@@ -7,6 +7,18 @@
         <% } %>
         <%= postTemplate({post: options.post, className: 'main'}) %>
         <% _.each(replies, function (post) { %>
+<div class="post-preview">
+        <% 
+        var html = '';
+        var current = post;
+        while (current.get('parent')) {
+            html = postTemplate({post: current.get('parent')}) + html;
+            current = current.get('parent');
+        }
+        %>
+        <%= html %>
+        <%= postTemplate({post: post, className: 'main'}) %>
+        <% _.each(post.get('replies'), function (post) { %>
             <%= postTemplate({post: post}) %>
         <% }) %>
     </div>
