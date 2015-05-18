@@ -47,7 +47,7 @@ module.exports = Backbone.View.extend({
         if (this.isExternal(url)) {
             gui.Shell.openExternal(url);
         } else {
-            app.router.navigate(url, {trigger: true});
+            app.router.load(url);
         }
     },
 
