@@ -12,7 +12,7 @@ Backbone.$ = $;
 module.exports = Backbone.View.extend({
 
     events: {
-        // 'click button': 'toggleFollow'
+        'click button': 'toggleFollow'
     },
 
     initialize: function() {

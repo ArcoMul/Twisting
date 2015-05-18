@@ -5,6 +5,7 @@ var _ = require("underscore"),
     fs = require("fs"),
     exec = require('child_process').exec,
     path = require('path'),
+    async = require('async'),
     config = require("./config.js");
 
 module.exports = (function () {
@@ -228,7 +229,7 @@ module.exports = (function () {
             if (err) return callback(err);
             if (!data) return callback(null, null);
             if (data.length == 0) return callback(null, data);
-            callback(err, data[0].p.v);
+            callback(err, data[0].p.v, data);
         });
     }
 
@@ -251,7 +252,7 @@ module.exports = (function () {
                 if (followers.length > 0) {
                     clearInterval(interval);
                     followers.push(username);
-                    follow(username, followers, function (err) {
+                    follow(username, followers, false, function (err) {
                         if (callback) callback(err);
                     });
                 } else {
@@ -301,15 +302,97 @@ module.exports = (function () {
         });
     }
 
-    var follow = function (username, users, callback) {
+    /**
+     * Follows a user localy and optionally saves it to DHT
+     */
+    var follow = function (username, users, saveToDht, callback) {
         twisterRpc("follow", [username, users], function (err, data) {
-            callback(err, data);
+            if (saveToDht) {
+                saveFollowingToDht(username, function (err, data) {
+                    callback(err, data);    
+                });
+            } else {
+                callback(err, data);
+            }
         });
     }
 
-    var unfollow = function (username, users, callback) {
+    /**
+     * Unfollows a user localy and optionally saves it to DHT
+     */
+    var unfollow = function (username, users, saveToDht, callback) {
         twisterRpc("unfollow", [username, users], function (err, data) {
-            callback(err, data);
+            if (saveToDht) {
+                saveFollowingToDht(username, function (err, data) {
+                    callback(err, data);    
+                });
+            } else {
+                callback(err, data);
+            }
+        });
+    }
+
+    /**
+     * Retrieves the current array of following and saves this list to DHT
+     * TODO: a little bit spagetti code
+     */
+    var saveFollowingToDht = function (username, callback) {
+        async.waterfall([
+            // Get the current following
+            function (callback) {
+                getFollowing(username, function (err, following) {
+                    callback(err, following);
+                });
+            },
+            function (newFollowing, callback) {
+                // Remove the user himself from the following array
+                var index = newFollowing.indexOf(username);
+                while(index != -1) {
+                    newFollowing.splice(index, 1);
+                    index = newFollowing.indexOf(username);
+                }
+                // TODO: do we really need to get the following from dht JUST to get the seq number?
+                // Get the followers from DHT (for the sequence number)
+                getFollowingFromDht(username, function (err, oldFollowing, dhtData) {
+                    callback(err, newFollowing, oldFollowing, dhtData);
+                });
+            },
+            function (newFollowing, oldFollowing, dhtData, callback) {
+                var result = [],
+                    page = [],
+                    pageNum = 1,
+                    seqNum = dhtData[0].p.seq,
+                    i = 0;
+
+                // Setup pages of following and 'put' these into DHT
+                async.eachSeries(newFollowing, function (user, callback) {
+                    page.push(user);
+
+                    // If one page, or last item in the following array
+                    if (page.length == config.FOLLOWING_PER_PAGE || i == newFollowing.length - 1) {
+                        twisterRpc("dhtput", [username, "following" + pageNum, "s", page, username, seqNum + 1], function (err, data) {
+                            if (err) return callback(err);
+
+                            // Reset page data before continueing with new page
+                            page = [];
+                            pageNum++;
+
+                            i++;
+                            callback();
+                        });
+                    } else {
+                        i++;
+                        callback();
+                    }
+                }, function (err) {
+                    // Error in async.eachSeries or loop is done
+                    if (err) return callback(err);
+                    callback();
+                });
+            }
+        ], function (err, result) {
+            // Waterfall is done
+            callback(err, result);    
         });
     }
 

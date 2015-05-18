@@ -74,7 +74,7 @@ module.exports = Backbone.Model.extend({
 
     follow: function (username, callback) {
         var self = this;
-        Twister.follow(this.get('username'), [username], function (err) {
+        Twister.follow(this.get('username'), [username], true, function (err) {
             if (err) return callback(err);
 
             var following = self.get('following');
@@ -86,7 +86,7 @@ module.exports = Backbone.Model.extend({
 
     unfollow: function (username, callback) {
         var self = this;
-        Twister.unfollow(this.get('username'), [username], function (err) {
+        Twister.unfollow(this.get('username'), [username], true, function (err) {
             if (err) return callback(err);
 
             var following = self.get('following');
