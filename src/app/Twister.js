@@ -65,7 +65,7 @@ module.exports = (function () {
             }
         }
         twisterRpc("getposts", [amount, users], function (err, data) {
-            if (err) callback(err);
+            if (err) return callback(err);
             var posts = [];
             _.each(data, function (item) {
                 posts.push(item.userpost);
@@ -92,7 +92,7 @@ module.exports = (function () {
     var getFollowing = function (username, callback)
     {
         twisterRpc("getfollowing", [username], function (err, data) {
-            if (err) callback(err);
+            if (err) return callback(err);
             callback (err, data);
         });
     }
@@ -219,7 +219,6 @@ module.exports = (function () {
 
     var importUser = function (username, key, callback) {
         twisterRpc("importprivkey", [key, username], function (err, data) {
-            console.log("importprivkey data", err, data);
             callback(err, data);
         });
     }
@@ -227,8 +226,8 @@ module.exports = (function () {
     var getFollowingFromDht = function (username, callback) {
         twisterRpc("dhtget", [username, "following1", "s"], function (err, data) {
             if (err) return callback(err);
-            if (!data) callback(null, null);
-            if (data.length == 0) callback(null, data);
+            if (!data) return callback(null, null);
+            if (data.length == 0) return callback(null, data);
             callback(err, data[0].p.v);
         });
     }
