@@ -69,7 +69,7 @@ module.exports = Backbone.View.extend({
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    self.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                    self.$posts.find('.post[data-id=' + post.id + '] .left img').attr('src', user.get('avatar'));
                 });
             });
 

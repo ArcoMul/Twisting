@@ -2,7 +2,7 @@
 
 <% if (post.get('retwist')) { %>
 
-<div class="post retwist <%= className %>" data-id="<%=post.cid%>">
+<div class="post retwist <%= className %>" data-id="<%=post.id%>">
     <div class="left">
         <% if (post.get('retwist').get('user').get('avatar')) { %>
             <img src="<%= post.get('retwist').get('user').get('avatar') %>" />
@@ -19,11 +19,16 @@
             <%= post.get('retwist').getMessageRegexed() %><br />
         </p>
     </div>
+    <div class="actions">
+        <div>
+            <span class="retwist"></span><span class="reply">@</span><span class="love"></span><span class="eye"></span>
+        </div>
+    </div>
 </div>
 
 <% } else { %>
 
-<div class="post <%= className %>" data-id="<%=post.cid%>">
+<div class="post <%= className %>" data-id="<%=post.id%>">
     <div class="left">
         <% if (post.get('user').get('avatar')) { %>
             <img src="<%= post.get('user').get('avatar') %>" />
@@ -37,6 +42,11 @@
         <p>
             <%= post.getMessageRegexed() %><br />
         </p>
+    </div>
+    <div class="actions">
+        <div>
+            <span class="retwist"></span><span class="reply">@</span><span class="love"></span><span class="eye"></span>
+        </div>
     </div>
 </div>
 

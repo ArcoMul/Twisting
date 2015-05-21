@@ -69,7 +69,7 @@ module.exports = Backbone.Model.extend({
 
     // Get all users which don't have an avatar yet in memory. The others
     // will already be rendered on the page so don't need fetching
-    fetchAvatars: function (avatarLoadForUserCallback) {
+    fetchAvatars: function (avatarLoadedForUserCallback) {
         var self = this;
 
         // First get avatar from disk for every user
@@ -84,7 +84,7 @@ module.exports = Backbone.Model.extend({
                         if (err) return callback(err);
                         var posts = self.getOrignalPostsOfUser(user);
                         posts = posts.concat(self.getRetwistsOfPostOfUser(user));
-                        avatarLoadForUserCallback(null, user, posts);
+                        avatarLoadedForUserCallback(null, user, posts);
                         callback();
                     });
                 }, function (err) {
@@ -100,7 +100,7 @@ module.exports = Backbone.Model.extend({
                         if (err) return callback(err);
                         var posts = self.getOrignalPostsOfUser(user);
                         posts = posts.concat(self.getRetwistsOfPostOfUser(user));
-                        avatarLoadForUserCallback(null, user, posts);
+                        avatarLoadedForUserCallback(null, user, posts);
                         callback();
                     });
                 },

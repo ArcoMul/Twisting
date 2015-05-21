@@ -31,7 +31,9 @@ module.exports = Backbone.View.extend({
         "input .compose": "onTyping",
         "click button": "onSubmit",
         "click .newpost": "onNewPost",
-        "click .post": "openPostDetail"
+        "click .post": "onPostClick",
+        "click .post .actions .retwist": "retwist",
+        "click .post .actions .preview": "preview"
     },
 
     initialize: function(options) {
@@ -85,10 +87,14 @@ module.exports = Backbone.View.extend({
         this.$posts.find(".post:hidden").show();
         this.$newpost.hide();
     },
+
+    onPostClick: function (e) {
+        var id = $(e.currentTarget).attr('data-id');
+        this.openPostDetail(id);
+    },
     
-    openPostDetail: function (e) {
-        var id = $(e.currentTarget).attr('data-id'),
-            post = this.feed.get('posts').get(id);
+    openPostDetail: function (id) {
+        var post = this.feed.get('posts').get(id);
 
         // Show original twist, not the retwist itself
         if (post.get('retwist')) {
@@ -96,6 +102,28 @@ module.exports = Backbone.View.extend({
         }
 
         this.options.parent.openPreview(new PostPreview({post: post, feed: this.feed}));
+    },
+
+    preview: function (e) {
+        e.stopPropagation();
+        var id = $(e.currentTarget).parents('.post').attr('data-id');
+        this.openPostDetail(id);
+    },
+
+    retwist: function (e) {
+        e.stopPropagation();
+        var id = $(e.currentTarget).parents('.post').attr('data-id'),
+            post = this.feed.get('posts').get(id);
+
+        // Retwist the original twist
+        if (post.get('retwist')) {
+            post = post.get('retwist');
+        }
+
+        Twister.retwist(app.user.get('username'), post.toRetwist(), function (err, data) {
+            if (err) return console.error('Error retwisting twist', err);    
+            console.log('Retwist data', data);
+        });
     },
 
     loadPosts: function (includeMaxId, isPolling) {
@@ -123,7 +151,7 @@ module.exports = Backbone.View.extend({
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    self.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                    self.$posts.find('.post[data-id=' + post.id + '] .left img').attr('src', user.get('avatar'));
                 });
             });
 

@@ -134,7 +134,7 @@ module.exports = Backbone.Collection.extend({
                         }
                         var posts = [];
                         _.each(mentions_data, function (item) {
-                            var post = new PostModel().parse(item.userpost, self);
+                            var post = new PostModel().parse(item, self);
                             posts.push(post);
                         });
                         callback(null, posts);
@@ -148,7 +148,7 @@ module.exports = Backbone.Collection.extend({
                         }
                         var posts = [];
                         _.each(mentions_data, function (item) {
-                            var post = new PostModel().parse(item.p.v.userpost, self);
+                            var post = new PostModel().parse(item.p.v, self);
                             posts.push(post);
                         });
                         callback(null, posts);

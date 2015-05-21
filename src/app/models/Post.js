@@ -23,8 +23,9 @@ var PostModel = module.exports = Backbone.Model.extend({
      * data = Twister post data
      * users = user collection to retrieve users from
      */
-    parse: function (item, users) {
+    parse: function (data, users) {
         var retwist;
+        var item = data.userpost;
         if(item.rt) {
             var retwistUser = users.findWhere({username: item.rt.n});
 
@@ -37,10 +38,13 @@ var PostModel = module.exports = Backbone.Model.extend({
             // Build the retwist post model
             retwist = new PostModel({
                 id: retwistUser.get('username') + '_' + item.rt.k,
+                signature: item.sig_rt,
+                height: item.rt.height,
                 user: retwistUser,
                 message: item.rt.msg,
                 time: item.rt.time,
-                twister_id: item.rt.k
+                twister_id: item.rt.k,
+                last_twister_id: item.rt.lastk
             });
 
             retwistUser.addPost(retwist);
@@ -56,6 +60,8 @@ var PostModel = module.exports = Backbone.Model.extend({
 
         this.set({
             id: user.get('username') + '_' + item.k,
+            signature: data.sig_userpost,
+            height: item.height,
             user: user,
             message: item.msg,
             time: item.time,
@@ -90,5 +96,34 @@ var PostModel = module.exports = Backbone.Model.extend({
     getTimeAgo: function ()
     {
         return moment(this.get('time') * 1000).fromNow();
+    },
+
+    getAsUserpost: function ()
+    {
+        var data = {
+            height: this.get('height'),
+            k: this.get('twister_id'),
+            lastk: this.get('last_twister_id'),
+            msg: this.get('message'),
+            n: this.get('user').get('username'),
+            time: this.get('time')
+        };
+        if (this.get('reply')) {
+            data.reply = {
+                k: this.get('reply').twister_id,
+                n: this.get('reply').username
+            };
+        }
+        return data;
+    },
+
+    toRetwist: function ()
+    {
+        var sig_userpost = this.get('signature');
+        var userpost = this.getAsUserpost();
+        return {
+            sig_userpost: sig_userpost,
+            userpost: userpost
+        }
     }
 });

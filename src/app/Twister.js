@@ -69,7 +69,7 @@ module.exports = (function () {
             if (err) return callback(err);
             var posts = [];
             _.each(data, function (item) {
-                posts.push(item.userpost);
+                posts.push(item);
             });
             callback(err, posts);
         });
@@ -86,7 +86,7 @@ module.exports = (function () {
             if (data.length == 0) {
                 return callback(err, null);
             }
-            callback(err, data[0].p.v.userpost);
+            callback(err, data[0].p.v);
         });
     }
 
@@ -403,9 +403,28 @@ module.exports = (function () {
             if (posts.length == 0) {
                 k = 0;
             } else {
-                k = posts[0].k + 1;
+                k = posts[0].userpost.k + 1;
             }
             twisterRpc("newpostmsg", [username, k, text], function (err, data) {
+                callback(err, data);
+            });
+        });
+    }
+    
+    /**
+     * username = user retwisting
+     * post = post being retwisted
+     */
+    var retwist = function (username, post, callback) {
+        var k;
+        getPosts(username, 1, function (err, posts) {
+            if (err) return callback(err);
+            if (posts.length == 0) {
+                k = 0;
+            } else {
+                k = posts[0].userpost.k + 1;
+            }
+            twisterRpc("newrtmsg", [username, k, post], function (err, data) {
                 callback(err, data);
             });
         });
@@ -452,6 +471,7 @@ module.exports = (function () {
         follow: follow,
         unfollow: unfollow,
         post: post,
+        retwist: retwist,
         startDeamon: startDeamon,
         stopDeamon: stopDeamon,
         status: status

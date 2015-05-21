@@ -30,7 +30,7 @@ module.exports = Backbone.View.extend({
 
             var posts = [];
             _.each(replies, function (reply) {
-                posts.push(new PostModel().parse(reply.p.v.userpost, options.feed.get('users')));
+                posts.push(new PostModel().parse(reply.p.v, options.feed.get('users')));
             });
             posts = posts.reverse();
             self.post.set('replies', posts);
@@ -44,7 +44,7 @@ module.exports = Backbone.View.extend({
             if (err) return console.error('Error getting parent post', err);
 
             // Found a parent post
-            parentPost = new PostModel().parse(parentPost[0].p.v.userpost, self.options.feed.get('users'));
+            parentPost = new PostModel().parse(parentPost[0].p.v, self.options.feed.get('users'));
 
             // Tell the parent post the original post is a reply
             parentPost.set('replies', [post]);
