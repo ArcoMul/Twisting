@@ -396,7 +396,12 @@ module.exports = (function () {
         });
     }
 
-    var post = function (username, text, callback) {
+    var post = function (username, text, replyTo, replyToK, callback) {
+        var isReplying = true;
+        if (_.isFunction(replyTo)) {
+            isReplying = false;
+            callback = replyTo;
+        }
         var k;
         getPosts(username, 1, function (err, posts) {
             if (err) return callback(err);
@@ -405,7 +410,12 @@ module.exports = (function () {
             } else {
                 k = posts[0].userpost.k + 1;
             }
-            twisterRpc("newpostmsg", [username, k, text], function (err, data) {
+            var params = [username, k, text];
+            if (isReplying) {
+                params.push(replyTo);
+                params.push(replyToK);
+            }
+            twisterRpc("newpostmsg", params, function (err, data) {
                 callback(err, data);
             });
         });
@@ -471,6 +481,7 @@ module.exports = (function () {
         follow: follow,
         unfollow: unfollow,
         post: post,
+        reply: post,
         retwist: retwist,
         startDeamon: startDeamon,
         stopDeamon: stopDeamon,

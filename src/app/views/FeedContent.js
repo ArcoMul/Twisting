@@ -33,6 +33,7 @@ module.exports = Backbone.View.extend({
         "click .newpost": "onNewPost",
         "click .post": "onPostClick",
         "click .post .actions .retwist": "retwist",
+        "click .post .actions .reply": "reply",
         "click .post .actions .preview": "preview"
     },
 
@@ -122,8 +123,42 @@ module.exports = Backbone.View.extend({
 
         Twister.retwist(app.user.get('username'), post.toRetwist(), function (err, data) {
             if (err) return console.error('Error retwisting twist', err);    
-            console.log('Retwist data', data);
         });
+    },
+
+    reply: function (e) {
+        e.stopPropagation();
+        var id = $(e.currentTarget).parents('.post').attr('data-id'),
+            post = this.feed.get('posts').get(id);
+
+        // Reply to the original twist
+        if (post.get('retwist')) {
+            post = post.get('retwist');
+        }
+
+        this.$replyingTo.text("Replying to @" + post.get('user').get('username')).show();
+        this.replyingTo = post;
+
+        $("#main-scrollable").scrollTop(0);
+        this.$input
+            .focus()
+            .html("@" + post.get('user').get('username') + "&nbsp;")
+            .keypress();
+
+        this.setCursorToEnd(this.$input[0]);
+
+        console.log('Reply to', post);
+    },
+
+    setCursorToEnd: function (ele)
+    {
+        var range = document.createRange();
+        var sel = window.getSelection();
+        range.setStart(ele, 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ele.focus();
     },
 
     loadPosts: function (includeMaxId, isPolling) {
@@ -167,18 +202,32 @@ module.exports = Backbone.View.extend({
         if (charcount > 0) {
             this.$info.show();
         } else {
+            this.replyingTo = null;
+            this.$replyingTo.text("").hide();
             this.$info.hide();
         }
     },
 
     onSubmit: function (e) {
-        Twister.post(app.user.get('username'), this.$input.text(), function (err, data) {
-            if (err) {
-                return console.log('Error posting:', err);
-            }
-            this.$input.text("");
-            this.$info.hide();
-        }.bind(this));
+        var self = this;
+        if (this.replyingTo) {
+            Twister.reply(app.user.get('username'), this.$input.text(), this.replyingTo.get('user').get('username'), this.replyingTo.get('twister_id'), function (err, data) {
+                if (err) {
+                    return console.log('Error posting:', err);
+                }
+                self.$input.text("");
+                self.$info.hide();
+                self.replyingTo = null;
+            }.bind(this));
+        } else {
+            Twister.post(app.user.get('username'), this.$input.text(), function (err, data) {
+                if (err) {
+                    return console.log('Error posting:', err);
+                }
+                self.$input.text("");
+                self.$info.hide();
+            }.bind(this));
+        }
     },
 
     scroll: function (e) {
@@ -205,7 +254,8 @@ module.exports = Backbone.View.extend({
         this.$el.html(postsContent());
 
         // Save references to certain elements
-        this.$input = this.$el.find('[contenteditable=true]');
+        this.$input = this.$el.find('.compose [contenteditable=true]');
+        this.$replyingTo = this.$el.find('.compose .replying-to');
         this.$info = this.$el.find('.info');
         this.$charcount = this.$el.find('.info span');
         this.$loader = this.$el.find('.load-animation');
