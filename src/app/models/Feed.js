@@ -28,6 +28,8 @@ module.exports = Backbone.Model.extend({
     // Get posts
     fetchPosts: function (amount, options, callback) {
 
+        options.sortDirection = options.sortDirection ? options.sortDirection : -1;
+
         // Get all the posts of the users in this feed
         this.get('users').fetchPosts(amount, options, function (err, posts) {
             if (err) return callback(err);
@@ -35,7 +37,7 @@ module.exports = Backbone.Model.extend({
             // Sort before adding so that the 'add' events are called
             // in the right order
             posts = _.sortBy(posts, function (post) {
-                return post.get('time') * -1;
+                return post.get('time') * options.sortDirection;
             });
             this.get('posts').add(posts);
 

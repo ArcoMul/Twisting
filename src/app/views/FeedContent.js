@@ -171,7 +171,8 @@ module.exports = Backbone.View.extend({
             this.$loader.show();
         }
 
-        this.feed.fetchPosts(10, {includeMaxId: includeMaxId, includeNotFollowers: false}, function (err) {
+        var sortDirection = isPolling ? 1 : -1;
+        this.feed.fetchPosts(10, {includeMaxId: includeMaxId, includeNotFollowers: false, sortDirection: sortDirection}, function (err) {
             if (err) return console.error('Error fetching posts in feed:', err);
 
             // View is removed while posts where fetched
