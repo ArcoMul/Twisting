@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 
     // TODO: platforms shouldn't be hardcoded here
-    var platforms = ['win64'];
+    var platforms = ['win64', 'linux64'];
 
     // Build up array of destinations for Twister deamon files
     var destinations = {files: []};
@@ -20,7 +20,8 @@ module.exports = function(grunt) {
             options: {
                 platforms: platforms,
                 version: 'v0.12.1',
-                buildDir: './builds'
+                buildDir: './builds',
+                winIco: './src/icon.ico'
             },
             src: ['./src/**/*', '!./src/twister-data/**/*', '!./src/*.exe', '!./src/*.pak', '!./src/*.dll']
         },
