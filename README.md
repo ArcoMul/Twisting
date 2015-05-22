@@ -4,16 +4,13 @@ Twisting (alpha)
 Intro
 -----
 
-**What is Twisting?**
-
+**What is Twisting?**  
 Twisting is a *Twister* client
 
-**What is Twister?**
-
+**What is Twister?**  
 Twister is a *peer to peer microblogging platform*
 
-**What is a peer to peer microblogging platform?**
-
+**What is a peer to peer microblogging platform?**  
 It's like *Twitter* without a website, Twists (Tweets) are getting downloaded directly from your friends.
 
 Status
@@ -47,7 +44,8 @@ Current features
 Screenshots
 -----------
 
-![Twisting Screenshot](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/1.png)
+![Feed](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/feed2.png)
+![Profile](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/profile2.png)
 
 Technology
 ----------
