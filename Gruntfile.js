@@ -8,7 +8,8 @@ module.exports = function(grunt) {
     platforms.forEach(function (platform) {
         destinations.files.push({
                 expand: true,
-                src: ['./twister-data/**'],
+                cwd: './twister-data/' + platform,
+                src: ['twister-data/**'],
                 dest: './builds/Twisting/' + platform + '/'
         });
     });
