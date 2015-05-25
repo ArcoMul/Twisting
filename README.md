@@ -72,11 +72,24 @@ Development setup
 - Download the repository using git
 - Run `$ npm install` in the Twisting folder
 - Grunt will be installed and start running some tasks
-- Download [this zip file](https://dl.dropboxusercontent.com/u/1146818/Twister/twisting-twister-data.zip "Twisting Twister Data") with a Twister Windows build, or use your own
-- Unpack the zip file and put the contents in the <repo>/twister-data folder
+- Download [this zip file](https://dl.dropboxusercontent.com/u/1146818/Twister/twisting-twister-data.zip "Twisting Twister Data") with a Twister Windows and Linux build, or use your own
+- Unpack the zip file and put the contents in the <repo>/twister-data folder; so that the folder structure looks like this:
+    - \<repo root>
+        - twister-data
+            - linux64
+                - twister-data
+                    - twisterd
+                    - data/
+                    - avatars/
+            - win64
+                - twister-data
+                    - twisterd.exe
+                    - \<other DLL files>
+                    - data/
+                    - avatars/
 - See next steps at **Development**
 
 Development 
 -----------
 
-- `$ npm run-script build` builds a Windows x64 version of the application
+- `$ npm run-script build` builds a Linux and Windows x64 version of the application. To only build one of both versions edit the `Gruntfile.js` for now
