@@ -80,16 +80,21 @@ Development setup
                 - twister-data
                     - twisterd
                     - data/
+                        - twister.conf
                     - avatars/
             - win64
                 - twister-data
                     - twisterd.exe
                     - \<other DLL files>
                     - data/
+                        - twister.conf
                     - avatars/
 - See next steps at **Development**
 
 Development 
 -----------
 
-- `$ npm run-script build` builds a Linux and Windows x64 version of the application. To only build one of both versions edit the `Gruntfile.js` for now
+The following targets are possible at the moment: `win64`, `linux64`
+
+- `$ npm run-script build` builds all targets (`win64`, `linux64`)
+- `$ npm --target=<target> run-script build` builds for a specific target, for example: `$ npm --target=linux64 run-script build`

@@ -1,7 +1,15 @@
 module.exports = function(grunt) {
 
-    // TODO: platforms shouldn't be hardcoded here
-    var platforms = ['win64', 'linux64'];
+    var target = process.env.npm_config_target || 'all';
+
+    var platforms;
+    if (target == 'all') {
+        platforms = ['win64', 'linux64'];
+    } else {
+        platforms = [target];
+    }
+
+    console.log('Building Twisting with target "' + target + '" for platforms:', platforms);
 
     // Build up array of destinations for Twister deamon files
     var destinations = {files: []};
