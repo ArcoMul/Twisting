@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         platforms = [target];
     }
 
-    console.log('Building Twisting with target "' + target + '" for platforms:', platforms);
+    console.log('Running Grunt tasks with target "' + target + '" for platforms:', platforms);
 
     // Build up array of destinations for Twister deamon files
     var destinations = {files: []};
