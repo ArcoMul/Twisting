@@ -14,6 +14,10 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
+    events: {
+        "click button": "openPost"
+    },
+
     initialize: function(options) {
         var self = this;
 
@@ -61,11 +65,50 @@ module.exports = Backbone.View.extend({
         });
     },
 
+    openPost: function () {
+        console.log('openPost');
+        app.router.navigate('/users/' + this.post.get('user').get('username') + '/posts/' + this.post.get('twister_id'), {testtest: 123});
+        app.router.postDetail(
+            this.post.get('user'),
+            this.post);
+    },
+
     render: function() {
         this.$el.html(postPreviewTemplate({
             postTemplate: postTemplate,
             post: this.post
         }));
+        var $title = this.$el.find('.title');
+        var $top = this.$el.find('.top');
+        var $middle = this.$el.find('.middle');
+        var $bottom = this.$el.find('.bottom');
+        var $footer = this.$el.find('.footer');
+        var dynamicHeight = this.$el.height() - $title.height() - $middle.height() - $footer.height();
+        this.$el.height($("#main-scrollable").height());
+        var tooManyParents = false,
+            tooManyReplies = false;
+        if ($top.height() > dynamicHeight / 2) {
+            tooManyParents = true;
+        }
+        if ($bottom.height() > dynamicHeight / 2) {
+            tooManyReplies = true;
+        }
+
+        if (tooManyParents && tooManyReplies) {
+            $top.height(dynamicHeight / 2);
+            $bottom.height(dynamicHeight / 2);
+        } else if (tooManyParents && !tooManyReplies) {
+            $top.height(dynamicHeight - $bottom.height());
+        } else if (!tooManyParents && tooManyReplies) {
+            $bottom.height(dynamicHeight - $top.height());
+        }
+
+        if (!tooManyParents && !tooManyReplies) {
+            $footer.hide();
+        }
+
+        $top.children().children().first().css('marginTop', -$top[0].scrollHeight + $top.height());
+        console.log($top, $top.children().first(), -$top[0].scrollHeight + $top.height(), $top[0].scrollHeight, $top.height());
         return this;
     }
 });

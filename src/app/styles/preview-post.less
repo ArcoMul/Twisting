@@ -1,48 +1,121 @@
 #preview-section .post-preview {
-    padding: 0 20px;
-
-    .posts .post {
-        padding: 10px 0;
-        &.main {
+    .title {
+        height: 20px;
+        padding: 10px;
+        border-bottom: 1px solid #DADADA;
+        color: #737373;
+        div {
+            float: left;
+            width: 22px;
+            text-align: center;
+            margin: -10px 0 -10px -10px;
+            padding: 10px;
+            border-right: 1px solid #DADADA;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            &:hover {
+                font-weight: bold;
+            }
+        }
+    }
+    .posts {
+        margin: 0 20px;
+        .post {
             padding: 10px 0;
+            .left {
+                flex-basis: 36px;
+                img {
+                    width: 40px;
+                    height: 40px;
+                }
+            }
             .right {
                 & > .username {
-                    font-size: 16px;
-                }
-                p {
-                    font-size: 15px;
-                    line-height: 22px;
+                    font-size: 14px;
                 }
                 .date {
-                    font-size: 14px;
-                    top: 11px;
+                    top: 14px;
+                    right: 0;
+                    font-size: 12px;
+                }
+                p {
+                    font-size: 13px;
+                }
+            }
+            .actions {
+                display: none;
+                &:hover {
+                    display: none;
                 }
             }
         }
-        .left {
-            flex-basis: 36px;
-            img {
-                width: 40px;
-                height: 40px;
-            }
+    }
+    .middle .posts {
+          border-top: 1px solid #DADADA;
+  border-bottom: 1px solid #DADADA;
+        .post.main {
+              margin: 0 20px;
         }
         .right {
             & > .username {
-                font-size: 14px;
-            }
-            .date {
-                top: 14px;
-                right: 0;
-                font-size: 12px;
+                font-size: 16px;
             }
             p {
-                font-size: 13px;
+                font-size: 15px;
+                line-height: 22px;
+            }
+            .date {
+                font-size: 14px;
+                top: 11px;
             }
         }
-        .actions {
-            display: none;
-            &:hover {
-                display: none;
+        .preview-actions {
+            color: #999;
+            border-top: 1px solid rgba(218, 218, 218, 0.49);
+            padding: 10px 10px;
+            vertical-align: middle;
+            line-height: 24px;
+            .love, .retwist {
+                display: inline-block;
+                vertical-align: middle;
+            }
+            .retwist {
+                -webkit-mask: url(../svg/retwist.svg);
+                background-color: #61c26a;
+                width: 19px;
+                height: 19px;
+            }
+            .love {
+                -webkit-mask: url(../svg/love.svg);
+                background-color: #f14d4d;
+                width: 24px;
+                height: 24px;
+            }
+            .reply {
+                color: #80A8CC;
+                float: right;
+            }
+        }
+    }
+    .top .posts, .bottom .posts {
+        overflow: hidden;
+        margin: 0 10px;
+        border-left: 3px solid #6992B8;
+        padding: 0 10px;
+        display: inline-block;
+    }
+    .top .posts {
+        margin-top: 10px;
+    }
+    .bottom .posts {
+        margin-bottom: 10px;
+    }
+    .footer {
+        div {
+            padding: 20px;
+            button {
+                width: 100%;
             }
         }
     }

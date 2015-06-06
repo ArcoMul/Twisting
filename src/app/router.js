@@ -3,10 +3,12 @@
 // External dependencies.
 var Backbone = require("backbone"),
     $ = require("jquery"),
+    _ = require("underscore"),
     app = require("./app"),
     UserModel = require("./models/User"),
     UserContentView = require("./views/UserContent"),
     UserContextView = require("./views/UserContext"),
+    PostContentView = require("./views/PostContent"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
     MentionsContentView = require("./views/MentionsContent"),
@@ -31,6 +33,7 @@ module.exports = Backbone.Router.extend({
         "login": "login",
         "choose-account": "chooseAccount",
         "user/:user": "user",
+        "user/:user/posts/:post": "postDetail",
         "feed": "feed",
         "mentions": "mentions",
         "messages": "notYetImplemented",
@@ -60,6 +63,18 @@ module.exports = Backbone.Router.extend({
         var user = new UserModel({username: user});
         app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
         app.mainView.switchContentView(UserContentView, {model: user, parent: app.mainView});
+    },
+
+    postDetail: function(user, post) {
+        console.log('postDetail', arguments);
+        if (_.isString(user)) {
+            user = new UserModel({username: user});
+        }
+        app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
+        app.mainView.switchContentView(PostContentView, {
+            model: post,
+            parentPosts: parentPosts
+        });
     },
 
     feed: function () {

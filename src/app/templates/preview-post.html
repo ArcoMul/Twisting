@@ -1,17 +1,41 @@
 <div class="post-preview">
-    <div class="posts">
-        <% 
-        var html = '';
-        var current = post;
-        while (current.get('parent')) {
-            html = postTemplate({post: current.get('parent')}) + html;
-            current = current.get('parent');
-        }
-        %>
-        <%= html %>
-        <%= postTemplate({post: post, className: 'main'}) %>
-        <% _.each(post.get('replies'), function (post) { %>
-            <%= postTemplate({post: post}) %>
-        <% }) %>
+    <div class="title">
+        <div>&times;</div>
+        Post of <a class="username" href="<%= post.get('user').getUrl() %>"><%= post.get('user').get('username') %></a>
+    </div>
+    <div class="top">
+        <div class="posts">
+            <% 
+            var html = '';
+            var current = post;
+            while (current.get('parent')) {
+                html = postTemplate({post: current.get('parent')}) + html;
+                current = current.get('parent');
+            }
+            %>
+            <%= html %>
+        </div>
+    </div>
+    <div class="middle">
+        <div class="posts">
+            <%= postTemplate({post: post, className: 'main'}) %>
+            <div class="preview-actions">
+                3 <span class="retwist"></span>
+                5 <span class="love"></span>
+                <span class="reply">Reply</span>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="posts">
+            <% _.each(post.get('replies'), function (post) { %>
+                <%= postTemplate({post: post}) %>
+            <% }) %>
+        </div>
+    </div>
+    <div class="footer">
+        <div>
+            <button>More...</button>
+        </div>
     </div>
 </div>
