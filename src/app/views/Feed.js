@@ -15,6 +15,7 @@ var $ = require("jquery"),
     PostPreview = require("../views/PostPreview"),
     SlideOverlayView = require("../views/SlideOverlay"),
     PostView = require("../views/Post"),
+    UserView = require("../views/User"),
     Twister = require("../Twister"),
     async = require("async");
 
@@ -38,7 +39,8 @@ module.exports = Backbone.View.extend({
         //"click .post .actions .reply": "reply",
         //"click .post .actions .preview": "preview",
         "scroll": "scroll",
-        "click .post .icon": "openPost"
+        "click .post .icon": "openPost",
+        "click .post .avatar": "openUser"
     },
 
     initialize: function(options) {
@@ -101,16 +103,9 @@ module.exports = Backbone.View.extend({
         this.$newpost.hide();
     },
 
-    onPostClick: function (e) {
-        var id = $(e.currentTarget).attr('data-id');
-        console.log('OTHERCLICK EVENT', id);
-        this.openPostDetail(id);
-    },
-
     openPost: function (e) {
         e.stopImmediatePropagation();
         var id = $(e.currentTarget).parents('.post').attr('data-id');
-        console.log('CLICK EVENT', id);
         this.openPostDetail(id);
     },
     
@@ -122,14 +117,34 @@ module.exports = Backbone.View.extend({
             post = post.get('retwist');
         }
 
-        console.log('IIDIDIDID', id);
-        console.log('open post detail', post);
-        console.log('PostView', PostView);
-
         this.$el.append('<div class="slide-overlay"></div>');
-        new SlideOverlayView({el: this.$el.children().last(), childView: PostView, options: {post: post, feed: this.feed}});
-        return;
-        this.options.parent.openPreview(new PostPreview({post: post, feed: this.feed}));
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: PostView,
+            options: {
+                post: post,
+                feed: this.feed
+            }
+        });
+    },
+
+    openUser: function (e) {
+        e.stopImmediatePropagation();
+        var id = $(e.currentTarget).parents('.post').attr('data-id');
+        var post = this.feed.get('posts').get(id);
+        var user = post.get('user');
+        this.openUserDetail(user);
+    },
+
+    openUserDetail: function (user) {
+        this.$el.append('<div class="slide-overlay"></div>');
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: UserView,
+            options: {
+                user: user
+            }
+        });
     },
 
     preview: function (e) {

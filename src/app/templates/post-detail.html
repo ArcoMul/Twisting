@@ -1,23 +1,25 @@
 <div class="post-detail">
     <div class="posts">
-        <% var top = post.getTopParent() %>
-        <%= postTemplate({post: post.getTopParent()}) %>
-        <div class="posts replies line">
-        <%
-        var print = function print (post, printself) {
-            if (printself) {
-                var html = postTemplate({post: post}); 
-            } else {
-                var html = '';
+        <% var top = post.getTopParent(); %>
+        <%= postTemplate({post: top}) %>
+        <% if (top.get('replies')) { %>
+            <div class="posts replies line">
+            <%
+            var print = function print (post, printself) {
+                if (printself) {
+                    var html = postTemplate({post: post}); 
+                } else {
+                    var html = '';
+                }
+                if (!post.get('replies')) return html;
+                post.get('replies').forEach(function (post) {
+                    html += print(post, true); 
+                });
+                return html;
             }
-            if (!post.get('replies')) return html;
-            post.get('replies').forEach(function (post) {
-                html += print(post, true); 
-            });
-            return html;
-        }
-        %>
-        <%= print(top, false) %>
-        </div>
+            %>
+            <%= print(top, false) %>
+            </div>
+        <% } %>
     </div>
 </div>

@@ -1,0 +1,26 @@
+<div class="user-detail">
+    <div class="avatar">
+        <img class="avatar" src="<%= user.get('avatar') ? user.get('avatar') : user.getDefaultAvatar() %>" />
+    </div>
+    <div class="user-info">
+        <h2 class="username"><%=user.get('username')%> <%= (user.get('fullname') ? '<span class="fullname"> - ' + user.get('fullname') + '</span>' : '') %></h2>
+        <p class="stats">
+        <% if (user.get('following')) { %>
+            Following: <%= user.get('following').length %>
+        <% } %>
+        </p>
+        <% if (user.get('bio') || user.get('location')) { %>
+            <p class="about">
+            <% if (user.get('bio')) { %>
+                <%= user.get('bio') %>
+            <% } %>
+            <% if (user.get('location')) { %>
+                <%= '<br /><span class="location">' + user.get('location') + '</span>' %>
+            <% } %>
+            </p>
+        <% } %>
+    </div>
+
+    <div class="posts">
+    </div>
+</div>

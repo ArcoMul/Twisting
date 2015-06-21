@@ -12,7 +12,7 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
-    el: '#main-page',
+    el: '#main-scrollable',
 
     $context: null,
     $content: null,

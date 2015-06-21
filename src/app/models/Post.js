@@ -174,6 +174,9 @@ var PostModel = module.exports = Backbone.Model.extend({
     getTopParent: function ()
     {
         var t = this;
+        // This is the top parent
+        if (!t.get('parent')) return t;
+        // Treverse to top
         while(t.get('parent')) {
             t = t.get('parent');
         }

@@ -39,6 +39,8 @@ module.exports = Backbone.View.extend({
             self.post.set('replies', posts);
             self.render();
         });
+
+        self.render();
     },
 
     addParentPost: function (post) {
