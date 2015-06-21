@@ -37,7 +37,7 @@ module.exports = Backbone.Model.extend({
             // Sort before adding so that the 'add' events are called
             // in the right order
             posts = _.sortBy(posts, function (post) {
-                return post.get('time') * options.sortDirection;
+                return post.get('last_time') * options.sortDirection;
             });
             this.get('posts').add(posts);
 

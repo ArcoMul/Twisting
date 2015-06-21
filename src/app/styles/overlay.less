@@ -54,3 +54,66 @@
         }
     }
 }
+
+@-webkit-keyframes slide {
+    from {left: 100%;}
+    to {left: 5%;}
+}
+@-webkit-keyframes slide-reverse {
+    from {left: 5%;}
+    to {left: 100%;}
+}
+.slide-overlay {
+    width: 95%;
+    height: 100%;
+    background-color: #fff;
+    position: fixed;
+    z-index: 1;
+    vertical-align: middle;
+    display: inline-flex;
+    left: 100%;
+    top: 0;
+    padding-top: 67px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    -webkit-animation-name: slide;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    &.close {
+        left: 5%;
+        -webkit-animation-name: slide-reverse;
+        -webkit-animation-duration: 1s;
+        -webkit-animation-fill-mode: forwards;
+    }
+
+    & > div > .content {
+        padding: 40px 80px 20px 80px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .close-button {
+        position: absolute;
+        left: 20px;
+        top: 68px;
+        font-size: 30px;
+        color: #666;
+        cursor: pointer;
+    }
+
+    &::-webkit-scrollbar {
+        width: 9px;
+    }
+     
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 134, 255, 0.04);
+    }
+     
+    &::-webkit-scrollbar-thumb {
+        border-radius: 9px;
+        background: @emphasis-color-dark;
+        width: 9px;
+    }
+}

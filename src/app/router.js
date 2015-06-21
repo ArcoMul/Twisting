@@ -9,6 +9,7 @@ var Backbone = require("backbone"),
     UserContentView = require("./views/UserContent"),
     UserContextView = require("./views/UserContext"),
     PostContentView = require("./views/PostContent"),
+    FeedView = require("./views/Feed"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
     MentionsContentView = require("./views/MentionsContent"),
@@ -78,6 +79,11 @@ module.exports = Backbone.Router.extend({
     },
 
     feed: function () {
+        // TODO: don't use clear, make sure all the view are deleted in the right way
+        $("#main-scrollable").html('');
+        new FeedView({ el: $("#main-scrollable")});
+        return;
+
         app.mainView.switchContextView(new FeedContextView({parent: app.mainView}));
         app.mainView.switchContentView(FeedContentView, {parent: app.mainView});
     },

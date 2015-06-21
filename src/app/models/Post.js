@@ -9,14 +9,22 @@ var $ = require("jquery"),
 
 Backbone.$ = $;
 
+var TYPES = {
+    RETWIST: 'retwist',
+    REPLY: 'reply',
+    POST: 'post',
+};
+
 // Defining the application router.
 var PostModel = module.exports = Backbone.Model.extend({
     defaults: {
         twister_id: null,
         message: null,
         time: null,
+        last_time: null,
         user: null,
-        retwist: null
+        retwist: null,
+        retwisters: []
     },
 
     /**
@@ -26,6 +34,15 @@ var PostModel = module.exports = Backbone.Model.extend({
     parse: function (data, users) {
         var retwist;
         var item = data.userpost;
+
+        var user = users.findWhere({username: item.n});
+
+        // Maybe the user doens't excist yet when we are parsing a 
+        // parent post of a reply for example
+        if (!user) {
+            user = users.newUser({username: item.n, isFollowing: false});
+        }
+        
         if(item.rt) {
             var retwistUser = users.findWhere({username: item.rt.n});
 
@@ -33,6 +50,14 @@ var PostModel = module.exports = Backbone.Model.extend({
             // in that case add it to the list of users
             if (!retwistUser) {
                 retwistUser = users.newUser({username: item.rt.n, isFollowing: false});
+            } else {
+                // Check if post is already known
+                var post = retwistUser.get('posts').findWhere({id: retwistUser.get('username') + '_' + item.rt.k});
+                if (post) {
+                    post.setLastTime(item.time);
+                    post.addRetwister(user);
+                    return post;
+                }
             }
 
             // Build the retwist post model
@@ -43,19 +68,17 @@ var PostModel = module.exports = Backbone.Model.extend({
                 user: retwistUser,
                 message: item.rt.msg,
                 time: item.rt.time,
+                last_time: item.time,
+                last_rt_time: item.time,
                 twister_id: item.rt.k,
-                last_twister_id: item.rt.lastk
+                last_twister_id: item.rt.lastk,
+                retwisters: [user]
             });
 
             retwistUser.addPost(retwist);
-        }
 
-        var user = users.findWhere({username: item.n});
-
-        // Maybe the user doens't excist yet when we are parsing a 
-        // parent post of a reply for example
-        if (!user) {
-            user = users.newUser({username: item.n, isFollowing: false});
+            // Return the retwist as if it is an original twist
+            return retwist;
         }
 
         this.set({
@@ -65,6 +88,7 @@ var PostModel = module.exports = Backbone.Model.extend({
             user: user,
             message: item.msg,
             time: item.time,
+            last_time: item.time,
             retwist: retwist,
             reply: item.reply ? {username: item.reply.n, twister_id: item.reply.k} : undefined,
             twister_id: item.k,
@@ -74,6 +98,18 @@ var PostModel = module.exports = Backbone.Model.extend({
         user.addPost(this);
 
         return this;
+    },
+
+    addRetwister: function (user) {
+        var retwisters = this.get('retwisters');
+        retwisters.push(user);
+        this.set('retwisters', retwisters);
+    },
+
+    setLastTime: function (time) {
+        if (time > this.get('last_time')) {
+            this.set('last_time', time);
+        }
     },
 
     getMessageRegexed: function () {
@@ -96,6 +132,14 @@ var PostModel = module.exports = Backbone.Model.extend({
     getTimeAgo: function ()
     {
         return moment(this.get('time') * 1000).fromNow();
+    },
+
+    getDaysAgo: function ()
+    {
+        var now = moment(new Date());
+        var date = moment(this.get('last_time') * 1000);
+        console.log('days ago', now.diff(date, 'days'));
+        return now.diff(date, 'days');
     },
 
     getAsUserpost: function ()
@@ -125,5 +169,24 @@ var PostModel = module.exports = Backbone.Model.extend({
             sig_userpost: sig_userpost,
             userpost: userpost
         }
+    },
+
+    getTopParent: function ()
+    {
+        var t = this;
+        while(t.get('parent')) {
+            t = t.get('parent');
+        }
+        return t;
+    },
+
+    getType: function ()
+    {
+        if (this.get('last_time') != this.get('time')) {
+            return TYPES.RETWIST;
+        } else if (this.get('reply')) {
+            return TYPES.REPLY;
+        }
+        return TYPES.POST;
     }
 });

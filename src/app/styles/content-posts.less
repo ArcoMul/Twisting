@@ -1,170 +1,117 @@
-.posts .post {
-    background-color: @foreground-color;
-    padding: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    color: #605e58;
+.posts {
     position: relative;
-    display: flex;
-    cursor: pointer;
-    &:first-child {
-        border: 0;
-    }
-    &.retwist span.retwist-icon {
-      width: 15px;
-      height: 15px;
-      display: inline-block;
-      -webkit-mask: url(../svg/retwist.svg);
-      background-color: #91C348;
-      vertical-align: middle;
-      margin-right: 5px;
-      margin-top: -1px;
+    padding: 20px 0;
+    
+    &.line::before {
+        content: "";
+        height: 100%;
+        width: 4px;
+        position: absolute;
+        left: 32px;
+        top: 0;
+        background-color: #c9e9ec;
+        border-radius: 4px;
     }
 
-    .left {
-        padding-right: 20px;
-        vertical-align: top;
-        flex-basis: 72px;
-        img {
-            width: 60px;
-            height: 60px;
-            border-radius: 60px;
+    .post {
+        color: #605e58;
+        position: relative;
+        display: flex;
+        margin-bottom: 40px;
+        font-size: 20px;
+        line-height: 26px;
+        &.retwist span.retwist-icon {
+          width: 15px;
+          height: 15px;
+          display: inline-block;
+          -webkit-mask: url(../svg/retwist.svg);
+          background-color: #91C348;
+          vertical-align: middle;
+          margin-right: 5px;
+          margin-top: -1px;
         }
-    }
 
-    .right {
-        flex-basis: 100%;
-        & > .username {
-            font-size: 14px;
+        .icon {
+            background-color: #09c1d1;
+            border-radius: 100%;
+            flex: 0 0 68px;
+            height: 68px;
+            margin-right: 20px;
+            cursor: pointer;
         }
-        p {
-            color: #605e58;
-            font-weight: lighter;
-            font-size: 14px;
-            margin: 5px 0 0 0;
+        &.reply .icon {
+            background-color: #7e50bd;
+        }
+        &.retwist .icon {
+            background-color: #4fb547;
+        }
+        .avatar {
+            flex: 0 0 68px;
+            margin-right: 20px;
+            height: 68px;
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 100%;
+            }
+        }
+        .content {
+            font-family: Georgia;
+            flex: 1;
             word-wrap: break-word;
-            line-height: 20px;
+            &:hover .date {
+                display: block;
+            }
+            & > .username {
+                font-family: 'Open Sans';
+                font-size: 20px;
+                color: #444444;
+                font-weight: 500;
+            }
+            .date {
+                display: none;
+                font-size: 16px;
+                position: absolute;
+                font-weight: lighter;
+                right: 20px;
+                top: 0;
+                float: right;
+                color: #BEBEBE;
+                font-family: 'Open Sans';
+            }
+            p {
+                color: #666;
+                a {
+                    color: #444;
+                    text-decoration: none;
+                    font-weight: normal;
+                }
+            }
             .emoji {
                 width: 20px;
                 margin-bottom: -5px;
             }
-            a {
-                color: #57575f;
-                text-decoration: none;
-                font-weight: normal;
-            }
-        }
-        .date {
-            font-size: 14px;
-            position: absolute;
-            font-weight: lighter;
-            right: 20px;
-            top: 20px;
-            float: right;
-            color: #b7b5b4;
-            font-family: 'Open Sans';
-        }
-        .retwisted-by {
-            color: #605e58;
-            font-size: 12px;
-            font-weight: lighter;
-            font-family: 'Open Sans';
-            .username {
-                font-size: 12px;
-                font-weight: lighter;
-                color: #57575f;
-                &::before {
-                    font-size: 10px;
-                }
-            }
+
         }
     }
-    &:hover .actions {
-        display: block;
-    }
-    .actions {
-        display: none;
-        position: absolute;
-        z-index: 1;
-        width: 50%;
-        height: 100%;
-        background-color: #80A8CC;
-        right: 0;
-        top: 0;
-        box-shadow: inset 3px 0 5px -3px rgba(0,0,0,0.2);
-        overflow: hidden;
-        div {
-            width: 80%;
-            text-align: right;
-            height: 100%;
-            vertical-align: middle;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            align-content: center;
-            span {
-                font-size: 14px;
-                padding: 5px;
-                background-color: rgba(255, 255, 255, 0.5);
-                border-radius: 100%;
-                width: 30px;
-                height: 30px;
-                display: inline-block;
-                text-align: center;
-                margin-right: 5px;
-                cursor: pointer;
-                margin: 3px;
-                &.retwist::after, &.love::after, &.eye::after {
-                    content: "";
-                    background-color: #0F395F;
-                    display: inline-block;
-                }
-                &.retwist::after {
-                    -webkit-mask: url(../svg/retwist.svg);
-                    width: 70%;
-                    height: 70%;
-                    margin-top: 4px;
-                }
-                &.reply {
-                    font-size: 22px;
-                    line-height: 25px;
-                    color: #0F395F;
-                    font-weight: bold;
-                }
-                &.love {
-                    opacity: 0.3;
-                    cursor: default;
-                    &::after {
-                        -webkit-mask: url(../svg/love.svg);
-                        width: 86%;
-                        height: 86%;
-                        margin-top: 2px;
-                    }
-                }
-                &.eye::after {
-                    -webkit-mask: url(../svg/eye.svg);
-                    width: 86%;
-                    height: 86%;
-                    margin-top: 2px;
-                }
+    
+    .replies.posts {
+        margin-left: 88px;
+        &.line::before {
+            left: 26px;
+        }
+        .post {
+            font-size: 18px;
+            line-height: 24px;
+            margin-bottom: 30px;
+            .avatar {
+                flex: 0 0 56px;
+                height: 56px;
             }
         }
     }
 }
 
-#content-posts {
-    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.1);
-    position: relative;
-    margin-top: 30px;
-
-    .newpost {
-        background-color: #6FBD5E;
-        color: #fff;
-        padding: 20px;
-        margin-top: 30px;
-        font-weight: lighter;
-        display: none;
-    }
-
+.post-detail > .posts > .post {
+    margin-bottom: 30px;
 }
