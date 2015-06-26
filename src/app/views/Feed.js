@@ -307,7 +307,7 @@ module.exports = Backbone.View.extend({
         this.$loader = this.$el.find('.load-animation');
         this.$newpost = this.$el.find('.newpost');
         this.$posts = this.$el.find('.posts');
-        this.$feed = this.$el.find('.feed');
+        this.$feed = this.$el.find('.feed .feed-posts');
         return this;
     },
 

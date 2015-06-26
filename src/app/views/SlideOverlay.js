@@ -31,7 +31,7 @@ module.exports = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.html('<div><div class="close-button">&times;</div><div class="content"></div></div>');
+        this.$el.html('<div><div class="close-button">&times;</div><div class="content-holder"><div class="content"></div></div></div>');
         this.$content = this.$el.find('.content');
         return this;
     }

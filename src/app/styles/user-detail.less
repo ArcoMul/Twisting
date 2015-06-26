@@ -1,36 +1,43 @@
 .user-detail {
-    display: flex;
-    .avatar {
-        flex: 0 0 68px;
-        margin-right: 15px;
-        img {
-            border-radius: 100%;
-            width: 100%;
+    .top {
+        display: flex;
+        .avatar {
+            flex: 0 0 68px;
+            margin-right: 15px;
+            img {
+                border-radius: 100%;
+                width: 100%;
+            }
+        }
+        .user-info {
+            flex: 1;
+            h2 {
+                .fullname {
+                    color: #999999;
+                    font-weight: normal;
+                }
+            }
+            .stats {
+                font-family: Georgia;
+                color: #aeaeae;
+                margin-top: 10px;
+                font-size: 20px;
+                line-height: 26px;
+            }
+            .about {
+                font-family: Georgia;
+                margin-top: 10px;
+                font-size: 20px;
+                line-height: 26px;
+                color: #666;
+                .location {
+                    font-style: italic;
+                }
+            }
         }
     }
-    .user-info {
-        flex: 1;
-        h2 {
-            .fullname {
-                color: #999999;
-                font-weight: normal;
-            }
-        }
-        .stats {
-            font-family: Georgia;
-            color: #aeaeae;
-            margin-top: 10px;
-            font-size: 18px;
-            line-height: 26px;
-        }
-        .about {
-            font-family: Georgia;
-            margin-top: 10px;
-            font-size: 18px;
-            line-height: 26px;
-            .location {
-                font-style: italic;
-            }
-        }
+    .posts {
+        margin-left: 82px;
+        margin-top: 15px;
     }
 }
