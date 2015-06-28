@@ -75,7 +75,7 @@
     display: inline-flex;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     -webkit-animation-name: slide;
-    -webkit-animation-duration: 1s;
+    -webkit-animation-duration: 0.5s;
     -webkit-animation-fill-mode: forwards;
     overflow-y: hidden;
     overflow-x: hidden;
@@ -83,12 +83,13 @@
     &.close {
         left: 5%;
         -webkit-animation-name: slide-reverse;
-        -webkit-animation-duration: 1s;
+        -webkit-animation-duration: 0.5s;
         -webkit-animation-fill-mode: forwards;
     }
 
     & > div {
         height: 100%; 
+        width: 100%;
 
         & > .content-holder {
             height:100%;

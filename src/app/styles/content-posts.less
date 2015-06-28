@@ -38,17 +38,26 @@
             height: 68px;
             margin-right: 20px;
             cursor: pointer;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+        }
+        &.post .icon {
+            background-color: #09c1d1;
+            background-image: url(../img/icon-post.png);
         }
         &.reply .icon {
             background-color: #7e50bd;
+            background-image: url(../img/icon-reply.png);
         }
         &.retwist .icon {
             background-color: #4fb547;
+            background-image: url(../img/icon-retwist.png);
         }
         .avatar {
             flex: 0 0 68px;
             margin-right: 20px;
             height: 68px;
+            cursor: pointer;
             img {
                 width: 100%;
                 height: 100%;
@@ -67,6 +76,9 @@
                 font-size: 20px;
                 color: #444444;
                 font-weight: 500;
+                &::before {
+                    font-size: 18px;
+                }
             }
             .date {
                 display: none;
