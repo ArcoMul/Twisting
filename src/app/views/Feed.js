@@ -106,10 +106,6 @@ module.exports = Backbone.View.extend({
     openPost: function (e) {
         e.stopImmediatePropagation();
         var id = $(e.currentTarget).parents('.post').attr('data-id');
-        this.openPostDetail(id);
-    },
-    
-    openPostDetail: function (id) {
         var post = this.feed.get('posts').get(id);
 
         // Show original twist, not the retwist itself
@@ -117,41 +113,28 @@ module.exports = Backbone.View.extend({
             post = post.get('retwist');
         }
 
-        this.$el.append('<div class="slide-overlay"></div>');
-        new SlideOverlayView({
-            el: this.$el.children().last(),
-            childView: PostView,
-            options: {
-                post: post,
-                feed: this.feed
-            }
+        app.dispatcher.trigger('open-post-detail', {
+            post: post,
+            feed: this.feed
         });
     },
 
     openUser: function (e) {
         e.stopImmediatePropagation();
         var id = $(e.currentTarget).parents('.post').attr('data-id');
-        var post = this.feed.get('posts').get(id);
-        var user = post.get('user');
-        this.openUserDetail(user);
-    },
-
-    openUserDetail: function (user) {
-        this.$el.append('<div class="slide-overlay"></div>');
-        new SlideOverlayView({
-            el: this.$el.children().last(),
-            childView: UserView,
-            options: {
-                user: user
-            }
+        var user = this.feed.get('posts').get(id).get('user');
+        app.dispatcher.trigger('open-user-profile', {
+            user: user
         });
     },
 
+    /*
     preview: function (e) {
         e.stopPropagation();
         var id = $(e.currentTarget).parents('.post').attr('data-id');
         this.openPostDetail(id);
     },
+    */
 
     retwist: function (e) {
         e.stopPropagation();

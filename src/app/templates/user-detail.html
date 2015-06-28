@@ -13,10 +13,10 @@
             <% if (user.get('bio') || user.get('location')) { %>
                 <p class="about">
                 <% if (user.get('bio')) { %>
-                    <%= user.get('bio') %>
+                    <%= user.get('bio') %><br />
                 <% } %>
                 <% if (user.get('location')) { %>
-                    <%= '<br /><span class="location">' + user.get('location') + '</span>' %>
+                    <%= '<span class="location">' + user.get('location') + '</span>' %>
                 <% } %>
                 </p>
             <% } %>

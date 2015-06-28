@@ -5,6 +5,7 @@ var _ = require("underscore"),
     gui = window.require('nw.gui'),
     $ = require("jquery"),
     UserModel = require("./models/User"),
+    Backbone = require("backbone"),
     MainMenuView = require("./views/MainMenu"),
     MainPageView = require("./views/MainPage");
 
@@ -23,6 +24,19 @@ app.changeUser = function (user) {
 
 app.menuView = new MainMenuView({model: app.user});
 app.mainView = new MainPageView();
+
+
+app.dispatcher = _.clone(Backbone.Events);
+app.dispatcher.on('open-post-detail', function (options) {
+    app.mainView.openPostDetail(options);
+});
+app.dispatcher.on('open-user-profile', function (options) {
+    app.mainView.openUserProfile(options);
+});
+app.dispatcher.on('open-mentions', function (options) {
+    app.mainView.openMentions(options);
+});
+
 
 // The root path to run the application through.
 app.root = '/';

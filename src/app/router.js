@@ -60,10 +60,13 @@ module.exports = Backbone.Router.extend({
        app.mainView.showOverlay(new AccountsOverlayView()); 
     },
     
-    user: function(user) {
+    user: function (user) {
         var user = new UserModel({username: user});
-        app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
-        app.mainView.switchContentView(UserContentView, {model: user, parent: app.mainView});
+        app.dispatcher.trigger('open-user-profile', {
+            user: user
+        });
+        //app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
+        //app.mainView.switchContentView(UserContentView, {model: user, parent: app.mainView});
     },
 
     postDetail: function(user, post) {

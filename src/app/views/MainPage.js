@@ -6,6 +6,9 @@ var gui = window.require('nw.gui'),
     Backbone = require("backbone"),
     app = require("../app"),
     _ = require("underscore"),
+    SlideOverlayView = require("../views/SlideOverlay"),
+    PostView = require("../views/Post"),
+    UserView = require("../views/User"),
     mainPageTemplate = _.template(require("../templates/main-page.html"));
 
 Backbone.$ = $;
@@ -14,10 +17,12 @@ module.exports = Backbone.View.extend({
 
     el: '#main-scrollable',
 
+    /*
     $context: null,
     $content: null,
     currentContextView: null,
     currentContentView: null,
+    */
 
     events: {
         "click a": "navigate",
@@ -26,18 +31,18 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         var self = this;
         this.render();
-        this.$context = this.$el.children('#context-section');
-        this.$content = this.$el.children('#content-section');
-        this.$preview = this.$el.children('#preview-section').children('.content');
-        this.$preview.css({left: this.$preview.width()});
+        // this.$context = this.$el.children('#context-section');
+        // this.$content = this.$el.children('#content-section');
+        // this.$preview = this.$el.children('#preview-section').children('.content');
+        // this.$preview.css({left: this.$preview.width()});
         this.$overlay = $("#overlay-holder");
 
-        $("#main-scrollable").scroll(function () {
-            self.scroll();
-        });
-        $(window).resize(function () {
-            self.$preview.css({left: self.$preview.width()});
-        });
+        // $("#main-scrollable").scroll(function () {
+        //     self.scroll();
+        // });
+        // $(window).resize(function () {
+        //     self.$preview.css({left: self.$preview.width()});
+        // });
     },
 
     navigate: function (e) {
@@ -58,6 +63,30 @@ module.exports = Backbone.View.extend({
         return false;
     },
 
+    openPostDetail: function (options) {
+        this.$el.append('<div class="slide-overlay"></div>');
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: PostView,
+            options: {
+                post: options.post,
+                feed: options.feed
+            }
+        });
+    },
+
+    openUserProfile: function (options) {
+        this.$el.append('<div class="slide-overlay"></div>');
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: UserView,
+            options: {
+                user: options.user
+            }
+        });
+    },
+
+    /*
     scroll: function () {
         this.$context.children().first().css({top: $("#main-scrollable").scrollTop()});    
 
@@ -97,6 +126,7 @@ module.exports = Backbone.View.extend({
         this.$content.html('<div />');
         this.currentContentView = new View(_.extend({el: this.$content.children().first()}, options));
     },
+    */
 
     showOverlay: function (view) {
         this.$overlay.html('<div />');
@@ -104,6 +134,7 @@ module.exports = Backbone.View.extend({
         view.render();
     },
 
+    /*
     openPreview: function (view) {
         var self = this;
         if (this.currentPreviewView) {
@@ -135,6 +166,7 @@ module.exports = Backbone.View.extend({
             complete: callback
         });
     },
+    */
 
     render: function() {
         this.$el.html(mainPageTemplate());
