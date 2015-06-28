@@ -12,8 +12,6 @@ var Backbone = require("backbone"),
     FeedView = require("./views/Feed"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
-    MentionsContentView = require("./views/MentionsContent"),
-    MentionsContextView = require("./views/MentionsContext"),
     StatusOverlayView = require("./views/StatusOverlay"),
     LoginOverlayView = require("./views/LoginOverlay"),
     AccountsOverlayView = require("./views/AccountsOverlay"),
@@ -92,8 +90,7 @@ module.exports = Backbone.Router.extend({
     },
 
     mentions: function () {
-        app.mainView.switchContextView(new MentionsContextView({parent: app.mainView}));
-        app.mainView.switchContentView(MentionsContentView, {parent: app.mainView});
+        app.dispatcher.trigger('open-mentions');
     },
 
     notYetImplemented: function () {

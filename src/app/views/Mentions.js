@@ -5,7 +5,7 @@ var $ = require("jquery"),
     Backbone = require("backbone"),
     app = require("../app"),
     _ = require("underscore"),
-    postsContentTemplate = _.template(require("../templates/content-posts.html")),
+    postsContentTemplate = _.template(require("../templates/mentions.html")),
     postTemplate = _.template(require("../templates/post.html")),
     PostModel = require("../models/Post"),
     UserModel = require("../models/User"),
@@ -24,7 +24,8 @@ module.exports = Backbone.View.extend({
     $loader: null,
 
     events: {
-        "click .post": "openPostDetail"
+        "click .post .icon": "openPost",
+        "click .post .avatar": "openUser"
     },
 
     initialize: function(options) {
@@ -35,7 +36,7 @@ module.exports = Backbone.View.extend({
         this.feed = new FeedModel();
         this.feed.get('users').add(app.user);
         this.feed.get('posts').on('add', function (post, posts, info) {
-            self.$posts.append(postTemplate({post: post}));
+            self.$posts.append(postTemplate({post: post, icon: true}));
         });
 
         this.fetchMentions();
@@ -71,16 +72,20 @@ module.exports = Backbone.View.extend({
         });
     },
 
-    openPostDetail: function (e) {
-        var id = $(e.currentTarget).attr('data-id'),
-            post = this.feed.get('posts').get(id);
+    openPost: function (e) {
+        e.stopImmediatePropagation();
+        var id = $(e.currentTarget).parents('.post').attr('data-id');
+        var post = this.feed.get('posts').get(id);
 
         // Show original twist, not the retwist itself
         if (post.get('retwist')) {
             post = post.get('retwist');
         }
 
-        this.options.parent.openPreview(new PostPreview({post: post, feed: this.feed}));
+        app.dispatcher.trigger('open-post-detail', {
+            post: post,
+            feed: this.feed
+        });
     },
 
     render: function() {

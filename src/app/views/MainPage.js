@@ -9,6 +9,7 @@ var gui = window.require('nw.gui'),
     SlideOverlayView = require("../views/SlideOverlay"),
     PostView = require("../views/Post"),
     UserView = require("../views/User"),
+    MentionsView = require("../views/Mentions"),
     mainPageTemplate = _.template(require("../templates/main-page.html"));
 
 Backbone.$ = $;
@@ -83,6 +84,14 @@ module.exports = Backbone.View.extend({
             options: {
                 user: options.user
             }
+        });
+    },
+
+    openMentions: function (options) {
+        this.$el.append('<div class="slide-overlay"></div>');
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: MentionsView,
         });
     },
 
