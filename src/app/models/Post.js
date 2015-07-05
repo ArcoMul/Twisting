@@ -13,6 +13,7 @@ var TYPES = {
     RETWIST: 'retwist',
     REPLY: 'reply',
     POST: 'post',
+    COMPOSE: 'compose',
 };
 
 // Defining the application router.
@@ -185,7 +186,9 @@ var PostModel = module.exports = Backbone.Model.extend({
 
     getType: function ()
     {
-        if (this.get('last_time') != this.get('time')) {
+        if (this.get('twister_id') == null) {
+            return TYPES.COMPOSE;
+        } else if (this.get('last_time') != this.get('time')) {
             return TYPES.RETWIST;
         } else if (this.get('reply')) {
             return TYPES.REPLY;

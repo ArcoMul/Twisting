@@ -1,37 +1,6 @@
 <% var className = className %>
 <% var icon = icon || false %>
 
-<% if (false && post.get('retwist')) { %>
-
-<div class="post retwist <%= className %>" data-id="<%=post.id%>">
-    <div class="icon"></div>
-    <div class="avatar">
-        <% if (post.get('retwist').get('user').get('avatar')) { %>
-            <img src="<%= post.get('retwist').get('user').get('avatar') %>" />
-        <% } else { %>
-            <img src="app/img/profile.jpg" />
-        <% } %>
-    </div>
-    <div class="content">
-        <span class="retwist-icon"></span>
-        <a class="username" href="/user/<%= post.get('retwist').get('user').get('username') %>"><%= post.get('retwist').get('user').get('username') %></a>
-        <span class="retwisted-by"> retwisted by <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
-        <span class="date"><%= post.get('retwist').getTimeAgo() %></span>
-        <p>
-            <%= post.get('retwist').getMessageRegexed() %><br />
-        </p>
-    </div>
-    <!--
-    <div class="actions">
-        <div>
-            <span class="retwist"></span><span class="reply">@</span><span class="love"></span><span class="eye"></span>
-        </div>
-    </div>
-    -->
-</div>
-
-<% } else { %>
-
 <div class="post <%= post.getType() %> <%= className %>" data-id="<%=post.id%>">
     <% if (icon) { %>
     <div class="icon"></div>
@@ -43,20 +12,19 @@
             <img src="app/img/profile.jpg" />
         <% } %>
     </div>
-    <div class="content">
-        <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
-        <span class="date"><%= post.getTimeAgo() %></span>
-        <p>
-            <%= post.getMessageRegexed() %><br />
-        </p>
-    </div>
-    <!--
-    <div class="actions">
-        <div>
-            <span class="retwist"></span><span class="reply">@</span><span class="love"></span><span class="eye"></span>
+    <% if (post.getType() != 'compose') { %>
+        <div class="content">
+            <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
+            <span class="date"><%= post.getTimeAgo() %></span>
+            <p>
+                <%= post.getMessageRegexed() %><br />
+            </p>
         </div>
-    </div>
-    -->
+    <% } else { %>
+        <div class="compose">
+            <span class="characters">140 characters left</span>
+            <div contenteditable="true" placeholder="What's happening?"></div>
+        </div>
+    <% } %>
 </div>
 
-<% } %>

@@ -30,8 +30,8 @@ module.exports = Backbone.View.extend({
     timeUpdateTimer: null,
 
     events: {
-        //"keypress .compose": "onTyping",
-        //"input .compose": "onTyping",
+        "keypress .compose div": "onTyping",
+        "input .compose div": "onTyping",
         //"click button": "onSubmit",
         //"click .newpost": "onNewPost",
         //"click .post": "onPostClick",
@@ -40,6 +40,7 @@ module.exports = Backbone.View.extend({
         //"click .post .actions .preview": "preview",
         "scroll": "scroll",
         "click .post .icon": "openPost",
+        "click .post.compose .icon": "onSubmit",
         "click .post .avatar": "openUser"
     },
 
@@ -55,7 +56,14 @@ module.exports = Backbone.View.extend({
             var ago = post.getDaysAgo();
             var $day = self.$feed.children('.posts[data-days-ago=' + ago + ']');
             if ($day.length == 0) {
-                self.$feed.append('<div class="days-ago">'+(ago == 0 ? 'Today' : post.getTimeAgo()) +'</div><div class="posts line" data-days-ago="'+ago+'"></div>');
+                self.$feed.append(
+                    '<div class="days-ago">'
+                    + post.getTimeAgo()
+                    + '</div>'
+                    + '<div class="posts line" data-days-ago="'+ago+'">'
+                    + '</div>'
+                );
+                $day = self.$feed.children().last();
             }
             $day.first().append(postTemplate({post: post, icon: true}));
 
@@ -105,7 +113,14 @@ module.exports = Backbone.View.extend({
 
     openPost: function (e) {
         e.stopImmediatePropagation();
-        var id = $(e.currentTarget).parents('.post').attr('data-id');
+        var $post = $(e.currentTarget).parents('.post');
+
+        if ($post.hasClass('compose')) {
+            this.onSubmit();
+            return;
+        }
+
+        var id = $post.attr('data-id');
         var post = this.feed.get('posts').get(id);
 
         // Show original twist, not the retwist itself
@@ -121,7 +136,18 @@ module.exports = Backbone.View.extend({
 
     openUser: function (e) {
         e.stopImmediatePropagation();
-        var id = $(e.currentTarget).parents('.post').attr('data-id');
+        var $post = $(e.currentTarget).parents('.post');
+
+        // User clicked on his own avatar of the 'compose post'
+        if ($post.hasClass('compose')) {
+            app.dispatcher.trigger('open-user-profile', {
+                user: app.user 
+            });
+            return;
+        }
+
+        // Normal click on an avatar of another user
+        var id = $post.attr('data-id');
         var user = this.feed.get('posts').get(id).get('user');
         app.dispatcher.trigger('open-user-profile', {
             user: user
@@ -222,19 +248,19 @@ module.exports = Backbone.View.extend({
     },
 
     onTyping: function (e) {
-        e.stopPropagation();
+        if (e) e.stopPropagation();
         var charcount = this.$input.text().length;
         this.$charcount.text(140 - charcount + ' charachters left');
         if (charcount > 0) {
-            this.$info.show();
+            this.$charcount.show();
+            this.$input.parent().parent().addClass('editing');
         } else {
-            this.replyingTo = null;
-            this.$replyingTo.text("").hide();
-            this.$info.hide();
+            this.$charcount.hide();
+            this.$input.parent().parent().removeClass('editing');
         }
     },
 
-    onSubmit: function (e) {
+    onSubmit: function () {
         var self = this;
         if (this.replyingTo) {
             Twister.reply(app.user.get('username'), this.$input.text(), this.replyingTo.get('user').get('username'), this.replyingTo.get('twister_id'), function (err, data) {
@@ -250,8 +276,7 @@ module.exports = Backbone.View.extend({
                 if (err) {
                     return console.log('Error posting:', err);
                 }
-                self.$input.text("");
-                self.$info.hide();
+                self.onTyping();
             }.bind(this));
         }
     },
@@ -280,17 +305,20 @@ module.exports = Backbone.View.extend({
 
     render: function() {
         // Render
-        this.$el.html(postsContent());
+        this.$el.html(postsContent({
+            postTemplate: postTemplate,
+            post: new PostModel({type: 'compose', user: app.user})
+        }));
 
         // Save references to certain elements
-        this.$input = this.$el.find('.compose [contenteditable=true]');
         this.$replyingTo = this.$el.find('.compose .replying-to');
         this.$info = this.$el.find('.info');
-        this.$charcount = this.$el.find('.info span');
         this.$loader = this.$el.find('.load-animation');
         this.$newpost = this.$el.find('.newpost');
         this.$posts = this.$el.find('.posts');
         this.$feed = this.$el.find('.feed .feed-posts');
+        this.$charcount = this.$feed.find('.characters');
+        this.$input = this.$feed.find('.compose div[contenteditable=true]');
         return this;
     },
 
