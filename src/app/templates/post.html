@@ -6,15 +6,22 @@
     <div class="icon"></div>
     <% } %>
     <div class="avatar">
-        <% if (post.get('user').get('avatar')) { %>
-            <img src="<%= post.get('user').get('avatar') %>" />
-        <% } else { %>
-            <img src="app/img/profile.jpg" />
-        <% } %>
+        <%= post.get('user').getAvatarImg() %>
     </div>
     <% if (post.getType() != 'compose') { %>
         <div class="content">
-            <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a></span>
+            <div class="top">
+                <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a>
+                <% if (post.get('retwisters').length > 0) { %>
+                    <div class="retwisters">
+                        <a href="#"></a>
+                        <% post.get('retwisters').forEach(function (user) { %>
+                            <%= user.getAvatarImg() %>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+
             <span class="date"><%= post.getTimeAgo() %></span>
             <p>
                 <%= post.getMessageRegexed() %><br />

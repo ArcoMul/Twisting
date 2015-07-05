@@ -146,7 +146,7 @@ module.exports = Backbone.Model.extend({
                 return callback(err);
             }
             self.set('avatar', avatar);
-            callback();
+            if (callback) callback();
         });
     },
 
@@ -176,5 +176,13 @@ module.exports = Backbone.Model.extend({
             // Just return the post, it has to be added to the user from the user collection
             callback(err, post);
         });
+    },
+
+    getAvatarImg: function () {
+        if (this.get('avatar')) {
+            return '<img alt="'+this.get('username')+'" src="' + this.get('avatar') + '" />';
+        } else {
+            return '<img alt="'+this.get('username')+'" src="app/img/profile.jpg" />';
+        }
     }
 });

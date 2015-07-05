@@ -103,6 +103,7 @@ var PostModel = module.exports = Backbone.Model.extend({
 
     addRetwister: function (user) {
         var retwisters = this.get('retwisters');
+        user.fetchAvatarFromDisk();
         retwisters.push(user);
         this.set('retwisters', retwisters);
     },

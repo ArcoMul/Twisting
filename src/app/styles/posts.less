@@ -98,13 +98,32 @@
             &:hover .date {
                 display: block;
             }
-            & > .username {
-                font-family: 'Open Sans';
-                font-size: 20px;
-                color: #444444;
-                font-weight: 500;
-                &::before {
-                    font-size: 18px;
+            .top {
+                display: flex;
+                .username {
+                    font-family: 'Open Sans';
+                    font-size: 20px;
+                    color: #444444;
+                    font-weight: 500;
+                    &::before {
+                        font-size: 18px;
+                    }
+                }
+                .retwisters {
+                    margin-left: 17px;
+                    margin-bottom: -1px;
+                    a {
+                        -webkit-mask: url(../svg/retwist.svg);
+                        background-color: #4fb547;
+                        width: 17px;
+                        height: 17px;
+                        display: inline-block;
+                    }
+                    img {
+                        width: 17px;
+                        height: 17px;
+                        border-radius: 100%;
+                    }
                 }
             }
             .date, .characters {
