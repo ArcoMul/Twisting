@@ -24,75 +24,73 @@
 #window-controls {
     -webkit-app-region: no-drag;
     position: fixed;
-    right: 0;
-    width: 112px;
+    right: 3px;
+    width: 100px;
     display: flex;
     z-index: 9;
     top: 0;
     div {
         -webkit-app-region: no-drag;
-        height: 18px;
+        height: 40px;
         margin-right: 3px;
         cursor: pointer;
         position: relative;
         z-index: 10;
-        color: #9E9992;
+        color: #8d8d8d;
         text-align: center;
-        line-height: 18px;
-        flex-grow: 2;
+        line-height: 40px;
+        flex-grow: 1;
         vertical-align: middle;
         &:hover {
-            opacity: 0.7;
+            color: #666;
         }
         &.close {
-            background-color: #BE6C6C;
-            color: #fff;
-            font-size: 20px;
-            flex-grow: 3;
+            font-size: 33px;
+            width: 0;
+            font-weight: lighter;
         }
         &.minimize  {
-            &:hover {
-                background-color: @emphasis-color;
-                span {
-                    background-color: #FFF;
-                }
+            &:hover span {
+                background-color: #666;
             }
             span {
-                width: 13px;
-                height: 3px;
-                background-color: #674A1D;
+                height: 2px;
+                width: 55%;
+                background-color: #8d8d8d;
                 display: inline-block;
                 position: absolute;
-                bottom: 2px;
-                left: 6px;
+                bottom: 11px;
+                left: 22.5%;
             }
         }
         &.scale {
             &:hover {
-                background-color: @emphasis-color;
                 span {
-                    border: 2px solid #FFF;
-                    background-color: @emphasis-color;
+                    border-color: #666;
                     &:nth-child(2) {
-                        background-color: transparent;
+                        border-top: 1px solid #666;
                     }
                 }
             }
             span {
-                width: 7px;
-                height: 7px;
-                border: 2px solid #674A1D;
+                width: 12px;
+                height: 11px;
+                border: 1px solid #8d8d8d;
+                border-top: 2px solid #8d8d8d;
                 display: inline-block;
                 position: absolute;
-                bottom: 2px;
-                left: 6px;
-                background-color: @foreground-color;
+                bottom: 11px;
+                left: 7px;
+                background-color: #C9E9EC;
                 z-index: 1;
                 &:nth-child(2) {
                     background-color: transparent;
-                    bottom: 5px;
-                    left: 9px;
+                    bottom: 15px;
+                    left: 10px;
                     z-index: 0;
+                    border-left: 0;
+                    border-bottom: 0;
+                    border-top: 1px solid #8d8d8d;
                 }
             }
         }

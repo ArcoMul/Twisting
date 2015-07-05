@@ -1,7 +1,6 @@
 #main-menu {
     margin: 0;
-    background-color: @foreground-color;
-    box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.1);
+    background-color: #C9E9EC;
     z-index: 2;
     -webkit-user-select: none;
     display: flex;
@@ -12,109 +11,35 @@
         padding: 0;
         margin: 0;
 
-        &.left { 
-            flex-shrink: 1;
-            a { margin: 15px 0 15px 15px; }
-        }
-        &.middle {
-            flex-grow: 2;
-            text-align: center;
-            -webkit-app-region: drag;
-            li {
-                margin: 0 auto;
-                display: inline-block;
-                float: none;
-                -webkit-app-region: no-drag;
-            }
-        }
-        &.right {
-            flex-shrink: 1;
-            a { margin: 15px 15px 15px 0; }
-        }
-
         li {
             float: left;
-            &.border {
-                height: 67px;
-                width: 1px;
-                background-color: #E0E0E0;
-            }
-            &.bold a {
-                background-color: #80A8CC;
-                color: @foreground-color;
-                border: 0;
-                width: 27px;
-                height: 27px;
-                line-height: 27px;
-                margin: 15px !important;
-                background-size: 37px;
-                opacity: 1;
-                &:hover {
-                    opacity: 0.8;
-                }
-            }
             a {
                 -webkit-app-region: no-drag;
                 display: block;
-                padding: 5px;
-                color: #000;
+                padding: 12.5px 25px;
                 text-decoration: none;
-                width: 25px;
-                height: 25px;
-                margin: 15px;
-                border: 1px solid #E0E0E0;
-                border-radius: 25px;
                 text-align: center;
-                line-height: 25px;
+                font-size: 15px;
+                line-height: 15px;
+                color: #333333;
                 &:hover {
-                    background-color: #F5F5F5;
+                    padding: 12.5px 25px 9.5px 25px;
+                    border-bottom: 3px solid #326de6;
                 }
-                &.feed {
-                    -webkit-mask: url(../svg/twister.svg);
-                    background-color: @emphasis-color;
-                    border-radius: 0;
-                    padding: 0;
-                    width: 35px;
-                    border: 0;
-                    height: 30px;
-                    margin: 19px;
-                }
-                &.mentions {
-                    color: #888888;
+                &.status {
+                    padding: 12.5px;
                     &:hover {
-                        color: #333;
+                        padding: 12.5px;
+                        border-bottom: 0;
+                    }
+                    span {
+                        width: 15px;
+                        height: 15px;
+                        background-color: #44e14b;
+                        display: inline-block;
+                        border-radius: 100%;
                     }
                 }
-                &.messages span, &.settings span {
-                    -webkit-mask: url(../svg/mail.svg);
-                    background-color: #888888;
-                    width: 20px;
-                    height: 20px;
-                    display: inline-block;
-                    margin-top: 3px;
-                    &:hover {
-                        background-color: #333;
-                    }
-                }
-                &.settings span {
-                    -webkit-mask: url(../svg/settings.svg);
-                }
-            }
-            input {
-                display: block;
-                padding: 5px 15px;
-                text-decoration: none;
-                height: 20px;
-                margin: 26px 10px;
-                border: 1px solid #E0E0E0;
-                border-radius: 25px;
-                line-height: 25px;
-                background-color: @foreground-color;
-                width: 125px;
-                color: #605e58;
-                font-weight: lighter;
-                font-size: 14px;
-                font-family: 'Open Sans';
             }
         }
     }

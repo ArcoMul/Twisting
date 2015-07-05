@@ -1,30 +1,22 @@
 <ul class="left">
-    <li class="bold">
-        <% if (user) { %>
-        <a class="user-profile" href="user/<%= user.get('username') %>"></a>
-        <% } %>
-    </li>
-    <li class="border"></li>
     <li>
-        <a class="mentions" href="mentions">@</a>
+        <a class="status" href="status"><span></span></a>
+    </li>
+    <% if (user) { %>
+    <li>
+        <a href="user/<%= user.get('username') %>">Profile</a>
     </li>
     <li>
-        <a class="messages" href="messages"><span></span></a>
+        <a href="feed">Feed</a>
     </li>
     <li>
-        <a class="settings" href="settings"><span></span></a>
+        <a href="mentions">Mentions</a>
     </li>
-    <br style="clear: both" />
+    <li>
+        <a href="messages">Messages</a>
+    </li>
+    <% } %>
+    <li>
+        <a href="settings">Settings</a>
+    </li>
 </ul>
-<ul class="middle">
-    <li>
-        <a class="feed" href="feed"></a>
-    </li>
-</ul>
-<ul class="right">
-    <li>
-        <input type="text" name="search" placeholder="Search" />
-    </li>
-    <br style="clear: both" />
-</ul>
-<br style="clear: both" />
