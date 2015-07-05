@@ -46,6 +46,10 @@ var PostModel = module.exports = Backbone.Model.extend({
         
         if(item.rt) {
             var retwistUser = users.findWhere({username: item.rt.n});
+            
+            // Update the lowest_id and last_twister_id of the retwisting user,
+            // since there is further no trace of this 'post' of the retwisting user
+            user.processTwisterIdsOfPost(item.k, item.lastk);
 
             // If this is a retwist we might not know the user
             // in that case add it to the list of users
@@ -76,6 +80,7 @@ var PostModel = module.exports = Backbone.Model.extend({
                 retwisters: [user]
             });
 
+            // The the post as an post of the original poster
             retwistUser.addPost(retwist);
 
             // Return the retwist as if it is an original twist

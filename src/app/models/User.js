@@ -50,14 +50,18 @@ module.exports = Backbone.Model.extend({
     },
 
     onAddPost: function (post) {
+        this.processTwisterIdsOfPost(post.get('twister_id'), post.get('last_twister_id'));
+    },
+
+    processTwisterIdsOfPost: function (twister_id, last_twister_id) {
         var lowest_id = this.get('lowest_id');
-        if (!lowest_id || post.get('twister_id') < lowest_id) {
-            this.set('lowest_id', post.get('twister_id'));
+        if (!lowest_id || twister_id < lowest_id) {
+            this.set('lowest_id', twister_id);
         }
 
         // TODO: dont assume twister_ids are in the right order
-        if (!this.get('last_twister_id') || post.get('last_twister_id') < this.get('last_twister_id')) {
-            this.set('last_twister_id', post.get('last_twister_id'));
+        if (!this.get('last_twister_id') || last_twister_id < this.get('last_twister_id')) {
+            this.set('last_twister_id', last_twister_id);
         }
     },
 
