@@ -2,35 +2,52 @@
 <% var icon = icon || false %>
 
 <div class="post <%= post.getType() %> <%= className %>" data-id="<%=post.id%>">
-    <% if (icon) { %>
+
+    <% if (icon || post.getType() == 'compose_reply') { %>
     <div class="icon"></div>
     <% } %>
+
+    <% if (post.getType() != 'compose_reply') { %>
     <div class="avatar">
-        <%= post.get('user').getAvatarImg() %>
+            <%= post.get('user').getAvatarImg() %>
     </div>
-    <% if (post.getType() != 'compose') { %>
+    <% } %>
+        
+    <% if (post.getType() == 'compose') { %>
+        <div class="compose">
+            <span class="characters">140 characters left</span>
+            <div contenteditable="true" placeholder="Hey @<%=post.get('user').get('username')%>! What's happening?"></div>
+        </div>
+    <% } else if (post.getType() == 'compose_reply') { %>
+        <div class="compose reply">
+            <span class="characters">140 characters left</span>
+            <div contenteditable="true" placeholder="Reply to @<%= post.get('reply').username %>"></div>
+        </div>
+    <% } else { %>
         <div class="content">
             <div class="top">
                 <a class="username" href="/user/<%= post.get('user').get('username') %>"><%= post.get('user').get('username') %></a>
-                <% if (post.get('retwisters').length > 0) { %>
-                    <div class="retwisters">
-                        <a href="#"></a>
+
+                    <div class="retwisters <%= (post.get('retwisters').length == 0 ? 'empty' : '') %>">
+                        <span></span>
                         <% post.get('retwisters').forEach(function (user) { %>
-                            <%= user.getAvatarImg() %>
+                            <%= user.getAvatarImg(true) %>
                         <% }) %>
                     </div>
-                <% } %>
+
+                    <div class="lovers <%= (post.get('lovers').length == 0 ? 'empty' : '') %>">
+                        <span></span>
+                        <% post.get('lovers').forEach(function (user) { %>
+                            <%= user.getAvatarImg(true) %>
+                        <% }) %>
+                    </div>
             </div>
 
             <span class="date"><%= post.getTimeAgo() %></span>
+
             <p>
                 <%= post.getMessageRegexed() %><br />
             </p>
-        </div>
-    <% } else { %>
-        <div class="compose">
-            <span class="characters">140 characters left</span>
-            <div contenteditable="true" placeholder="What's happening?"></div>
         </div>
     <% } %>
 </div>

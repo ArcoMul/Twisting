@@ -23,6 +23,7 @@ module.exports = Backbone.Model.extend({
 
     initialize: function () {
         this.set('posts', new PostsCollection());
+        this.set('retwists', new PostsCollection());
         this.get('posts').on('add', this.onAddPost.bind(this));
     },
 
@@ -31,8 +32,11 @@ module.exports = Backbone.Model.extend({
     },
 
     addPost: function (post) {
-        // Add posts to user
         this.get('posts').add(post);
+    },
+
+    addRetwist: function (post) {
+        this.get('retwists').add(post);
     },
 
     addPosts: function (posts) {
@@ -46,7 +50,7 @@ module.exports = Backbone.Model.extend({
     },
 
     hasPost: function () {
-        return this.get('posts').length > 0;
+        return this.get('posts').length > 0 || this.get('retwists').length > 0;
     },
 
     onAddPost: function (post) {
@@ -182,11 +186,11 @@ module.exports = Backbone.Model.extend({
         });
     },
 
-    getAvatarImg: function () {
+    getAvatarImg: function (title) {
         if (this.get('avatar')) {
-            return '<img alt="'+this.get('username')+'" src="' + this.get('avatar') + '" />';
+            return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="'+this.get('username')+'"' : '') + ' src="' + this.get('avatar') + '" />';
         } else {
-            return '<img alt="'+this.get('username')+'" src="app/img/profile.jpg" />';
+            return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="'+this.get('username')+'"' : '') + ' src="app/img/profile.jpg" />';
         }
     }
 });

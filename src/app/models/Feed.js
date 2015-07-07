@@ -65,8 +65,8 @@ module.exports = Backbone.Model.extend({
         return user.get('posts').filter(function (post) { return !post.get('retwist') });
     },
 
-    getRetwistsOfPostOfUser: function (user) {
-        return this.get('posts').filter(function (post) { return post.get('retwist') && post.get('retwist').get('user').cid == user.cid });
+    getRetwistsOfUser: function (user) {
+        return this.get('posts').filter(function (post) { return post.get('retwisters').indexOf(user) != -1});
     },
 
     // Get all users which don't have an avatar yet in memory. The others
@@ -85,7 +85,7 @@ module.exports = Backbone.Model.extend({
                     user.fetchAvatarFromDisk(function (err) {
                         if (err) return callback(err);
                         var posts = self.getOrignalPostsOfUser(user);
-                        posts = posts.concat(self.getRetwistsOfPostOfUser(user));
+                        posts = posts.concat(self.getRetwistsOfUser(user));
                         avatarLoadedForUserCallback(null, user, posts);
                         callback();
                     });
@@ -101,7 +101,7 @@ module.exports = Backbone.Model.extend({
                     user.fetchAvatar(function (err) {
                         if (err) return callback(err);
                         var posts = self.getOrignalPostsOfUser(user);
-                        posts = posts.concat(self.getRetwistsOfPostOfUser(user));
+                        posts = posts.concat(self.getRetwistsOfUser(user));
                         avatarLoadedForUserCallback(null, user, posts);
                         callback();
                     });

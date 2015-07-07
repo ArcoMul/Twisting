@@ -30,17 +30,15 @@ module.exports = Backbone.View.extend({
     timeUpdateTimer: null,
 
     events: {
-        "keypress .compose div": "onTyping",
-        "input .compose div": "onTyping",
-        //"click button": "onSubmit",
-        //"click .newpost": "onNewPost",
+        "keyup .compose div": "onTyping",
+
+        "click .post.new": "onNewPost",
         //"click .post": "onPostClick",
-        //"click .post .actions .retwist": "retwist",
+        "click .retwisters span:nth-child(1)": "retwist",
         //"click .post .actions .reply": "reply",
         //"click .post .actions .preview": "preview",
         "scroll": "scroll",
         "click .post .icon": "openPost",
-        "click .post.compose .icon": "onSubmit",
         "click .post .avatar": "openUser"
     },
 
@@ -65,22 +63,19 @@ module.exports = Backbone.View.extend({
                 );
                 $day = self.$feed.children().last();
             }
-            $day.first().append(postTemplate({post: post, icon: true}));
-
-            return;
 
             // The first post defines the time of the lastest posted post
             if (!self.dateOfLastPost) {
-                self.dateOfLastPost = post.get('time');
+                self.dateOfLastPost = post.get('last_time');
             }
             
             // When a post is younger than the youngest post, show notification
-            if (post.get('time') > self.dateOfLastPost) {
-                self.$posts.prepend(postTemplate({post: post})).children().first().hide();
-                self.setNewPost(self.$posts.find('.post:hidden').length);
+            if (post.get('last_time') > self.dateOfLastPost) {
+                $day.first().children().first().after(postTemplate({post: post, icon: true})).next().hide();
+                self.setNewPost(self.$posts.find('.post:hidden').not(self.$newpost).length);
             } else {
                 // Otherwise just add it
-                self.$posts.append(postTemplate({post: post}));
+                $day.first().append(postTemplate({post: post, icon: true}));
             }
         });
 
@@ -93,7 +88,7 @@ module.exports = Backbone.View.extend({
             self.loadPosts(true);
 
             // Every 30 seconds get latest posts
-            if(!self.pollingTimer) self.pollingTimer = setInterval(self.loadPosts.bind(self, false, true), 30000);
+            if(!self.pollingTimer) self.pollingTimer = setInterval(self.poll.bind(self), 30000);
         });
 
         if (!this.timeUpdateTimer) this.timeUpdateTimer = setInterval(this.updateTime.bind(this), 60000);
@@ -102,7 +97,7 @@ module.exports = Backbone.View.extend({
     },
 
     setNewPost: function (n) {
-        this.$newpost.text(n + ' new post' + (n > 1 ? 's' : ''));
+        this.$newpost.children(".icon").children("span").text(n);
         this.$newpost.show();
     },
 
@@ -112,16 +107,15 @@ module.exports = Backbone.View.extend({
     },
 
     openPost: function (e) {
-        e.stopImmediatePropagation();
         var $post = $(e.currentTarget).parents('.post');
-
-        if ($post.hasClass('compose')) {
-            this.onSubmit();
-            return;
-        }
-
         var id = $post.attr('data-id');
         var post = this.feed.get('posts').get(id);
+
+        // Couldn't find the post, might be a fake post or something went wrong
+        // anyway, abort mission
+        if (!post) return;
+
+        e.stopImmediatePropagation();
 
         // Show original twist, not the retwist itself
         if (post.get('retwist')) {
@@ -154,16 +148,10 @@ module.exports = Backbone.View.extend({
         });
     },
 
-    /*
-    preview: function (e) {
-        e.stopPropagation();
-        var id = $(e.currentTarget).parents('.post').attr('data-id');
-        this.openPostDetail(id);
-    },
-    */
-
     retwist: function (e) {
         e.stopPropagation();
+        e.preventDefault();
+
         var id = $(e.currentTarget).parents('.post').attr('data-id'),
             post = this.feed.get('posts').get(id);
 
@@ -197,8 +185,6 @@ module.exports = Backbone.View.extend({
             .keypress();
 
         this.setCursorToEnd(this.$input[0]);
-
-        console.log('Reply to', post);
     },
 
     setCursorToEnd: function (ele)
@@ -212,7 +198,12 @@ module.exports = Backbone.View.extend({
         ele.focus();
     },
 
-    loadPosts: function (includeMaxId, isPolling) {
+    poll: function (dontHide)
+    {
+        this.loadPosts(false, true, dontHide);
+    },
+
+    loadPosts: function (includeMaxId, isPolling, dontHide) {
         if (this.isLoading) return;
         var self = this;
 
@@ -229,7 +220,11 @@ module.exports = Backbone.View.extend({
             // View is removed while posts where fetched
             if (!self) return;
 
+            // Hide the loader if the user was scrolling downwards
             if(!isPolling) self.$loader.hide();
+
+            // Immediately show new posts if this is prefered
+            if (dontHide) self.onNewPost();
 
             // Fetch avatars of users of which we don't have one yet
             self.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
@@ -237,8 +232,9 @@ module.exports = Backbone.View.extend({
                     console.log(user.get('username'), 'does not have an avatar');
                     return;
                 }
+                // Healthier approach to the above, but doesn't handle retwists really well
                 _.each(postsToSetAvatar, function (post) {
-                    self.$el.find('.post[data-id=' + post.id + '] .avatar img').attr('src', user.get('avatar'));
+                   self.$el.find('.post[data-id=' + post.id + '] img[data-username='+user.get('username')+']').attr('src', user.get('avatar'));
                 });
             });
 
@@ -249,6 +245,15 @@ module.exports = Backbone.View.extend({
 
     onTyping: function (e) {
         if (e) e.stopPropagation();
+        if (e && e.keyCode == 13) {
+            e.preventDefault();
+            this.submitPost();
+            return;
+        }
+        if (e && e.keyCode == 27) {
+            e.preventDefault();
+            this.$input.text("");
+        }
         var charcount = this.$input.text().length;
         this.$charcount.text(140 - charcount + ' charachters left');
         if (charcount > 0) {
@@ -260,25 +265,28 @@ module.exports = Backbone.View.extend({
         }
     },
 
-    onSubmit: function () {
+    submitPost: function () {
         var self = this;
-        if (this.replyingTo) {
-            Twister.reply(app.user.get('username'), this.$input.text(), this.replyingTo.get('user').get('username'), this.replyingTo.get('twister_id'), function (err, data) {
-                if (err) {
-                    return console.log('Error posting:', err);
-                }
-                self.$input.text("");
-                self.$info.hide();
-                self.replyingTo = null;
-            }.bind(this));
-        } else {
-            Twister.post(app.user.get('username'), this.$input.text(), function (err, data) {
-                if (err) {
-                    return console.log('Error posting:', err);
-                }
-                self.onTyping();
-            }.bind(this));
-        }
+        var $icon = this.$input.parent().parent().find('.icon');
+
+        // Already submitting
+        if ($icon.hasClass('loading')) return;
+
+        // Show that we are processing the post
+        $icon.addClass('loading');
+
+        // Post
+        Twister.post(app.user.get('username'), this.$input.text(), function (err, data) {
+            if (err) {
+                return console.log('Error posting:', err);
+            }
+
+            // Posting done, reset everything
+            $icon.removeClass('loading');
+            self.$input.text("");
+            self.onTyping();
+            self.poll(true);
+        }.bind(this));
     },
 
     scroll: function (e) {
@@ -288,7 +296,6 @@ module.exports = Backbone.View.extend({
         if (bottomOfScreen > totalHeight - 200 && this.feed.get('posts').length > 0) {
             this.loadPosts(true);
         }
-        console.log('scrollllll');
     },
 
     updateTime: function () {
@@ -314,7 +321,7 @@ module.exports = Backbone.View.extend({
         this.$replyingTo = this.$el.find('.compose .replying-to');
         this.$info = this.$el.find('.info');
         this.$loader = this.$el.find('.load-animation');
-        this.$newpost = this.$el.find('.newpost');
+        this.$newpost = this.$el.find('.post.new');
         this.$posts = this.$el.find('.posts');
         this.$feed = this.$el.find('.feed .feed-posts');
         this.$charcount = this.$feed.find('.characters');

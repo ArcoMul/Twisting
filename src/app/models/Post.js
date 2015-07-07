@@ -3,6 +3,7 @@
 // External dependencies.
 var $ = require("jquery"),
     Backbone = require("backbone"),
+    _ = require("underscore"),
     app = require("../app"),
     twemoji = require('twemoji'),
     moment = require("moment");
@@ -14,6 +15,7 @@ var TYPES = {
     REPLY: 'reply',
     POST: 'post',
     COMPOSE: 'compose',
+    COMPOSE_REPLY: 'compose_reply',
 };
 
 // Defining the application router.
@@ -25,7 +27,8 @@ var PostModel = module.exports = Backbone.Model.extend({
         last_time: null,
         user: null,
         retwist: null,
-        retwisters: []
+        retwisters: [],
+        lovers: []
     },
 
     /**
@@ -59,6 +62,7 @@ var PostModel = module.exports = Backbone.Model.extend({
                 // Check if post is already known
                 var post = retwistUser.get('posts').findWhere({id: retwistUser.get('username') + '_' + item.rt.k});
                 if (post) {
+                    user.addRetwist(post);
                     post.setLastTime(item.time);
                     post.addRetwister(user);
                     return post;
@@ -82,6 +86,8 @@ var PostModel = module.exports = Backbone.Model.extend({
 
             // The the post as an post of the original poster
             retwistUser.addPost(retwist);
+
+            user.addRetwist(post);
 
             // Return the retwist as if it is an original twist
             return retwist;
@@ -108,6 +114,9 @@ var PostModel = module.exports = Backbone.Model.extend({
 
     addRetwister: function (user) {
         var retwisters = this.get('retwisters');
+        if (retwisters.indexOf(user) != -1) {
+            return;
+        }
         user.fetchAvatarFromDisk();
         retwisters.push(user);
         this.set('retwisters', retwisters);
@@ -133,6 +142,8 @@ var PostModel = module.exports = Backbone.Model.extend({
             folder: 'node_modules/twemoji/svg',
             ext: '.svg'
         });
+        // Breaks / enters
+        msg = msg.replace(/(?:\r\n|\r|\n)/g, '<br />');
         return msg;
     },
 
@@ -190,9 +201,23 @@ var PostModel = module.exports = Backbone.Model.extend({
         return t;
     },
 
+    getLastChild: function ()
+    {
+        var t = this;
+        // This is the top parent
+        if (!t.get('replies')) return t;
+        // Treverse to top
+        while(t.get('replies')) {
+            t = t.get('replies')[t.get('replies').length - 1];
+        }
+        return t;
+    },
+
     getType: function ()
     {
-        if (this.get('twister_id') == null) {
+        if (this.get('twister_id') == null && this.get('reply')) {
+            return TYPES.COMPOSE_REPLY;
+        } else if (this.get('twister_id') == null) {
             return TYPES.COMPOSE;
         } else if (this.get('last_time') != this.get('time')) {
             return TYPES.RETWIST;

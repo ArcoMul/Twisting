@@ -3,6 +3,10 @@
         <div class="days-ago">Today</div>
         <div class="posts line" data-days-ago="0">
             <%= postTemplate({post: post, icon: true}) %>
+            <div class="post new" style="display: none;">
+                <div class="icon"><span>?</span></div>
+                <div class="content new">There is something new...</div>
+            </div>
         </div>
     </div>
     <div class="load-animation"></div>
