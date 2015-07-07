@@ -444,11 +444,7 @@ module.exports = (function () {
 
     var startDeamon = function () {
         var datadir = getDataDir();
-        var datadir_cygwin = datadir;
-	if (isWin) {
-		datadir_cygwin = ('/cygdrive/' + datadir).replace(':', '');
-	}
-        var cmd = '"' + datadir + '/twisterd" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir_cygwin + '/data"';
+        var cmd = '"' + datadir + '/twisterd" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir + '/data"';
         console.log('Execute:', cmd);
         exec(cmd, function (error, stdout, stderr) {
             console.log(arguments);
