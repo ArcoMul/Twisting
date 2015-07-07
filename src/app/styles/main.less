@@ -16,6 +16,7 @@
 @import "section-preview.less";
 @import "posts.less";
 @import "feed.less";
+@import "post-detail.less";
 @import "context-feed.less";
 //@import "context-user.less";
 @import "user-detail.less";
@@ -44,12 +45,12 @@
         &:hover {
             color: #666;
         }
-        &.close {
+        &.window-close {
             font-size: 33px;
             width: 0;
             font-weight: lighter;
         }
-        &.minimize  {
+        &.window-minimize  {
             &:hover span {
                 background-color: #666;
             }
@@ -63,7 +64,7 @@
                 left: 22.5%;
             }
         }
-        &.scale {
+        &.window-scale {
             &:hover {
                 span {
                     border-color: #666;

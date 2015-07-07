@@ -1,11 +1,12 @@
 "use strict";
 
 // External dependencies.
-var $ = require("jquery");
-var Backbone = require("backbone");
-var app = require("../app");
-var _ = require("underscore");
-var mainMenuTemplate = _.template(require("../templates/main-menu.html"));
+var gui = window.require('nw.gui'),
+    $ = require("jquery"),
+    Backbone = require("backbone"),
+    _ = require("underscore"),
+    app = require("../app"),
+    mainMenuTemplate = _.template(require("../templates/main-menu.html"));
 
 Backbone.$ = $;
 
@@ -13,8 +14,13 @@ module.exports = Backbone.View.extend({
 
     el: "#main-menu",
 
+    maximized: false,
+
     events: {
         "click a": "navigate",
+        "click .window-close": "closeWindow",
+        "click .window-minimize": "minimizeWindow",
+        "click .window-scale": "scaleWindow",
     },
 
     initialize: function() {
@@ -28,6 +34,24 @@ module.exports = Backbone.View.extend({
 
         if (this.model) {
             this.loadAvatar();
+        }
+    },
+
+    closeWindow: function () {
+        gui.Window.get().close();    
+    },
+
+    minimizeWindow: function () {
+        gui.Window.get().minimize();    
+    },
+
+    scaleWindow: function () {
+        if (this.maximized) {
+            gui.Window.get().unmaximize();
+            this.maximized = false;
+        } else {
+            gui.Window.get().maximize();
+            this.maximized = true;
         }
     },
 
