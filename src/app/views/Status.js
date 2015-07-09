@@ -49,7 +49,7 @@ module.exports = Backbone.View.extend({
         this.deamonTimer = setInterval (function () {
             Twister.getStatus(function (status) {
                 if (status != Twister.status.NOCONNECTION) {
-                    clearInterval(this.deamonTimer);
+                    clearInterval(self.deamonTimer);
                     self.gatherInfo();
                 }
             });

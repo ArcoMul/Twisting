@@ -69,6 +69,6 @@ module.exports = Backbone.View.extend({
     },
 
     destroy: function () {
-        this.remove();
+        this.trigger('close');
     }
 });
