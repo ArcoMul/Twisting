@@ -1,6 +1,7 @@
 <div class="user-detail">
     <div class="top">
         <div class="avatar">
+            <div class="<%= (user.isFollowedByActiveUser() ? 'following' : 'follow') %>"></div>
             <img class="avatar" src="<%= user.get('avatar') ? user.get('avatar') : user.getDefaultAvatar() %>" />
         </div>
         <div class="user-info">

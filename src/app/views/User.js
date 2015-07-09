@@ -17,6 +17,8 @@ module.exports = Backbone.View.extend({
 
     events: {
         "scroll": "scroll",
+        "click .avatar .follow": "toggleFollow",
+        "click .avatar .following": "toggleFollow"
     },
 
     initialize: function(options) {
@@ -100,13 +102,14 @@ module.exports = Backbone.View.extend({
 
     toggleFollow: function () {
         var self = this;
-        if (app.user.isFollowing(this.model.get('username'))) {
-            app.user.unfollow(this.model.get('username'), function (err) {
+        this.$followButton.addClass('loading');
+        if (app.user.isFollowing(this.user.get('username'))) {
+            app.user.unfollow(this.user.get('username'), function (err) {
                 if(err) return console.error('Error unfollowing user', err); 
                 self.render();    
             });
         } else {
-            app.user.follow(this.model.get('username'), function (err) {
+            app.user.follow(this.user.get('username'), function (err) {
                 if(err) return console.error('Error following user', err); 
                 self.render();    
             });
@@ -121,6 +124,7 @@ module.exports = Backbone.View.extend({
         }));
         this.$loader = this.$el.find('.load-animation');
         this.$posts = this.$el.find('.posts');
+        this.$followButton = this.$el.find('.avatar div');
         return this;
     }
 });

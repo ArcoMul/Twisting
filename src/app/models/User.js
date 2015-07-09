@@ -5,6 +5,7 @@ var $ = require("jquery"),
     _ = require("underscore"),
     Backbone = require("backbone"),
     Twister = require("../Twister"),
+    app = require("../app"),
     PostsCollection = require("../collections/posts"),
     config = require("../config"),
     PostModel = require("../models/Post");
@@ -78,6 +79,10 @@ module.exports = Backbone.Model.extend({
             return false;
         }
         return this.get('following').indexOf(username) != -1;
+    },
+
+    isFollowedByActiveUser: function () {
+        return app.user.isFollowing(this.get('username'));
     },
 
     follow: function (username, callback) {
