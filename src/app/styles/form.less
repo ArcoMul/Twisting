@@ -1,31 +1,40 @@
 form {
+    display: flex;
+    flex-direction: column;
     &.login {
-        margin-top: 30px;
+        width: 350px;
+        margin: 30px auto 0 auto;
 
         h2 {
-            color: #3C6D9B;
-            font-size: 20px;
-            padding-bottom: 20px;
+            color: #333333;
+            font-weight: normal;
+            font-size: 37px;
+            text-align: center;
+            margin-bottom: 50px;
         }
     }
 }
 button {
-    line-height: 33px;
+    line-height: 40px;
     font-family: 'Open Sans', serif;
-    margin-bottom: 20px;
-    background-color: #6992B8;
+    margin-bottom: 40px;
+    background-color: #326de6;
     border: 0;
     color: #fff;
-    font-size: 15px;
+    font-size: 18px;
     padding: 0 20px;
     display: inline-block;
     cursor: pointer;
+    margin-top: 20px;
 }
 input {
-    width: 50%;
     line-height: 30px;
     font-family: 'Open Sans', serif;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     padding: 0 10px;
     display: inline-block;
+    border: 0;
+    font-size: 18px;
+    border-bottom: 2px solid #c9e9ec;
+    outline: 0;
 }
