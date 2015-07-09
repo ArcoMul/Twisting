@@ -6,6 +6,7 @@ var gui = window.require('nw.gui'),
     Backbone = require("backbone"),
     app = require("../app"),
     _ = require("underscore"),
+    OverlayView = require("../views/Overlay"),
     SlideOverlayView = require("../views/SlideOverlay"),
     PostView = require("../views/Post"),
     UserView = require("../views/User"),
@@ -36,7 +37,6 @@ module.exports = Backbone.View.extend({
         // this.$content = this.$el.children('#content-section');
         // this.$preview = this.$el.children('#preview-section').children('.content');
         // this.$preview.css({left: this.$preview.width()});
-        this.$overlay = $("#overlay-holder");
 
         // $("#main-scrollable").scroll(function () {
         //     self.scroll();
@@ -95,52 +95,23 @@ module.exports = Backbone.View.extend({
         });
     },
 
-    /*
-    scroll: function () {
-        this.$context.children().first().css({top: $("#main-scrollable").scrollTop()});    
-
-        var scrollTop = $("#main-scrollable").scrollTop();
-        this.$preview.css({paddingTop: scrollTop});
-
-        this.trigger('scroll');
-
-        return;
-        var scrollHeight = $("#main-scrollable").height();
-        var previewTop = parseInt(this.$preview.css('padding-top'));
-        var previewContentHeight = this.$preview.children().first().height();
-        if (previewTop > scrollTop || previewContentHeight < scrollHeight) {
-            this.$preview.css({paddingTop: scrollTop});
-        } else if (previewTop + previewContentHeight < scrollTop + scrollHeight) {
-            this.$preview.css({paddingTop: scrollTop + scrollHeight - previewContentHeight });
-        }
-
-        this.trigger('scroll');
+    showOverlay: function (View, options) {
+        console.log('main page ', View, options);
+        this.$overlay.append('<div />');
+        new OverlayView({
+            el: this.$overlay.children().last(),
+            childView: View,
+            options: options
+        });
     },
 
-    switchContextView: function (view) {
-        if (this.currentContextView) {
-            this.currentContextView.remove();
-        }
-        this.$context.html('<div></div>');
-        this.currentContextView = view;
-        this.currentContextView.setElement(this.$context.children().first());
-        this.currentContextView.render();
-        this.togglePreview(false);
-    },
-
-    switchContentView: function (View, options) {
-        if(this.currentContentView) {
-            this.currentContentView.remove();
-        }
-        this.$content.html('<div />');
-        this.currentContentView = new View(_.extend({el: this.$content.children().first()}, options));
-    },
-    */
-
-    showOverlay: function (view) {
-        this.$overlay.html('<div />');
-        view.setElement(this.$overlay.children().first());
-        view.render();
+    showSlideOverlay: function (View, options) {
+        this.$el.append('<div class="slide-overlay"></div>');
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: View,
+            options: options
+        });
     },
 
     /*
@@ -179,6 +150,7 @@ module.exports = Backbone.View.extend({
 
     render: function() {
         this.$el.html(mainPageTemplate());
+        this.$overlay = $("#overlay-holder");
         return this;
     }
 });

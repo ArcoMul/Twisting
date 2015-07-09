@@ -45,6 +45,7 @@ module.exports = Backbone.View.extend({
         var username = $(e.currentTarget).attr('data-user');
         app.changeUser(this.users[username]);
         app.router.navigate('start', {trigger: true});
+        this.trigger('close');
     },
 
     navigate: function (e) {

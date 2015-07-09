@@ -12,9 +12,9 @@ var Backbone = require("backbone"),
     FeedView = require("./views/Feed"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
-    StatusOverlayView = require("./views/StatusOverlay"),
-    LoginOverlayView = require("./views/LoginOverlay"),
-    AccountsOverlayView = require("./views/AccountsOverlay"),
+    StatusView = require("./views/Status"),
+    LoginView = require("./views/LoginOverlay"),
+    AccountsView = require("./views/AccountsOverlay"),
     NotYetImplementedOverlayView = require("./views/NotYetImplementedOverlay");
 
 Backbone.$ = $;
@@ -34,6 +34,7 @@ module.exports = Backbone.Router.extend({
         "user/:user": "user",
         "user/:user/posts/:post": "postDetail",
         "feed": "feed",
+        "status": "status",
         "mentions": "mentions",
         "messages": "notYetImplemented",
         "tags": "notYetImplemented",
@@ -47,15 +48,15 @@ module.exports = Backbone.Router.extend({
     },
 
     start: function () {
-       app.mainView.showOverlay(new StatusOverlayView({starting: true})); 
+       app.mainView.showOverlay(StatusView, {starting: true}); 
     },
 
     login: function () {
-       app.mainView.showOverlay(new LoginOverlayView()); 
+       app.mainView.showOverlay(LoginView); 
     },
 
     chooseAccount: function () {
-       app.mainView.showOverlay(new AccountsOverlayView()); 
+       app.mainView.showOverlay(AccountsView); 
     },
     
     user: function (user) {
@@ -63,30 +64,16 @@ module.exports = Backbone.Router.extend({
         app.dispatcher.trigger('open-user-profile', {
             user: user
         });
-        //app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
-        //app.mainView.switchContentView(UserContentView, {model: user, parent: app.mainView});
-    },
-
-    postDetail: function(user, post) {
-        console.log('postDetail', arguments);
-        if (_.isString(user)) {
-            user = new UserModel({username: user});
-        }
-        app.mainView.switchContextView(new UserContextView({model: user, parent: app.mainView}));
-        app.mainView.switchContentView(PostContentView, {
-            model: post,
-            parentPosts: parentPosts
-        });
     },
 
     feed: function () {
         // TODO: don't use clear, make sure all the view are deleted in the right way
         $("#main-scrollable").html('');
         new FeedView({ el: $("#main-scrollable")});
-        return;
+    },
 
-        app.mainView.switchContextView(new FeedContextView({parent: app.mainView}));
-        app.mainView.switchContentView(FeedContentView, {parent: app.mainView});
+    status: function () {
+        app.mainView.showSlideOverlay(StatusView);
     },
 
     mentions: function () {
@@ -94,6 +81,6 @@ module.exports = Backbone.Router.extend({
     },
 
     notYetImplemented: function () {
-        app.mainView.showOverlay(new NotYetImplementedOverlayView()); 
+        app.mainView.showOverlay(NotYetImplementedOverlayView); 
     }
 });

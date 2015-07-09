@@ -20,8 +20,11 @@ module.exports = Backbone.View.extend({
     },
 
     close: function () {
+        this.trigger('close');
+    },
+
+    onClose: function () {
         app.router.navigate('feed', {trigger: true});
-        this.remove();
     },
 
     render: function() {

@@ -12,7 +12,6 @@ Backbone.$ = $;
 module.exports = Backbone.View.extend({
 
     events: {
-        'click .close-button': 'onClose'
     },
 
     initialize: function(options) {
@@ -20,22 +19,17 @@ module.exports = Backbone.View.extend({
         this.options = options;
         this.render();
         this.childView = new (this.options.childView)(_.extend({el: this.$content}, this.options.options));
-    },
-
-    onClose: function () {
-        var self = this;
-        this.$el.one('webkitAnimationEnd', function(e) {
+        this.childView.on("close", function () {
             if (self.childView.onClose) {
                 self.childView.onClose();
             }
             self.remove();
         });
-        this.$el.addClass('close');
     },
 
     render: function() {
-        this.$el.html('<div><div class="close-button">&times;</div><div class="content-holder"><div class="content"></div></div></div>');
-        this.$content = this.$el.find('.content');
+        this.$el.html('<div class="overlay"><div class="inner"></div></div>');
+        this.$content = this.$el.find('.inner');
         return this;
     }
 });

@@ -15,11 +15,11 @@ Backbone.$ = $;
 
 module.exports = Backbone.View.extend({
 
-    posts: null,
+    infoTimer: null,
+    deamonTimer: null,
 
     initialize: function(options) {
         var self = this;
-        console.log("Initialize status overlay");
 
         this.options = options;
 
@@ -46,10 +46,10 @@ module.exports = Backbone.View.extend({
         Twister.startDeamon();
 
         // Keep checking if it is started
-        var check = setInterval (function () {
+        this.deamonTimer = setInterval (function () {
             Twister.getStatus(function (status) {
                 if (status != Twister.status.NOCONNECTION) {
-                    clearInterval(check);
+                    clearInterval(this.deamonTimer);
                     self.gatherInfo();
                 }
             });
@@ -87,6 +87,11 @@ module.exports = Backbone.View.extend({
                 // unresponsive
                 count++;
             });
+
+            // If the purpose of this view is NOT to show
+            // startup status, just keep displaying the latest 
+            // information
+            if (!self.options.starting) return;
 
             // After 10, 30, and 60 seconds force a connection to the offical Twister seeders
             // in case this client can't find a connection
@@ -130,7 +135,7 @@ module.exports = Backbone.View.extend({
                 app.router.navigate('feed', {trigger: true});
 
                 // Remove the overlay 
-                self.remove();
+                self.trigger('close');
             });
         }
     },
@@ -156,11 +161,11 @@ module.exports = Backbone.View.extend({
             // No accounts? Login so that we get one
             if (accounts.length == 0) {
                 app.router.navigate('login', {trigger: true});
-                self.remove();
+                self.trigger('close');
             // More than one account? Make the user choose one
             } else if (accounts.length > 1) {
                 app.router.navigate('choose-account', {trigger: true});
-                self.remove();
+                self.trigger('close');
 
             // Only one account? Choose that one directly
             } else {
@@ -184,6 +189,14 @@ module.exports = Backbone.View.extend({
 
     setText: function (text) {
         this.$status.html(text);
+    },
+
+    /**
+     * BE AWARE: Function called by the overlay type using this view
+     */
+    onClose: function () {
+        clearInterval(this.infoTimer); 
+        clearInterval(this.deamonTimer);
     },
 
     render: function() {
