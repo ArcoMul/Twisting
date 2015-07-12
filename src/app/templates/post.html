@@ -1,5 +1,7 @@
 <% var className = className %>
 <% var icon = icon || false %>
+<% var isReplying = isReplying || false %>
+<% var overwriteUser = overwriteUser || null %>
 
 <div class="post <%= post.getType() %> <%= className %>" data-id="<%=post.id%>">
 
@@ -9,7 +11,7 @@
 
     <% if (post.getType() != 'compose_reply') { %>
     <div class="avatar">
-            <%= post.get('user').getAvatarImg() %>
+            <%= (overwriteUser ? overwriteUser : post.get('user')).getAvatarImg() %>
     </div>
     <% } %>
         
@@ -18,10 +20,10 @@
             <span class="characters">140 characters left</span>
             <div contenteditable="true" placeholder="Hey @<%=post.get('user').get('username')%>! What's happening?"></div>
         </div>
-    <% } else if (post.getType() == 'compose_reply') { %>
+    <% } else if (isReplying) { %>
         <div class="compose reply">
             <span class="characters">140 characters left</span>
-            <div contenteditable="true" placeholder="Reply to @<%= post.get('reply').username %>"></div>
+            <div contenteditable="true" placeholder="Reply to @<%= post.get('user').get('username') %>"></div>
         </div>
     <% } else { %>
         <div class="content">

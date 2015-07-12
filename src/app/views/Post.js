@@ -15,6 +15,7 @@ Backbone.$ = $;
 module.exports = Backbone.View.extend({
 
     events: {
+        "click .compose.reply div": "onReplyClick",
         "keypress .compose.reply div": "onTyping",
         "input .compose.reply div": "onTyping",
     },
@@ -45,7 +46,7 @@ module.exports = Backbone.View.extend({
             self.render();
         });
 
-        self.render();
+        this.render();
     },
 
     addParentPost: function (post) {
@@ -71,6 +72,25 @@ module.exports = Backbone.View.extend({
         });
     },
 
+    onReplyClick: function (e) {
+        if (!_.isEmpty(this.$input.text())) return;
+        this.$input
+            .html("@" + this.replyingTo.get('user').get('username') + "&nbsp;")
+            .keypress();
+        this.setCursorToEnd(this.$input[0]);
+    },
+
+    setCursorToEnd: function (ele)
+    {
+        var range = document.createRange();
+        var sel = window.getSelection();
+        range.setStart(ele, 1);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ele.focus();
+    },
+
     onTyping: function (e) {
         if (e) e.stopPropagation();
         if (e && e.keyCode == 13) {
@@ -91,27 +111,23 @@ module.exports = Backbone.View.extend({
 
     submitReply: function () {
         var self = this;
-        Twister.reply(app.user.get('username'), this.$input.text(), this.replyingTo.get('reply').username, this.replyingTo.get('reply').twister_id, function (err, data) {
+        this.replyingTo.reply(app.user, this.$input.text(), function (err, reply) {
             if (err) {
-                return console.log('Error posting reply:', err);
+                return console.error('Error posting reply:', err);
             }
             self.$input.text("");
             self.onTyping();
+            self.render();
         });
     },
 
     render: function() {
-        this.replyingTo = new PostModel({
-            user: app.user,
-            reply: {
-                username: this.post.getLastChild().get('user').get('username'),
-                twister_id: this.post.getLastChild().get('twister_id')
-            }
-        });
+        this.replyingTo = this.post.getLastChild();
         this.$el.html(postDetailTemplate({
             reply: this.replyingTo,
             postTemplate: postTemplate,
-            post: this.post
+            post: this.post,
+            user: app.user
         }));
         this.$charcount = this.$el.find('.characters');
         this.$input = this.$el.find('.compose.reply div[contenteditable=true]');

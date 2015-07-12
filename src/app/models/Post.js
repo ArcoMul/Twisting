@@ -4,6 +4,7 @@
 var $ = require("jquery"),
     Backbone = require("backbone"),
     _ = require("underscore"),
+    Twister = require("../Twister"),
     app = require("../app"),
     twemoji = require('twemoji'),
     moment = require("moment");
@@ -28,7 +29,14 @@ var PostModel = module.exports = Backbone.Model.extend({
         user: null,
         retwist: null,
         retwisters: [],
+        replies: [],
         lovers: []
+    },
+
+    initialize: function () {
+        this.set('retwisters', new Array());
+        this.set('replies', new Array());
+        this.set('lovers', new Array());
     },
 
     /**
@@ -36,10 +44,14 @@ var PostModel = module.exports = Backbone.Model.extend({
      * users = user collection to retrieve users from
      */
     parse: function (data, users) {
-        var retwist;
-        var item = data.userpost;
+        var item = data.userpost,
+            user;
 
-        var user = users.findWhere({username: item.n});
+        if (!users.findWhere) {
+            user = users;
+        } else {
+            user = users.findWhere({username: item.n});
+        }
 
         // Maybe the user doens't excist yet when we are parsing a 
         // parent post of a reply for example
@@ -70,7 +82,7 @@ var PostModel = module.exports = Backbone.Model.extend({
             }
 
             // Build the retwist post model
-            retwist = new PostModel({
+            var retwist = new PostModel({
                 id: retwistUser.get('username') + '_' + item.rt.k,
                 signature: item.sig_rt,
                 height: item.rt.height,
@@ -87,7 +99,7 @@ var PostModel = module.exports = Backbone.Model.extend({
             // The the post as an post of the original poster
             retwistUser.addPost(retwist);
 
-            user.addRetwist(post);
+            user.addRetwist(retwist);
 
             // Return the retwist as if it is an original twist
             return retwist;
@@ -110,6 +122,19 @@ var PostModel = module.exports = Backbone.Model.extend({
         user.addPost(this);
 
         return this;
+    },
+
+
+    reply: function (user, msg, callback) {
+        var self = this;
+        Twister.reply(user.get('username'), msg, this.get('user').get('username'), this.get('twister_id'), function (err, data) {
+            if (err) return callback (err);
+            var reply = new PostModel().parse(data, user);
+            var replies = self.get('replies');
+            replies.push(reply);
+            self.set('replies', replies);
+            callback(null, reply);
+        });
     },
 
     addRetwister: function (user) {
@@ -204,10 +229,10 @@ var PostModel = module.exports = Backbone.Model.extend({
     getLastChild: function ()
     {
         var t = this;
-        // This is the top parent
-        if (!t.get('replies')) return t;
-        // Treverse to top
-        while(t.get('replies')) {
+
+        if (t.get('replies').length == 0) return t;
+
+        while(t.get('replies').length > 0) {
             t = t.get('replies')[t.get('replies').length - 1];
         }
         return t;
