@@ -27,25 +27,25 @@ There are already several good Twister clients. Twisting hopes to improve on tho
 - Organized codebase, based on recent web technologies. The main Twister client is written in pure HTML/CSS/Javascript, which is fine, but it is hard to maintain and even harder for newcomers to get into the codebase. By using npm/grunt modules, and Backbone as framework the code should be more easy to understand.
 - Have fun developing something new ;-D Yes, I admit that this is the main reason I started working on Twisting
 
-Current features
+Missing features
 ----------------
 
-- Logging in
-- Choosing a user
-- Display feed / postboard
-- Display user profile
-- Poll for new Twists
-- Twist Twists
-- Display emojis
-- Following / unfollowing
-- Displaying conversations
-- Displaying user mentions
+- Private messages
+- 'Favouriting/loving' posts
+- Connecting over VPN / Tor
+- Changing settings of Twisterd
 
 Screenshots
 -----------
 
-![Feed](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/feed2.png)
-![Profile](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/profile2.png)
+![Feed](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/feed3.png)
+*Feed*
+
+![Profile](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/profile3.png)
+*Profile*
+
+![Conversation](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/conversation1.png)
+*Conversation*
 
 Technology
 ----------
