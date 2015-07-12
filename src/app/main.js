@@ -29,9 +29,8 @@ Backbone.history.start({ root: app.root });
 app.router.navigate('/index.html', {trigger: true});
 
 // Press <d> to open dev tools
-$(window.document).on('keypress', function (e) {
-    console.log(e);
-    if (e.keyCode == 100) {
+$(window.document).on('keyup', function (e) {
+    if (e.keyCode == 123) {
         gui.Window.get().showDevTools();
     }
 });
