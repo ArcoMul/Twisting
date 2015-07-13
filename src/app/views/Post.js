@@ -86,9 +86,9 @@ module.exports = Backbone.View.extend({
             usernames.splice(index, 1);
         }
 
-        // See if the user of the post we are replying to is already in there,
-        // otherwise add this user too
-        if (usernames.indexOf(replyingToUsername) == -1) {
+        // See if the user of the post is not the active user and if
+        // the user is already in there, otherwise add this user too
+        if (replyingToUsername != app.user.get('username') && usernames.indexOf(replyingToUsername) == -1) {
             usernames.push(replyingToUsername);
         }
 
