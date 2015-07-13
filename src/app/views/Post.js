@@ -74,8 +74,33 @@ module.exports = Backbone.View.extend({
 
     onReplyClick: function (e) {
         if (!_.isEmpty(this.$input.text())) return;
+        var replyingToUsername = this.replyingTo.get('user').get('username');
+            
+        // Get the usernames mentioned in the post we are replying to
+        var usernames = this.replyingTo.getMentionedUsernames();
+
+        // See if the active user is mentioned too,
+        // if so, remove the username
+        var index = usernames.indexOf(app.user.get('username'));
+        if (index != -1) {
+            usernames.splice(index, 1);
+        }
+
+        // See if the user of the post we are replying to is already in there,
+        // otherwise add this user too
+        if (usernames.indexOf(replyingToUsername) == -1) {
+            usernames.push(replyingToUsername);
+        }
+
+        // Build up the precomposed reply with the right mentions
+        var html = '';
+        usernames.forEach(function (username) {
+            html += "@" + username + "&nbsp;";
+        });
+
+        // Render and set the cursor to the end, ready for typing
         this.$input
-            .html("@" + this.replyingTo.get('user').get('username') + "&nbsp;")
+            .html(html)
             .keypress();
         this.setCursorToEnd(this.$input[0]);
     },

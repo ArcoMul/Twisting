@@ -250,5 +250,19 @@ var PostModel = module.exports = Backbone.Model.extend({
             return TYPES.REPLY;
         }
         return TYPES.POST;
+    },
+
+    /**
+     * Returns the usernames of the users mentioned in this post
+     * without the '@'
+     */
+    getMentionedUsernames: function ()
+    {
+        var text = this.get('message');
+        var usernames = text.match( /(^|[^@\w])@(\w{1,30})\b/g);
+        for (var i = 0; i < usernames.length; i++) {
+            usernames[i] = usernames[i].trim().substr(1);
+        }
+        return usernames;
     }
 });
