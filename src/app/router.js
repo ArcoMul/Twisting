@@ -15,7 +15,7 @@ var Backbone = require("backbone"),
     StatusView = require("./views/Status"),
     LoginView = require("./views/LoginOverlay"),
     AccountsView = require("./views/AccountsOverlay"),
-    NotYetImplementedOverlayView = require("./views/NotYetImplementedOverlay");
+    NotYetImplementedView = require("./views/NotYetImplemented");
 
 Backbone.$ = $;
 
@@ -81,6 +81,6 @@ module.exports = Backbone.Router.extend({
     },
 
     notYetImplemented: function () {
-        app.mainView.showOverlay(NotYetImplementedOverlayView); 
+        new NotYetImplementedView({ el: $("#main-scrollable")});
     }
 });
