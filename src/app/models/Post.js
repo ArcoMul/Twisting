@@ -155,8 +155,11 @@ var PostModel = module.exports = Backbone.Model.extend({
 
     getMessageRegexed: function () {
         if (!this.get('message')) return "";
+        var msg = this.get('message');
+        // Html
+        msg = msg.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         // Urls
-        var msg = this.get('message').replace( /(https?:\/\/[^\s]+)/g, function(url) { return '<a href="'+url+'">'+url+'</a>' });
+        msg = msg.replace( /(https?:\/\/[^\s]+)/g, function(url) { return '<a href="'+url+'">'+url+'</a>' });
         // Hashtags
         msg = msg.replace( /(^|[^#\w])#(\w{1,30})\b/g, '$1<a href="hashtag/$2">#$2</a>' );
         // Mentions
