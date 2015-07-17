@@ -64,7 +64,7 @@ module.exports = Backbone.View.extend({
     navigate: function (e) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        app.router.load($(e.currentTarget).attr('href'));
+        app.router.navigate($(e.currentTarget).attr('href'), {trigger: true});
     },
 
     render: function() {

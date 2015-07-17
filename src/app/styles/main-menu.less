@@ -44,4 +44,80 @@
             }
         }
     }
+
+    #window-controls {
+        -webkit-app-region: no-drag;
+        position: fixed;
+        right: 3px;
+        width: 100px;
+        display: flex;
+        z-index: 9;
+        top: 0;
+        div {
+            -webkit-app-region: no-drag;
+            height: 40px;
+            margin-right: 3px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            color: #8d8d8d;
+            text-align: center;
+            line-height: 40px;
+            flex-grow: 1;
+            vertical-align: middle;
+            &:hover {
+                color: #666;
+            }
+            &.window-close {
+                font-size: 33px;
+                width: 0;
+                font-weight: lighter;
+            }
+            &.window-minimize  {
+                &:hover span {
+                    background-color: #666;
+                }
+                span {
+                    height: 2px;
+                    width: 55%;
+                    background-color: #8d8d8d;
+                    display: inline-block;
+                    position: absolute;
+                    bottom: 11px;
+                    left: 22.5%;
+                }
+            }
+            &.window-scale {
+                &:hover {
+                    span {
+                        border-color: #666;
+                        &:nth-child(2) {
+                            border-top: 1px solid #666;
+                        }
+                    }
+                }
+                span {
+                    width: 12px;
+                    height: 11px;
+                    border: 1px solid #8d8d8d;
+                    border-top: 2px solid #8d8d8d;
+                    display: inline-block;
+                    position: absolute;
+                    bottom: 11px;
+                    left: 7px;
+                    background-color: #C9E9EC;
+                    z-index: 1;
+                    &:nth-child(2) {
+                        background-color: transparent;
+                        bottom: 15px;
+                        left: 10px;
+                        z-index: 0;
+                        border-left: 0;
+                        border-bottom: 0;
+                        border-top: 1px solid #8d8d8d;
+                    }
+                }
+            }
+        }
+    }
 }

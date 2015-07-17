@@ -19,13 +19,6 @@ module.exports = Backbone.View.extend({
 
     el: '#main-scrollable',
 
-    /*
-    $context: null,
-    $content: null,
-    currentContextView: null,
-    currentContentView: null,
-    */
-
     events: {
         "click a": "navigate",
     },
@@ -33,17 +26,6 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         var self = this;
         this.render();
-        // this.$context = this.$el.children('#context-section');
-        // this.$content = this.$el.children('#content-section');
-        // this.$preview = this.$el.children('#preview-section').children('.content');
-        // this.$preview.css({left: this.$preview.width()});
-
-        // $("#main-scrollable").scroll(function () {
-        //     self.scroll();
-        // });
-        // $(window).resize(function () {
-        //     self.$preview.css({left: self.$preview.width()});
-        // });
     },
 
     navigate: function (e) {
@@ -53,7 +35,7 @@ module.exports = Backbone.View.extend({
         if (this.isExternal(url)) {
             gui.Shell.openExternal(url);
         } else {
-            app.router.load(url);
+            app.router.navigate(url, {trigger: true});
         }
     },
 
