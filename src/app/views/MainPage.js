@@ -21,6 +21,7 @@ module.exports = Backbone.View.extend({
 
     events: {
         "click a": "navigate",
+        "scroll": "scroll",
     },
 
     initialize: function() {
@@ -44,6 +45,10 @@ module.exports = Backbone.View.extend({
         if (typeof match[1] === "string" && match[1].length > 0 && match[1].toLowerCase() !== window.location.protocol) return true;
         if (typeof match[2] === "string" && match[2].length > 0 && match[2].replace(new RegExp(":("+{"http:":80,"https:":443}[window.location.protocol]+")?$"), "") !== window.location.host) return true;
         return false;
+    },
+
+    scroll: function () {
+        this.trigger('scroll');
     },
 
     openPostDetail: function (options) {

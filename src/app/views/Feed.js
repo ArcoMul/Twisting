@@ -37,7 +37,6 @@ module.exports = Backbone.View.extend({
         "click .retwisters span:nth-child(1)": "retwist",
         //"click .post .actions .reply": "reply",
         //"click .post .actions .preview": "preview",
-        "scroll": "scroll",
         "click .post .icon": "openPost",
         "click .post .avatar": "openUser"
     },
@@ -94,6 +93,8 @@ module.exports = Backbone.View.extend({
         if (!this.timeUpdateTimer) this.timeUpdateTimer = setInterval(this.updateTime.bind(this), 60000);
 
         this.$el.scrollTop(0);
+
+        app.mainView.on('scroll', this.scroll, this);
     },
 
     setNewPost: function (n) {
@@ -343,6 +344,7 @@ module.exports = Backbone.View.extend({
 
     remove: function() {
         this.$el.off(null, null, this);
+        app.mainView.off(null, null, this);
         clearInterval(this.pollingTimer);
         clearInterval(this.timeUpdateTimer);
         Backbone.View.prototype.remove.apply(this, arguments);

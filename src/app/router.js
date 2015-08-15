@@ -75,15 +75,19 @@ module.exports = Backbone.Router.extend({
     },
 
     feed: function () {
-        // TODO: don't use clear, make sure all the view are deleted in the right way
-        $("#main-scrollable").html('');
-        new FeedView({ el: $("#main-scrollable")});
+        if (this.contentView) {
+            this.contentView.remove();
+        }
+        $("#main-content").append('<div />');
+        this.contentView = new FeedView({ el: $("#main-content").children().last() });
     },
 
     settings: function () {
-        // TODO: don't use clear, make sure all the view are deleted in the right way
-        $("#main-scrollable").html('');
-        new SettingsView({ el: $("#main-scrollable")});
+        if (this.contentView) {
+            this.contentView.remove();
+        }
+        $("#main-content").append('<div />');
+        this.contentView = new SettingsView({ el: $("#main-content").children().last()});
     },
 
     status: function () {
@@ -95,6 +99,10 @@ module.exports = Backbone.Router.extend({
     },
 
     notYetImplemented: function () {
-        new NotYetImplementedView({ el: $("#main-scrollable")});
+        if (this.contentView) {
+            this.contentView.remove();
+        }
+        $("#main-content").append('<div />');
+        this.contentView = new NotYetImplementedView({ el: $("#main-content").children().last()});
     }
 });

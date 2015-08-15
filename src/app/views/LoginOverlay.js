@@ -28,7 +28,7 @@ module.exports = Backbone.View.extend({
 
         this.render();
 
-        Twister.getUsers(function (users) {
+        Twister.getUsers(function (err, users) {
             if (users && users.length > 0) {
                 self.$cancelButton.show();
             }
