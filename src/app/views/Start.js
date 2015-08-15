@@ -129,9 +129,9 @@ module.exports = Backbone.View.extend({
         var time = new Date().getTime() / 1000;
         if (!this.latestInfo.connections) {
             this.setText("Fetching network information");
-        } else if (this.latestInfo.connections == 0) {
+        } else if (this.latestInfo.connections === 0) {
             this.setText("Waiting for a connection");
-        } else if (this.latestInfo.dhtNodes == 0) {
+        } else if (this.latestInfo.dht_nodes === 0) {
             this.setText("Waiting for DHT nodes");
         } else if (!this.latestBlock.time) {
             this.setText("Fetching blockchain information");
@@ -144,17 +144,20 @@ module.exports = Backbone.View.extend({
             // See if there is already an account
             this.checkAccounts(function () {
                 // Seems like we are good to go    
+                
+                self.setText("Updating followers");
 
                 // First tell Twister to follow all the followers from DHT
                 //  so that we are sure new followers added in other clients
                 //  are also followed here
-                Twister.followFollowersFromDht(app.user.get('username'));
+                Twister.followFollowersFromDht(app.user.get('username'), function (err) {
+                    if (err) console.error('Error follow followers from DHT');
+                    // Go to the feed of this user
+                    app.router.navigate('feed', {trigger: true});
 
-                // Go to the feed of this user
-                app.router.navigate('feed', {trigger: true});
-
-                // Remove the overlay 
-                self.trigger('close');
+                    // Remove the overlay 
+                    self.trigger('close');
+                });
             });
         }
     },
