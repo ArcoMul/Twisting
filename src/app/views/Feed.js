@@ -160,8 +160,20 @@ module.exports = Backbone.View.extend({
             post = post.get('retwist');
         }
 
-        Twister.retwist(app.user.get('username'), post.toRetwist(), function (err, data) {
-            if (err) return console.error('Error retwisting twist', err);    
+        app.dispatcher.trigger('open-confirm-popup', {
+            texts: {
+                main: 'Are you sure you want to retwist this twist?',
+                confirm: 'Yes',
+                cancel: 'Cancel'
+            },
+            onConfirm: function () {
+                Twister.retwist(app.user.get('username'), post.toRetwist(), function (err, data) {
+                    if (err) return console.error('Error retwisting twist', err);    
+                });
+            },
+            onCancel: function () {
+                // Nothing to do
+            }
         });
     },
 

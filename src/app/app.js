@@ -7,6 +7,7 @@ var _ = require("underscore"),
     UserModel = require("./models/User"),
     Backbone = require("backbone"),
     MainMenuView = require("./views/MainMenu"),
+    ConfirmPopupView = require("./views/ConfirmPopup"),
     MainPageView = require("./views/MainPage");
 
 // Alias the module for easier identification.
@@ -32,6 +33,9 @@ app.dispatcher.on('open-user-profile', function (options) {
 });
 app.dispatcher.on('open-mentions', function (options) {
     app.mainView.openMentions(options);
+});
+app.dispatcher.on('open-confirm-popup', function (options) {
+    app.mainView.showPopup(ConfirmPopupView, options);
 });
 
 // The root path to run the application through.

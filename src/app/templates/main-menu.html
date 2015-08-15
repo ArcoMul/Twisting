@@ -2,12 +2,13 @@
     <li>
         <a class="status" href="status"><span></span></a>
     </li>
+
     <% if (user) { %>
     <li>
-        <a href="user/<%= user.get('username') %>">Profile</a>
+        <a href="feed">Feed</a>
     </li>
     <li>
-        <a href="feed">Feed</a>
+        <a href="user/<%= user.get('username') %>">Profile</a>
     </li>
     <li>
         <a href="mentions">Mentions</a>
@@ -16,9 +17,12 @@
         <a href="messages">Messages</a>
     </li>
     <% } %>
+
+    <!--
     <li>
         <a href="settings">Settings</a>
     </li>
+    -->
 
     <!-- This has to be in the menu div, outside it is not clickable
          anymore, for some magical reason -->

@@ -19,13 +19,6 @@ module.exports = Backbone.View.extend({
 
     el: '#main-scrollable',
 
-    /*
-    $context: null,
-    $content: null,
-    currentContextView: null,
-    currentContentView: null,
-    */
-
     events: {
         "click a": "navigate",
     },
@@ -33,17 +26,6 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         var self = this;
         this.render();
-        // this.$context = this.$el.children('#context-section');
-        // this.$content = this.$el.children('#content-section');
-        // this.$preview = this.$el.children('#preview-section').children('.content');
-        // this.$preview.css({left: this.$preview.width()});
-
-        // $("#main-scrollable").scroll(function () {
-        //     self.scroll();
-        // });
-        // $(window).resize(function () {
-        //     self.$preview.css({left: self.$preview.width()});
-        // });
     },
 
     navigate: function (e) {
@@ -95,6 +77,12 @@ module.exports = Backbone.View.extend({
         });
     },
 
+    showPopup: function (View, options) {
+        this.$popup.append('<div />');
+        options.el = this.$popup.children().last();
+        new View(options);
+    },
+
     showOverlay: function (View, options) {
         console.log('main page ', View, options);
         this.$overlay.append('<div />');
@@ -114,43 +102,10 @@ module.exports = Backbone.View.extend({
         });
     },
 
-    /*
-    openPreview: function (view) {
-        var self = this;
-        if (this.currentPreviewView) {
-            this.togglePreview(false, function () {
-                self.currentPreviewView.remove();
-
-                self.$preview.html('<div />');
-                self.currentPreviewView = view;
-                self.currentPreviewView.setElement(self.$preview.children().first());
-                self.currentPreviewView.render();
-                self.$preview.css({paddingTop: $("#main-scrollable").scrollTop()});    
-                self.togglePreview(true);
-            });
-            return;
-        }
-        this.$preview.html('<div />');
-        this.currentPreviewView = view;
-        this.currentPreviewView.setElement(this.$preview.children().first());
-        this.currentPreviewView.render();
-        this.$preview.css({paddingTop: $("#main-scrollable").scrollTop()});    
-        this.togglePreview(true);
-    },
-
-    togglePreview: function (visible, callback) {
-        this.$preview.animate({
-            left: visible ? 0 : this.$preview.width()
-        }, {
-            duration: 200,
-            complete: callback
-        });
-    },
-    */
-
     render: function() {
         this.$el.html(mainPageTemplate());
         this.$overlay = $("#overlay-holder");
+        this.$popup = $("#popup-holder");
         return this;
     }
 });
