@@ -1,0 +1,29 @@
+#settings-page {
+    padding: 50px;
+    h2 {
+        text-align: center;
+    }
+    div {
+        display: flex;
+        & > div {
+            flex: 1 0 0;
+            padding: 20px;
+            font-family: Georgia;
+            font-size: 20px;
+            color: #666;
+            &:first-child {
+                border-right: 1px solid #eee;
+                p {
+                    text-align: right;
+                    width: 100%;
+                }
+            }
+            a { 
+                color: #333;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

@@ -18,24 +18,20 @@ module.exports = Backbone.View.extend({
     posts: null,
 
     events: {
-        "click a": "navigate",
-        "click button": "login"
+        "click button": "login",
+        "click a.button-cancel": "destroy"
     },
 
     initialize: function() {
         var self = this;
-        console.log("Initialize login overlay");
 
         this.render();
 
         Twister.getUsers(function (users) {
-            console.log('received users', users);
+            if (users.length > 0) {
+                self.$cancelButton.show();
+            }
         });
-    },
-
-    navigate: function (e) {
-        e.preventDefault();
-        app.router.navigate($(e.target).attr('href'), {trigger: true});
     },
 
     login: function (e) {
@@ -63,8 +59,8 @@ module.exports = Backbone.View.extend({
     },
 
     render: function() {
-        console.log("Render login overlay");
         this.$el.html(loginOverlayTemplate());
+        this.$cancelButton = this.$el.find('.button-cancel');
         return this;
     },
 
