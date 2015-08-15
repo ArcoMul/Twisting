@@ -13,6 +13,7 @@ var Backbone = require("backbone"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
     StartView = require("./views/Start"),
+    StatusView = require("./views/Status"),
     LoginView = require("./views/LoginOverlay"),
     AccountsView = require("./views/AccountsOverlay"),
     SettingsView = require("./views/Settings"),
@@ -80,7 +81,7 @@ module.exports = Backbone.Router.extend({
     },
 
     status: function () {
-        app.mainView.showSlideOverlay(StartView);
+        app.mainView.showSlideOverlay(StatusView);
     },
 
     mentions: function () {

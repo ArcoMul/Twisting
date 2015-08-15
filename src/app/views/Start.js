@@ -198,9 +198,9 @@ module.exports = Backbone.View.extend({
         if (!this.latestInfo) this.latestInfo = {}
         if (!this.latestBlock) this.latestBlock = {}
         this.$info.html([
-            'DHT nodes: ' + (this.latestInfo.dhtNodes === undefined ? 'unkown' : this.latestInfo.dhtNodes),
+            'DHT nodes: ' + (this.latestInfo.dht_nodes === undefined ? 'unkown' : this.latestInfo.dht_nodes),
             'Connections: ' + (this.latestInfo.connections === undefined ? 'unkown' : this.latestInfo.connections),
-            'Peers: ' + (this.latestInfo.peers === undefined ? 'unkown' : this.latestInfo.peers),
+            'Peers: ' + (this.latestInfo.addrman_total === undefined ? 'unkown' : this.latestInfo.addrman_total),
             'Blocks: ' + (this.latestInfo.blocks === undefined ? 'unkown' : this.latestInfo.blocks),
             '',
             'Latest block: ' + (this.latestBlock.time ? moment(this.latestBlock.time * 1000).fromNow() : 'unkown'),

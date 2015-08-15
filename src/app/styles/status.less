@@ -1,0 +1,145 @@
+#status-page {
+    h2 {
+        text-align: center;
+    }
+    h3.version {
+        text-align: center;
+        font-family: Georgia;
+        color: #999;
+        font-weight: normal;
+        font-size: 19px;
+    }
+
+    .icon-info {
+        width: 16px;
+        height: 16px;
+        border-radius: 16px;
+        background-color: #CFCFCF;
+        display: inline-block;
+        color: #fff;
+        font-family: Georgia;
+        font-size: 15px;
+        text-align: center;
+        padding: 0;
+        line-height: 17px;
+        font-weight: bold;
+        position: relative;
+        cursor: default;
+        &:hover:after {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: .5em;
+            bottom: 21px;
+            color: #fff;
+            content: attr(tooltip);
+            display: block;
+            left: -12px;
+            padding: 10px 15px;
+            position: absolute;
+            text-shadow: 0 1px 0 #000;
+            z-index: 98;
+            width: 300px;
+            text-align: left;
+            font-family: 'Open Sans';
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 18px;
+        }
+        &:hover:before {
+            border: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent;
+            border-width: .4em .4em 0 .4em;
+            bottom: 1em;
+            content: "";
+            display: block;
+            left: 2px;
+            position: absolute;
+            z-index: 99;
+        }
+    }
+
+    .grid {
+        & > div {
+            display: flex;
+            padding-top: 40px;
+            & > div {
+                flex: 1 0 0;
+                padding: 0 20px;
+                &:first-child {
+                    border-right: 1px solid #ddd;
+                }
+                h3 {
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: normal;
+                    padding-bottom: 20px;
+                    color: #666;
+                }
+            }
+        }  
+    }
+
+    .table {
+        & > div {
+            display: flex;
+            & > div {
+                flex: 1 0 0;
+                font-family: Georgia;
+                font-size: 20px;
+                line-height: 40px;
+                color: #666;
+                &:first-child {
+                    text-align: right;
+                    padding-right: 15px;
+                }
+                &:last-child {
+                    padding-left: 15px;
+                }
+            }
+            p {
+                font-family: Georgia;
+                font-size: 19px;
+                color: #666;
+                line-height: 26px;
+                padding: 0 15px;
+                a { 
+                    color: #333;
+                    text-decoration: none;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+
+    .healthbar {
+        display: flex;
+        div {
+            width: 30%;
+            margin: 1%;
+            height: 20px;
+            margin-top: 11px;
+            &:nth-child(1) {
+                border-radius: 20px 0 0 20px;
+            }
+            &:nth-child(3) {
+                border-radius: 0 20px 20px 0;
+            }
+        }
+        &.bad {
+            divnth-child(1) { background-color: #F07777; }
+            div:nth-child(2) { background-color: #DDD; }
+            div:nth-child(3) { background-color: #DDD; }
+        }
+        &.neutral {
+            div:nth-child(1) { background-color: #F0D85E; }
+            div:nth-child(2) { background-color: #F0D85E; }
+            div:nth-child(3) { background-color: #DDD; }
+        }
+        &.good {
+            div:nth-child(1) { background-color: #82E782; }
+            div:nth-child(2) { background-color: #82E782; }
+            div:nth-child(3) { background-color: #82E782; }
+        }
+    }
+}

@@ -185,12 +185,7 @@ module.exports = (function () {
                 checkError(err);
                 return callback(err);
             }
-            callback(null, {
-                dhtNodes: data.dht_nodes,
-                connections: data.connections,
-                peers: data.addrman_total,
-                blocks: data.blocks
-            });
+            callback(null, data);
         });
     }
 
@@ -206,10 +201,7 @@ module.exports = (function () {
                     checkError(err);
                     return callback(err);
                 }
-                callback(null, {
-                    hash: data.hash,
-                    time: data.time
-                });
+                callback(null, data);
             });
         });
     }

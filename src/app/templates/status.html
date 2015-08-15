@@ -1,0 +1,74 @@
+<div id="status-page">
+    <h2>Status</h2>
+
+    <% if (info) { %>
+    <h3 class="version">Twister version <%= info.getVersion() %></h2>
+    <div class="grid">
+        <div>
+            <div>
+                <h3>Connection</h3>
+                <div class="table">
+                    <div>
+                        <div>Connection <span tooltip="The amount of direct connections to other users. More connection means a faster experience. Currently there are <%= info.get('connections') %> connections." class="icon-info">i</span></div>
+                        <div class="healthbar <%= info.getConnectionLevel() %>">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>DHT Connection <span tooltip="DHT is a collection of special data, like avatars and user profile information. The more DHT connection you have the faster avatars and other special data loads. Currently there are <%= info.get('dht_nodes') %> DHT connections." class="icon-info">i</span></div>
+                        <div class="healthbar <%= info.getDhtConnectionLevel() %>">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>Online Peers <span tooltip="An indication of the amount of people online on the Twister network. Be aware that this is only an estimation." class="icon-info">i</span></div>
+                        <div><%= info.get('addrman_total') %></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3>Data</h3>
+                <div class="table">
+                    <div>
+                        <div>Download <span tooltip="The speed with which the Twister deamon is downloading data right now, and the total amount of data downloaded since Twisting was started." class="icon-info">i</span></div>
+                        <div><%= info.getDownloadSpeed() %> kb/s (<%= info.getTotalDownload() %> mb)</div>
+                    </div>
+                    <div>
+                        <div>Upload <span  tooltip="The speed with which the Twister deamon is uploading data right now, and the total amount of data uploaded since Twisting was started." class="icon-info">i</span></div>
+                        <div><%= info.getUploadSpeed() %> kb/s (<%= info.getTotalUpload() %> mb)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div>
+                <h3>User Registration Blocks</h3>
+                <div class="table">
+                    <div>
+                        <div>Current Block <span tooltip="The number of blocks mined since the beginning of Twister regarding Twister user registration." class="icon-info">i</span></div>
+                        <div><%= info.get('blocks') %></div>
+                    </div>
+                    <div>
+                        <div>Last Block <span tooltip="Time passed since the last block was mined. About every 30 minutes a new user registration block should be mined." class="icon-info">i</span></div>
+                        <div><%= info.getLastBlockFromNow() %></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3>Support</h3>
+                <div class="table">
+                    <div>
+                        <p>For support and connection problems, open an issue at the <a href="https://github.com/ArcoMul/Twisting">Twisting Github repository</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } else { %>
+        <p>Loading</p>
+    <% } %>
+</div>
