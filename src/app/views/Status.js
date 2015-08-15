@@ -114,6 +114,8 @@ module.exports = Backbone.View.extend({
             this.setText("Fetching network information");
         } else if (this.latestInfo.connections == 0) {
             this.setText("Waiting for a connection");
+        } else if (this.latestInfo.dhtNodes == 0) {
+            this.setText("Waiting for DHT nodes");
         } else if (!this.latestBlock) {
             this.setText("Fetching blockchain information");
         } else if (this.latestBlock.time < time - (2 * 3600)) {

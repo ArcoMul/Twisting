@@ -26,7 +26,7 @@ module.exports = Backbone.Collection.extend({
         // If we don't know the last post of this user, get its status
         if (_.isUndefined(user.get('last_twister_id'))) {
             user.getStatus(function (err, post) {
-                var post = new PostModel().parse(post, self);
+                var post = new PostModel().parse({userpost: post}, self);
                 posts.push(post);
                 self.fetchPostFromDht(user, posts, till, callback);
             });
