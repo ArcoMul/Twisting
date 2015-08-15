@@ -16,6 +16,7 @@ var Backbone = require("backbone"),
     StatusView = require("./views/Status"),
     LoginView = require("./views/LoginOverlay"),
     AccountsView = require("./views/AccountsOverlay"),
+    CreateAccountView = require("./views/CreateAccount"),
     SettingsView = require("./views/Settings"),
     NotYetImplementedView = require("./views/NotYetImplemented");
 
@@ -33,6 +34,7 @@ module.exports = Backbone.Router.extend({
         "start": "start",
         "login": "login",
         "choose-account": "chooseAccount",
+        "account/create": "createAccount",
         "user/:user": "user",
         "user/:user/posts/:post": "postDetail",
         "feed": "feed",
@@ -55,6 +57,10 @@ module.exports = Backbone.Router.extend({
 
     login: function () {
        app.mainView.showOverlay(LoginView); 
+    },
+
+    createAccount: function () {
+       app.mainView.showOverlay(CreateAccountView); 
     },
 
     chooseAccount: function () {

@@ -218,6 +218,16 @@ module.exports = (function () {
         });
     }
 
+    var createUser = function (username, callback) {
+        twisterRpc("createwalletuser", [username], function (err, key) {
+            if (err) return callback(err);
+            twisterRpc("sendnewusertransaction", [username], function (err, data) {
+                if (err) return callback(err);
+                callback(null, key);
+            });
+        });
+    }
+
     var getFollowingFromDht = function (username, callback) {
         twisterRpc("dhtget", [username, "following1", "s"], function (err, data) {
             if (err) return callback(err);
@@ -463,6 +473,7 @@ module.exports = (function () {
         getBestBlock: getBestBlock,
         getUsers: getUsers,
         importUser: importUser,
+        createUser: createUser,
         getFollowingFromDht: getFollowingFromDht,
         followFollowersFromDht: followFollowersFromDht,
         getTrendingHashtags: getTrendingHashtags,

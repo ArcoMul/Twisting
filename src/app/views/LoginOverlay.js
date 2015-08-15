@@ -18,6 +18,7 @@ module.exports = Backbone.View.extend({
     posts: null,
 
     events: {
+        "click a": "navigate",
         "click button": "login",
         "click a.button-cancel": "destroy"
     },
@@ -28,10 +29,16 @@ module.exports = Backbone.View.extend({
         this.render();
 
         Twister.getUsers(function (users) {
-            if (users.length > 0) {
+            if (users && users.length > 0) {
                 self.$cancelButton.show();
             }
         });
+    },
+
+    navigate: function (e) {
+        e.preventDefault();
+        app.router.navigate($(e.target).attr('href'), {trigger: true});
+        // this.destroy();
     },
 
     login: function (e) {

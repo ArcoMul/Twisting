@@ -7,6 +7,7 @@ var _ = require("underscore"),
     UserModel = require("./models/User"),
     Backbone = require("backbone"),
     MainMenuView = require("./views/MainMenu"),
+    PopupView = require("./views/Popup"),
     ConfirmPopupView = require("./views/ConfirmPopup"),
     MainPageView = require("./views/MainPage");
 
@@ -33,6 +34,9 @@ app.dispatcher.on('open-user-profile', function (options) {
 });
 app.dispatcher.on('open-mentions', function (options) {
     app.mainView.openMentions(options);
+});
+app.dispatcher.on('open-popup', function (options) {
+    app.mainView.showPopup(PopupView, options);
 });
 app.dispatcher.on('open-confirm-popup', function (options) {
     app.mainView.showPopup(ConfirmPopupView, options);
