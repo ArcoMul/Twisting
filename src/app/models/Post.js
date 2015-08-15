@@ -184,7 +184,6 @@ var PostModel = module.exports = Backbone.Model.extend({
     {
         var now = moment(new Date());
         var date = moment(this.get('last_time') * 1000);
-        console.log('days ago', now.diff(date, 'days'));
         return now.diff(date, 'days');
     },
 
