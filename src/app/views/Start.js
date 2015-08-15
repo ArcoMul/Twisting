@@ -7,7 +7,7 @@ var $ = require("jquery"),
     moment = require("moment"),
     app = require("../app"),
     _ = require("underscore"),
-    statusOverlayTemplate = _.template(require("../templates/overlay-status.html")),
+    statusOverlayTemplate = _.template(require("../templates/start.html")),
     UserModel = require("../models/User"),
     Twister = require("../Twister");
 
@@ -18,12 +18,17 @@ module.exports = Backbone.View.extend({
     infoTimer: null,
     deamonTimer: null,
 
+    events: {
+        'click .more-info': 'showMoreInfo'
+    },
+
     initialize: function(options) {
         var self = this;
 
         this.options = options;
 
         this.render();
+        this.renderInfo();
 
         this.setText("Requesting status");
 
@@ -36,24 +41,30 @@ module.exports = Backbone.View.extend({
         });
     },
 
-    startDeamon: function () {
-        var self = this;
+    showMoreInfo: function () {
+        this.$info.show();
+    },
 
+    startDeamon: function () {
         // Tell the user we are starting Twister
-        self.setText("Starting");
+        this.setText("Starting");
 
         // Start the deamon
         Twister.startDeamon();
 
         // Keep checking if it is started
-        this.deamonTimer = setInterval (function () {
-            Twister.getStatus(function (status) {
-                if (status != Twister.status.NOCONNECTION) {
-                    clearInterval(self.deamonTimer);
-                    self.gatherInfo();
-                }
-            });
-        }, 1000);
+        this.deamonTimer = setInterval (this.getStatus.bind(this), 1000);
+        this.getStatus();
+    },
+
+    getStatus: function () {
+        var self = this;
+        Twister.getStatus(function (status) {
+            if (status != Twister.status.NOCONNECTION) {
+                clearInterval(self.deamonTimer);
+                self.gatherInfo();
+            }
+        });
     },
 
     gatherInfo: function () {
@@ -62,61 +73,67 @@ module.exports = Backbone.View.extend({
 
         var self = this;
 
-        self.setText("Fetching network information");
+        this.setText("Fetching network information");
 
-        var count = 0;
+        this.infoRetrievalCount = 0;
 
         // Twister is started, let's gather info on its status
-        this.infoTimer = setInterval(function () {
+        this.infoTimer = setInterval(this.getInfo.bind(this), 1000);
+        this.getInfo();
+    },
+        
+    getInfo: function () {
+        var self = this;
 
-            // Retrieve latest info
-            Twister.getInfo(function (err, info) {
-                if(!self) return;
-                self.latestInfo = info;
-                self.renderInfo();
-            });
+        // Retrieve latest info
+        Twister.getInfo(function (err, info) {
+            if(!self) return;
+            self.latestInfo = info;
+            self.renderInfo();
+        });
 
-            // Retrieve latest blockchain info
-            Twister.getBestBlock(function (err, block) {
-                if(!self) return;
-                self.latestBlock = block;
-                self.renderInfo();
+        // Retrieve latest blockchain info
+        Twister.getBestBlock(function (err, block) {
+            if(!self) return;
+            self.latestBlock = block;
+            self.renderInfo();
 
-                // Increase the counter only when we actually get a response
-                // otherwise it might not be the connection, but the deamon
-                // unresponsive
-                count++;
-            });
+            // Increase the counter only when we actually get a response
+            // otherwise it might not be the connection, but the deamon
+            // unresponsive
+            self.infoRetrievalCount++;
+        });
 
-            // If the purpose of this view is NOT to show
-            // startup status, just keep displaying the latest 
-            // information
-            if (!self.options.starting) return;
+        // If the purpose of this view is NOT to show
+        // startup status, just keep displaying the latest 
+        // information
+        if (!self.options.starting) return;
 
-            // After 10, 30, and 60 seconds force a connection to the offical Twister seeders
-            // in case this client can't find a connection
-            if (count == 10) {
+        // After 10, 30, and 60 seconds force a connection to the offical Twister seeders
+        // in case this client can't find a connection
+        if (this.latestInfo && this.latestInfo.connections === 0) {
+            if (this.infoRetrievalCount == 10) {
                 Twister.addNode('seed.twister.net.co', 'onetry');
-            } else if (count == 30) {
+            } else if (this.infoRetrievalCount == 30) {
                 Twister.addNode('seed2.twister.net.co', 'onetry');
-            } else if (count == 60) {
+            } else if (this.infoRetrievalCount == 60) {
                 Twister.addNode('seed3.twister.net.co', 'onetry');
             }
+        }
 
-            self.checkStatus();
-        }, 1000);
+        self.checkStatus();
     },
 
     checkStatus: function () {
         var self = this;
         var time = new Date().getTime() / 1000;
-        if (!this.latestInfo) {
+        if (!this.latestInfo.connections) {
             this.setText("Fetching network information");
         } else if (this.latestInfo.connections == 0) {
             this.setText("Waiting for a connection");
         } else if (this.latestInfo.dhtNodes == 0) {
             this.setText("Waiting for DHT nodes");
-        } else if (!this.latestBlock) {
+        } else if (!this.latestBlock.time) {
             this.setText("Fetching blockchain information");
         } else if (this.latestBlock.time < time - (2 * 3600)) {
             this.setText("Downloading latest blocks");
@@ -178,14 +195,15 @@ module.exports = Backbone.View.extend({
     },
 
     renderInfo: function () {
-        if (!this.latestInfo || !this.latestBlock) return;
+        if (!this.latestInfo) this.latestInfo = {}
+        if (!this.latestBlock) this.latestBlock = {}
         this.$info.html([
-            'DHT nodes: ' + this.latestInfo.dhtNodes,
-            'Connections: ' + this.latestInfo.connections,
-            'Peers: ' + this.latestInfo.peers,
-            'Blocks: ' + this.latestInfo.blocks,
+            'DHT nodes: ' + (this.latestInfo.dhtNodes === undefined ? 'unkown' : this.latestInfo.dhtNodes),
+            'Connections: ' + (this.latestInfo.connections === undefined ? 'unkown' : this.latestInfo.connections),
+            'Peers: ' + (this.latestInfo.peers === undefined ? 'unkown' : this.latestInfo.peers),
+            'Blocks: ' + (this.latestInfo.blocks === undefined ? 'unkown' : this.latestInfo.blocks),
             '',
-            'Latest block: ' + moment(this.latestBlock.time * 1000).fromNow(),
+            'Latest block: ' + (this.latestBlock.time ? moment(this.latestBlock.time * 1000).fromNow() : 'unkown'),
         ].join('<br />'));
     },
 
@@ -203,7 +221,7 @@ module.exports = Backbone.View.extend({
 
     render: function() {
         this.$el.html(statusOverlayTemplate());
-        this.$status = this.$el.find('span.status');
+        this.$status = this.$el.find('h2.status');
         this.$info = this.$el.find('span.info');
         return this;
     }

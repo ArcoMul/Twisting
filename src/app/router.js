@@ -12,9 +12,10 @@ var Backbone = require("backbone"),
     FeedView = require("./views/Feed"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
-    StatusView = require("./views/Status"),
+    StartView = require("./views/Start"),
     LoginView = require("./views/LoginOverlay"),
     AccountsView = require("./views/AccountsOverlay"),
+    SettingsView = require("./views/Settings"),
     NotYetImplementedView = require("./views/NotYetImplemented");
 
 Backbone.$ = $;
@@ -39,7 +40,7 @@ module.exports = Backbone.Router.extend({
         "messages": "notYetImplemented",
         "tags": "notYetImplemented",
         "tags/:tag": "notYetImplemented",
-        "settings": "notYetImplemented",
+        "settings": "settings",
         "logout": "notYetImplemented"
     },
 
@@ -48,7 +49,7 @@ module.exports = Backbone.Router.extend({
     },
 
     start: function () {
-       app.mainView.showOverlay(StatusView, {starting: true}); 
+       app.mainView.showOverlay(StartView, {starting: true}); 
     },
 
     login: function () {
@@ -72,8 +73,14 @@ module.exports = Backbone.Router.extend({
         new FeedView({ el: $("#main-scrollable")});
     },
 
+    settings: function () {
+        // TODO: don't use clear, make sure all the view are deleted in the right way
+        $("#main-scrollable").html('');
+        new SettingsView({ el: $("#main-scrollable")});
+    },
+
     status: function () {
-        app.mainView.showSlideOverlay(StatusView);
+        app.mainView.showSlideOverlay(StartView);
     },
 
     mentions: function () {
