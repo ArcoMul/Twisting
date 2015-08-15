@@ -19,7 +19,6 @@ module.exports = Backbone.View.extend({
     initialize: function(options) {
         var self = this;
         this.options = options;
-        console.log('OPEITIONS', this.options);
         this.render(options);
     },
 
