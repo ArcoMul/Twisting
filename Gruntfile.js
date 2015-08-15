@@ -63,5 +63,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', ['less', 'nodewebkit', 'copy:twister']);
     grunt.registerTask('compile', ['less']);
-    grunt.registerTask('postinstall', ['auto_install']);
+    grunt.registerTask('postinstall', ['auto_install', 'less']);
 };
