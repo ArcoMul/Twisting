@@ -47,6 +47,9 @@ Screenshots
 ![Conversation](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/conversation1.png)
 *Conversation*
 
+![Status](https://dl.dropboxusercontent.com/u/1146818/Twister/Screenshots/status1.png)
+*(Network) status*
+
 Technology
 ----------
 
