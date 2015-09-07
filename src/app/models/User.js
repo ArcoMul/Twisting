@@ -4,6 +4,7 @@
 var $ = require("jquery"),
     _ = require("underscore"),
     Backbone = require("backbone"),
+    async = require("async"),
     Twister = require("../Twister"),
     app = require("../app"),
     PostsCollection = require("../collections/posts"),
@@ -184,6 +185,42 @@ module.exports = Backbone.Model.extend({
         });
     },
 
+    fetchMentions: function (amount, users, callback) {
+        async.parallel([
+            function (callback) {
+                Twister.getMentions(this.get('username'), amount, null, function (err, mentions_data) {
+                    if (err) {
+                        console.error('Error getting mentions for user ', err);
+                        return callback(err);
+                    }
+                    var posts = [];
+                    _.each(mentions_data, function (item) {
+                        var post = new PostModel().parse(item, users ? users : null);
+                        posts.push(post);
+                    });
+                    callback(null, posts);
+                });
+            },
+            function (callback) {
+                Twister.getMentionsFromDHT(this.get('username'), function (err, mentions_data) {
+                    if (err) {
+                        console.error('Error getting mentions for user ', err);
+                        return callback(err);
+                    }
+                    var posts = [];
+                    _.each(mentions_data, function (item) {
+                        var post = new PostModel().parse(item.p.v, users ? users : null);
+                        posts.push(post);
+                    });
+                    callback(null, posts);
+                });
+            }
+        ], function (err, results) {
+            if (err) return callback(err);
+            callback(null, results[0].concat(results[1]));
+        });
+    },
+
     getStatus: function (callback) {
         Twister.getUserStatus(this.get('username'), function (err, post) {
             // Just return the post, it has to be added to the user from the user collection
@@ -193,9 +230,9 @@ module.exports = Backbone.Model.extend({
 
     getAvatarImg: function (title) {
         if (this.get('avatar')) {
-            return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="'+this.get('username')+'"' : '') + ' src="' + this.get('avatar') + '" />';
+            return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="@'+this.get('username')+'"' : '') + ' src="' + this.get('avatar') + '" />';
         } else {
-            return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="'+this.get('username')+'"' : '') + ' src="app/img/profile.jpg" />';
+            return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="@'+this.get('username')+'"' : '') + ' src="app/img/profile.jpg" />';
         }
     }
 });
