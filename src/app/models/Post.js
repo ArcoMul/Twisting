@@ -33,10 +33,10 @@ var PostModel = module.exports = Backbone.Model.extend({
         lovers: []
     },
 
-    initialize: function () {
-        this.set('retwisters', new Array());
-        this.set('replies', new Array());
-        this.set('lovers', new Array());
+    initialize: function (properties) {
+        if (properties && !properties.retwisters) this.set('retwisters', new Array());
+        if (properties && !properties.replies) this.set('replies', new Array());
+        if (properties && !properties.lovers) this.set('lovers', new Array());
     },
 
     /**
@@ -53,15 +53,15 @@ var PostModel = module.exports = Backbone.Model.extend({
             user = users.findWhere({username: item.n});
         }
 
-        // Maybe the user doens't excist yet when we are parsing a 
+        // Maybe the user doens't excist yet when we are parsing a
         // parent post of a reply for example
         if (!user) {
             user = users.newUser({username: item.n, isFollowing: false});
         }
-        
+
         if(item.rt) {
             var retwistUser = users.findWhere({username: item.rt.n});
-            
+
             // Update the lowest_id and last_twister_id of the retwisting user,
             // since there is further no trace of this 'post' of the retwisting user
             user.processTwisterIdsOfPost(item.k, item.lastk);
