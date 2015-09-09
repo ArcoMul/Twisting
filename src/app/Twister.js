@@ -25,8 +25,8 @@ module.exports = (function () {
         var client = rpc.Client.$create(28332, 'localhost', 'user', 'pwd');
 
         console.log('CALL:', method, params);
-         
-        // Call add function on the server 
+
+        // Call add function on the server
         client.call(method, params, function(err, result) {
             console.log('RESULT:', method, arguments);
             callback(err, result);
@@ -42,7 +42,7 @@ module.exports = (function () {
 
     var addNode = function (server, mode) {
         twisterRpc('addnode', [server, mode], function (err) {
-            if (err) return console.error('Error adding node:', err); 
+            if (err) return console.error('Error adding node:', err);
         });
     }
 
@@ -300,6 +300,12 @@ module.exports = (function () {
         });
     }
 
+    var getMentionsCombined = function (username, n, callback) {
+        async.parallel([getMentions.bind(null, username, n, null), getMentionsFromDHT.bind(null, username)], function (err, results) {
+            callback(err, results[0].concat(results[1]));
+        });
+    }
+
     var getProfile = function (username, callback) {
         twisterRpc("dhtget", [username, "profile", "s"], function (err, data) {
             callback(err, data);
@@ -313,7 +319,7 @@ module.exports = (function () {
         twisterRpc("follow", [username, users], function (err, data) {
             if (saveToDht) {
                 saveFollowingToDht(username, function (err, data) {
-                    callback(err, data);    
+                    callback(err, data);
                 });
             } else {
                 callback(err, data);
@@ -328,7 +334,7 @@ module.exports = (function () {
         twisterRpc("unfollow", [username, users], function (err, data) {
             if (saveToDht) {
                 saveFollowingToDht(username, function (err, data) {
-                    callback(err, data);    
+                    callback(err, data);
                 });
             } else {
                 callback(err, data);
@@ -396,7 +402,7 @@ module.exports = (function () {
             }
         ], function (err, result) {
             // Waterfall is done
-            callback(err, result);    
+            callback(err, result);
         });
     }
 
@@ -424,7 +430,7 @@ module.exports = (function () {
             });
         });
     }
-    
+
     /**
      * username = user retwisting
      * post = post being retwisted
@@ -481,6 +487,7 @@ module.exports = (function () {
         getPost: getPost,
         getMentions: getMentions,
         getMentionsFromDHT: getMentionsFromDHT,
+        getMentionsCombined: getMentionsCombined,
         getProfile: getProfile,
         follow: follow,
         unfollow: unfollow,

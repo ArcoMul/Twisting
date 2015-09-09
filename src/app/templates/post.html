@@ -14,7 +14,7 @@
             <%= (overwriteUser ? overwriteUser : post.get('user')).getAvatarImg() %>
     </div>
     <% } %>
-        
+
     <% if (post.getType() == 'compose') { %>
         <div class="compose">
             <span class="characters">140 characters left</span>
@@ -53,4 +53,3 @@
         </div>
     <% } %>
 </div>
-

@@ -123,8 +123,9 @@ module.exports = Backbone.Collection.extend({
     },
 
     fetchMentions: function (amount, options, callback) {
+        var self = this;
         this.each(function (user) {
-            user.getMentions(amount, this, function (err, mentions) {
+            user.fetchMentions(amount, self, function (err, mentions) {
                 if (err) return console.error('Error fetching mentions for user', err);
                 callback (null, mentions);
             });

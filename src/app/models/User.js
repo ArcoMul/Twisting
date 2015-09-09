@@ -186,9 +186,10 @@ module.exports = Backbone.Model.extend({
     },
 
     fetchMentions: function (amount, users, callback) {
+        var self = this;
         async.parallel([
             function (callback) {
-                Twister.getMentions(this.get('username'), amount, null, function (err, mentions_data) {
+                Twister.getMentions(self.get('username'), amount, null, function (err, mentions_data) {
                     if (err) {
                         console.error('Error getting mentions for user ', err);
                         return callback(err);
@@ -202,7 +203,7 @@ module.exports = Backbone.Model.extend({
                 });
             },
             function (callback) {
-                Twister.getMentionsFromDHT(this.get('username'), function (err, mentions_data) {
+                Twister.getMentionsFromDHT(self.get('username'), function (err, mentions_data) {
                     if (err) {
                         console.error('Error getting mentions for user ', err);
                         return callback(err);

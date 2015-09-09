@@ -17,7 +17,7 @@ Backbone.$ = $;
 module.exports = Backbone.Model.extend({
     defaults: {
         users: null,
-        posts: null 
+        posts: null
     },
 
     initialize: function () {
@@ -57,7 +57,7 @@ module.exports = Backbone.Model.extend({
             });
             self.get('posts').add(mentions);
 
-            callback();
+            callback(null, mentions);
         });
     },
 

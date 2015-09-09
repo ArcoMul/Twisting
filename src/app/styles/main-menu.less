@@ -23,6 +23,7 @@
                 font-size: 15px;
                 line-height: 15px;
                 color: #333333;
+                position: relative;
                 &:hover {
                     padding: 12.5px 25px 9.5px 25px;
                     border-bottom: 3px solid #326de6;
@@ -40,6 +41,16 @@
                         display: inline-block;
                         border-radius: 100%;
                     }
+                }
+                .dot {
+                    display: none;
+                    position: absolute;
+                    width: 7px;
+                    height: 7px;
+                    background-color: #E82222;
+                    border-radius: 100%;
+                    right: 17px;
+                    top: 12px;
                 }
             }
         }

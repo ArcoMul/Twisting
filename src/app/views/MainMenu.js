@@ -24,6 +24,7 @@ module.exports = Backbone.View.extend({
     },
 
     initialize: function() {
+        var self = this;
         this.render();
 
         this.on('userChange', function (user) {
@@ -35,14 +36,21 @@ module.exports = Backbone.View.extend({
         if (this.model) {
             this.loadAvatar();
         }
+
+        app.dispatcher.on('new-mentions', function (options) {
+            self.showNewMentions();
+        });
+        app.dispatcher.on('mentions-seen', function (options) {
+            self.hideNewMentions();
+        });
     },
 
     closeWindow: function () {
-        gui.Window.get().close();    
+        gui.Window.get().close();
     },
 
     minimizeWindow: function () {
-        gui.Window.get().minimize();    
+        gui.Window.get().minimize();
     },
 
     scaleWindow: function () {
@@ -53,6 +61,13 @@ module.exports = Backbone.View.extend({
             gui.Window.get().maximize();
             this.maximized = true;
         }
+    },
+
+    showNewMentions: function () {
+        this.$el.find('.mentions .dot').show();
+    },
+    hideNewMentions: function () {
+        this.$el.find('.mentions .dot').hide();
     },
 
     loadAvatar: function () {

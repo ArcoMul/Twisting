@@ -10,11 +10,17 @@
     <li>
         <a href="user/<%= user.get('username') %>">Profile</a>
     </li>
-    <li>
-        <a href="mentions">Mentions</a>
+    <li class="mentions">
+        <a href="mentions">
+            Mentions
+            <span class="dot"></span>
+        </a>
     </li>
     <li>
-        <a href="messages">Messages</a>
+        <a href="messages">
+            Messages
+            <span class="dot"></span>
+        </a>
     </li>
     <% } %>
 
@@ -25,8 +31,8 @@
     <!-- This has to be in the menu div, outside it is not clickable
          anymore, for some magical reason -->
     <div id="window-controls">
-        <div class="window-minimize"><span></span></div> 
-        <div class="window-scale"><span></span><span></span></div> 
-        <div class="window-close">&times;</div> 
+        <div class="window-minimize"><span></span></div>
+        <div class="window-scale"><span></span><span></span></div>
+        <div class="window-close">&times;</div>
     </div>
 </ul>

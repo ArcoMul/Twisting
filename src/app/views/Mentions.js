@@ -48,7 +48,7 @@ module.exports = Backbone.View.extend({
         if (this.isLoading) return;
         var self = this;
 
-        this.feed.fetchMentions(10, null, function (err) {
+        this.feed.fetchMentions(10, null, function (err, mentions) {
             if (err) return console.error('Error fetching posts in feed:', err);
 
             // View is removed while posts where fetched
@@ -59,13 +59,15 @@ module.exports = Backbone.View.extend({
             // Fetch avatars of users of which we don't have one yet
             self.feed.fetchAvatars(function (err, user, postsToSetAvatar) {
                 if (!user.get('avatar')) {
-                    console.log(user.get('username'), 'does not have an avatar');
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
                     self.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
                 });
             });
+
+            window.localStorage[app.user.get('username') + '_lastMention'] = mentions[0].get('time');
+            app.dispatcher.trigger('mentions-seen');
 
             // Allowed to load the next page
             self.isLoading = false;
@@ -95,4 +97,3 @@ module.exports = Backbone.View.extend({
         return this;
     }
 });
-

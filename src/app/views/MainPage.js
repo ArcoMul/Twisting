@@ -4,6 +4,7 @@
 var gui = window.require('nw.gui'),
     $ = require("jquery"),
     Backbone = require("backbone"),
+    Twister = require("../Twister"),
     app = require("../app"),
     _ = require("underscore"),
     OverlayView = require("../views/Overlay"),
@@ -19,6 +20,8 @@ module.exports = Backbone.View.extend({
 
     el: '#main-scrollable',
 
+    fetchUserMentionsInterval: undefined,
+
     events: {
         "click a": "navigate",
         "scroll": "scroll",
@@ -27,6 +30,27 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         var self = this;
         this.render();
+        this.on('userChange', this.userChange.bind(this));
+    },
+
+    userChange: function (e) {
+        if (this.fetchUserMentionsInterval) clearInterval(this.fetchUserMentionsInterval);
+        this.fetchUserMentionsInterval = setInterval(function () {
+            Twister.getMentionsCombined(app.user.get('username'), 10, function (err, posts) {
+                if (err) return console.error('Error fetching mentions:', err);
+                posts = _.sortBy(posts, function (post) {
+                    if (post.userpost) {
+                        return post.userpost.time * -1;
+                    } else if (post.p) {
+                        return post.p.time * -1;
+                    }
+                });
+                var lastMention = posts[0].userpost? posts[0].userpost.time : posts[0].p.time;
+                if (lastMention > (window.localStorage[app.user.get('username') + '_lastMention'] || 0)) {
+                    app.dispatcher.trigger('new-mentions');
+                }
+            });
+        }, 5000);
     },
 
     navigate: function (e) {

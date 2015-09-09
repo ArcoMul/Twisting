@@ -38,11 +38,13 @@ $(window.document).on('keyup', function (e) {
 var win = gui.Window.get();
 win.on('close', function() {
     this.hide(); // Pretend to be closed already
+    /*
     Twister.stopDeamon(function (err, data) {
         // TODO: application should always quit, no matter what
         //      this is just for debugging
         if (err) return console.log('Error stopping deamon, inspect!', err);
     });
+    */
 
     // Quit the application
     gui.App.quit();

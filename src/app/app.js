@@ -22,10 +22,10 @@ app.changeUser = function (user) {
     app.mainView.trigger('userChange', user);
 }
 
+app.dispatcher = _.clone(Backbone.Events);
 app.menuView = new MainMenuView({model: app.user});
 app.mainView = new MainPageView();
 
-app.dispatcher = _.clone(Backbone.Events);
 app.dispatcher.on('open-post-detail', function (options) {
     app.mainView.openPostDetail(options);
 });
