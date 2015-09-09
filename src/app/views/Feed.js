@@ -28,6 +28,7 @@ module.exports = Backbone.View.extend({
     feed: null,
     pollingTimer: null,
     timeUpdateTimer: null,
+    getPostsToScrollRequests: 0,
 
     events: {
         "keyup .compose div": "onTyping",
@@ -67,9 +68,11 @@ module.exports = Backbone.View.extend({
             if (!self.dateOfLastPost) {
                 self.dateOfLastPost = post.get('last_time');
             }
-            
+
             // When a post is younger than the youngest post, show notification
-            if (post.get('last_time') > self.dateOfLastPost) {
+            if (post.getType() !== PostModel.TYPES.POST && window.localStorage[app.user.get('username') + '_hideRepliesAndRetwists'] === 'true') {
+                return;
+            } else if (post.get('last_time') > self.dateOfLastPost) {
                 $day.first().children().first().after(postTemplate({post: post, icon: true})).next().hide();
                 self.setNewPost(self.$posts.find('.post:hidden').not(self.$newpost).length);
             } else {
@@ -136,7 +139,7 @@ module.exports = Backbone.View.extend({
         // User clicked on his own avatar of the 'compose post'
         if ($post.hasClass('compose')) {
             app.dispatcher.trigger('open-user-profile', {
-                user: app.user 
+                user: app.user
             });
             return;
         }
@@ -169,7 +172,7 @@ module.exports = Backbone.View.extend({
             },
             onConfirm: function () {
                 Twister.retwist(app.user.get('username'), post.toRetwist(), function (err, data) {
-                    if (err) return console.error('Error retwisting twist', err);    
+                    if (err) return console.error('Error retwisting twist', err);
                 });
             },
             onCancel: function () {
@@ -253,6 +256,11 @@ module.exports = Backbone.View.extend({
 
             // Allowed to load the next page
             if (!isPolling) self.isLoading = false;
+
+            if (!app.mainView.isScrollable() && self.getPostsToScrollRequests < 10) {
+                self.getPostsToScrollRequests += 1;
+                self.loadPosts(true, false);
+            }
         });
     },
 
@@ -350,4 +358,3 @@ module.exports = Backbone.View.extend({
         Backbone.View.prototype.remove.apply(this, arguments);
     }
 });
-

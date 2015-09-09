@@ -268,3 +268,6 @@ var PostModel = module.exports = Backbone.Model.extend({
         return usernames;
     }
 });
+
+// TODO: not the best way to do this; saving a property on a backbone model
+module.exports.TYPES = TYPES;

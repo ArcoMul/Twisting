@@ -75,6 +75,18 @@ module.exports = Backbone.View.extend({
         this.trigger('scroll');
     },
 
+    /**
+     * If the user can actually scroll the window
+     * without a scrollable window the scroll event
+     * can never be called
+     */
+    isScrollable: function () {
+        if (this.$el[0].scrollHeight > this.$el.height()) {
+            return true;
+        }
+        return false;
+    },
+
     openPostDetail: function (options) {
         this.$el.append('<div class="slide-overlay"></div>');
         new SlideOverlayView({
