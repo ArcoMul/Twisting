@@ -32,6 +32,9 @@ app.dispatcher.on('open-post-detail', function (options) {
 app.dispatcher.on('open-user-profile', function (options) {
     app.mainView.openUserProfile(options);
 });
+app.dispatcher.on('open-following', function (options) {
+    app.mainView.openFollowing(options);
+});
 app.dispatcher.on('open-mentions', function (options) {
     app.mainView.openMentions(options);
 });

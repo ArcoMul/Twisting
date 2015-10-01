@@ -448,7 +448,13 @@ module.exports = (function () {
                 callback(err, data);
             });
         });
-    }
+    };
+
+    var getTorrentStatus = function (username, callback) {
+        twisterRpc('torrentstatus', [username], function (err, data) {
+            callback(err, data);
+        });
+    };
 
     var startDeamon = function () {
         var datadir = getDataDir();
@@ -496,6 +502,8 @@ module.exports = (function () {
         retwist: retwist,
         startDeamon: startDeamon,
         stopDeamon: stopDeamon,
-        status: status
+        status: status,
+        getTorrentStatus: getTorrentStatus,
+        twisterRpc: twisterRpc
     };
 })();

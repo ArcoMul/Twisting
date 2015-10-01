@@ -8,7 +8,7 @@
             <h2 class="username"><%=user.get('username')%> <%= (user.get('fullname') ? '<span class="fullname"> - ' + user.get('fullname') + '</span>' : '') %></h2>
             <p class="stats">
             <% if (user.get('following')) { %>
-                Following: <%= user.get('following').length %>
+                <a href="user/<%= user.get('username') %>/following">Following: <%= user.get('following').length %></a>
             <% } %>
             </p>
             <% if (user.get('bio') || user.get('location')) { %>

@@ -11,6 +11,7 @@ var gui = window.require('nw.gui'),
     SlideOverlayView = require("../views/SlideOverlay"),
     PostView = require("../views/Post"),
     UserView = require("../views/User"),
+    FollowingView = require("../views/Following"),
     MentionsView = require("../views/Mentions"),
     mainPageTemplate = _.template(require("../templates/main-page.html"));
 
@@ -104,6 +105,17 @@ module.exports = Backbone.View.extend({
         new SlideOverlayView({
             el: this.$el.children().last(),
             childView: UserView,
+            options: {
+                user: options.user
+            }
+        });
+    },
+
+    openFollowing: function (options) {
+        this.$el.append('<div class="slide-overlay"></div>');
+        new SlideOverlayView({
+            el: this.$el.children().last(),
+            childView: FollowingView,
             options: {
                 user: options.user
             }

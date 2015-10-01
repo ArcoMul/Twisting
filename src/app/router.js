@@ -36,6 +36,7 @@ module.exports = Backbone.Router.extend({
         "choose-account": "chooseAccount",
         "account/create": "createAccount",
         "user/:user": "user",
+        "user/:user/following": "following",
         "user/:user/posts/:post": "postDetail",
         "feed": "feed",
         "status": "status",
@@ -52,24 +53,31 @@ module.exports = Backbone.Router.extend({
     },
 
     start: function () {
-       app.mainView.showOverlay(StartView, {starting: true}); 
+       app.mainView.showOverlay(StartView, {starting: true});
     },
 
     login: function () {
-       app.mainView.showOverlay(LoginView); 
+       app.mainView.showOverlay(LoginView);
     },
 
     createAccount: function () {
-       app.mainView.showOverlay(CreateAccountView); 
+       app.mainView.showOverlay(CreateAccountView);
     },
 
     chooseAccount: function () {
-       app.mainView.showOverlay(AccountsView); 
+       app.mainView.showOverlay(AccountsView);
     },
-    
-    user: function (user) {
-        var user = new UserModel({username: user});
+
+    user: function (u) {
+        var user = new UserModel({username: u});
         app.dispatcher.trigger('open-user-profile', {
+            user: user
+        });
+    },
+
+    following: function (u) {
+        var user = new UserModel({username: u});
+        app.dispatcher.trigger('open-following', {
             user: user
         });
     },

@@ -1,0 +1,13 @@
+<div id="following-page">
+    <% if (following) { %>
+        <% _.each(following, function (data, username) { %>
+            <% if (data.percentage > 0) { %>
+            <div class="user">
+                <%= data.user.getAvatarImg(username) %><br />
+                <span class="username"><%= username %></span><br />
+                <span class="percentage">(<%= data.percentage %>%)</span>
+            </div>
+            <% } %>
+        <% }) %>
+    <% } %>
+</div>
