@@ -12,6 +12,7 @@ var Backbone = require("backbone"),
     FeedView = require("./views/Feed"),
     FeedContentView = require("./views/FeedContent"),
     FeedContextView = require("./views/FeedContext"),
+    MessagesView = require("./views/Messages"),
     StartView = require("./views/Start"),
     StatusView = require("./views/Status"),
     LoginView = require("./views/LoginOverlay"),
@@ -41,7 +42,7 @@ module.exports = Backbone.Router.extend({
         "feed": "feed",
         "status": "status",
         "mentions": "mentions",
-        "messages": "notYetImplemented",
+        "messages": "messages",
         "tags": "notYetImplemented",
         "tags/:tag": "notYetImplemented",
         "settings": "settings",
@@ -104,6 +105,14 @@ module.exports = Backbone.Router.extend({
 
     mentions: function () {
         app.dispatcher.trigger('open-mentions');
+    },
+
+    messages: function () {
+        if (this.contentView) {
+            this.contentView.remove();
+        }
+        $("#main-content").append('<div />');
+        this.contentView = new MessagesView({ el: $("#main-content").children().last() });
     },
 
     notYetImplemented: function () {

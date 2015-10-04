@@ -456,6 +456,16 @@ module.exports = (function () {
         });
     };
 
+    var getMessages = function (username, amount, usernames, cb) {
+        var users = [];
+        _.each(usernames, function (u) {
+            users.push({username: u});
+        });
+        twisterRpc("getdirectmsgs", [username, amount, users], function (err, data) {
+            cb(err, data);
+        });
+    };
+
     var startDeamon = function () {
         var datadir = getDataDir();
         var cmd = '"' + datadir + '/twisterd" -daemon -rpcuser=user -rpcpassword=pwd -rpcallowip=127.0.0.1 -datadir="' + datadir + '/data"';
@@ -463,13 +473,13 @@ module.exports = (function () {
         exec(cmd, function (error, stdout, stderr) {
             console.log(arguments);
         });
-    }
+    };
 
     var stopDeamon = function (callback) {
         twisterRpc("stop", [], function (err, data) {
             callback(err, data);
         });
-    }
+    };
 
     return {
         addNode: addNode,
@@ -504,6 +514,7 @@ module.exports = (function () {
         stopDeamon: stopDeamon,
         status: status,
         getTorrentStatus: getTorrentStatus,
+        getMessages: getMessages,
         twisterRpc: twisterRpc
     };
 })();
