@@ -99,9 +99,8 @@ module.exports = Backbone.View.extend({
         });
 
         // Render and set the cursor to the end, ready for typing
-        this.$input
-            .html(html)
-            .keypress();
+        this.$input.html(html).keypress();
+        if (html.length === 0) return;
         this.setCursorToEnd(this.$input[0]);
     },
 

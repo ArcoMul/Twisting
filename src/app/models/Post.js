@@ -34,9 +34,9 @@ var PostModel = module.exports = Backbone.Model.extend({
     },
 
     initialize: function (properties) {
-        if (properties && !properties.retwisters) this.set('retwisters', []);
-        if (properties && !properties.replies) this.set('replies', []);
-        if (properties && !properties.lovers) this.set('lovers', []);
+        if (!properties || !properties.retwisters) this.set('retwisters', []);
+        if (!properties || !properties.replies) this.set('replies', []);
+        if (!properties || !properties.lovers) this.set('lovers', []);
     },
 
     /**
@@ -213,7 +213,7 @@ var PostModel = module.exports = Backbone.Model.extend({
         return {
             sig_userpost: sig_userpost,
             userpost: userpost
-        }
+        };
     },
 
     getTopParent: function ()
@@ -231,6 +231,7 @@ var PostModel = module.exports = Backbone.Model.extend({
     getLastChild: function ()
     {
         var t = this;
+
 
         if (t.get('replies').length == 0) return t;
 
