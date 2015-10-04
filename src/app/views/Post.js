@@ -135,10 +135,18 @@ module.exports = Backbone.View.extend({
 
     submitReply: function () {
         var self = this;
+        var $icon = this.$input.parent().parent().find('.icon');
+
+        // Already submitting
+        if ($icon.hasClass('loading')) return;
+
+        $icon.addClass('loading');
+
         this.replyingTo.reply(app.user, this.$input.text(), function (err, reply) {
             if (err) {
                 return console.error('Error posting reply:', err);
             }
+            $icon.removeClass('loading');
             self.$input.text("");
             self.onTyping();
             self.render();
