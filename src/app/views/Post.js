@@ -18,13 +18,11 @@ module.exports = Backbone.View.extend({
         "click .compose.reply div": "onReplyClick",
         "keypress .compose.reply div": "onTyping",
         "input .compose.reply div": "onTyping",
+        "click .post .avatar .icon": "openPost",
     },
 
     initialize: function(options) {
         var self = this;
-        
-        console.log('THIS', this);
-        console.log('new post detail', options);
 
         this.options = options;
         this.post = options.post;
@@ -54,6 +52,8 @@ module.exports = Backbone.View.extend({
         Twister.getPost(post.get('reply').username, post.get('reply').twister_id, function (err, parentPost) {
             if (err) return console.error('Error getting parent post', err);
 
+            if (!parentPost || parentPost.length === 0) return;
+
             // Found a parent post
             parentPost = new PostModel().parse(parentPost[0].p.v, self.options.feed.get('users'));
 
@@ -75,7 +75,7 @@ module.exports = Backbone.View.extend({
     onReplyClick: function (e) {
         if (!_.isEmpty(this.$input.text())) return;
         var replyingToUsername = this.replyingTo.get('user').get('username');
-            
+
         // Get the usernames mentioned in the post we are replying to
         var usernames = this.replyingTo.getMentionedUsernames();
 
@@ -146,6 +146,29 @@ module.exports = Backbone.View.extend({
         });
     },
 
+    openPost: function (e) {
+        var $post = $(e.currentTarget).parents('.post');
+        var id = $post.attr('data-id');
+        var post = this.options.feed.get('posts').get(id);
+
+        // Couldn't find the post, might be a fake post or something went wrong
+        // anyway, abort mission
+        if (!post) return;
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        // Show original twist, not the retwist itself
+        if (post.get('retwist')) {
+            post = post.get('retwist');
+        }
+
+        app.dispatcher.trigger('open-post-detail', {
+            post: post,
+            feed: this.options.feed
+        });
+    },
+
     render: function() {
         this.replyingTo = this.post.getLastChild();
         this.$el.html(postDetailTemplate({
@@ -159,4 +182,3 @@ module.exports = Backbone.View.extend({
         return this;
     }
 });
-

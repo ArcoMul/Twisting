@@ -3,17 +3,14 @@
 <% var isReplying = isReplying || false %>
 <% var overwriteUser = overwriteUser || null %>
 
-<div class="post <%= post.getType() %> <%= className %>" data-id="<%=post.id%>">
+<div class="post <%= (isReplying ? 'compose_reply' : post.getType()) %> <%= className %>" data-id="<%= (isReplying ? '' : post.id) %>">
 
-    <% if (icon || post.getType() == 'compose_reply') { %>
-    <div class="icon"></div>
-    <% } %>
-
-    <% if (post.getType() != 'compose_reply') { %>
-    <div class="avatar">
-            <%= (overwriteUser ? overwriteUser : post.get('user')).getAvatarImg() %>
-    </div>
-    <% } %>
+    <a class="avatar" href="/user/<%= (overwriteUser ? overwriteUser.get('username') : post.get('user').get('username')) %>">
+        <%= (overwriteUser ? overwriteUser.getAvatarImg() : post.get('user').getAvatarImg()) %>
+        <% if (icon) { %>
+            <div class="icon"></div>
+        <% } %>
+    </a>
 
     <% if (post.getType() == 'compose') { %>
         <div class="compose">

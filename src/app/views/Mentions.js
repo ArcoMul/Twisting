@@ -24,8 +24,7 @@ module.exports = Backbone.View.extend({
     $loader: null,
 
     events: {
-        "click .post .icon": "openPost",
-        "click .post .avatar": "openUser"
+        "click .post .icon": "openPost"
     },
 
     initialize: function(options) {
@@ -62,7 +61,7 @@ module.exports = Backbone.View.extend({
                     return;
                 }
                 _.each(postsToSetAvatar, function (post) {
-                    self.$posts.find('.post[data-id=' + post.cid + '] .left img').attr('src', user.get('avatar'));
+                    self.$posts.find('.post[data-id=' + post.id + '] img[data-username='+user.get('username')+']').attr('src', user.get('avatar'));
                 });
             });
 
@@ -75,9 +74,16 @@ module.exports = Backbone.View.extend({
     },
 
     openPost: function (e) {
-        e.stopImmediatePropagation();
-        var id = $(e.currentTarget).parents('.post').attr('data-id');
+        var $post = $(e.currentTarget).parents('.post');
+        var id = $post.attr('data-id');
         var post = this.feed.get('posts').get(id);
+
+        // Couldn't find the post, might be a fake post or something went wrong
+        // anyway, abort mission
+        if (!post) return;
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
 
         // Show original twist, not the retwist itself
         if (post.get('retwist')) {

@@ -18,12 +18,13 @@ module.exports = Backbone.View.extend({
     events: {
         "scroll": "scroll",
         "click .avatar .follow": "toggleFollow",
-        "click .avatar .following": "toggleFollow"
+        "click .avatar .following": "toggleFollow",
+        "click .avatar .icon": "openPost"
     },
 
     initialize: function(options) {
         var self = this;
-        
+
         this.options = options;
         this.user = options.user;
 
@@ -105,15 +106,38 @@ module.exports = Backbone.View.extend({
         this.$followButton.addClass('loading');
         if (app.user.isFollowing(this.user.get('username'))) {
             app.user.unfollow(this.user.get('username'), function (err) {
-                if(err) return console.error('Error unfollowing user', err); 
-                self.render();    
+                if(err) return console.error('Error unfollowing user', err);
+                self.render();
             });
         } else {
             app.user.follow(this.user.get('username'), function (err) {
-                if(err) return console.error('Error following user', err); 
-                self.render();    
+                if(err) return console.error('Error following user', err);
+                self.render();
             });
         }
+    },
+
+    openPost: function (e) {
+        var $post = $(e.currentTarget).parents('.post');
+        var id = $post.attr('data-id');
+        var post = this.feed.get('posts').get(id);
+
+        // Couldn't find the post, might be a fake post or something went wrong
+        // anyway, abort mission
+        if (!post) return;
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        // Show original twist, not the retwist itself
+        if (post.get('retwist')) {
+            post = post.get('retwist');
+        }
+
+        app.dispatcher.trigger('open-post-detail', {
+            post: post,
+            feed: this.feed
+        });
     },
 
     render: function() {
@@ -128,4 +152,3 @@ module.exports = Backbone.View.extend({
         return this;
     }
 });
-

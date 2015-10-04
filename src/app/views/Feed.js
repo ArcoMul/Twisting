@@ -32,14 +32,9 @@ module.exports = Backbone.View.extend({
 
     events: {
         "keyup .compose div": "onTyping",
-
         "click .post.new": "onNewPost",
-        //"click .post": "onPostClick",
         "click .retwisters span:nth-child(1)": "retwist",
-        //"click .post .actions .reply": "reply",
-        //"click .post .actions .preview": "preview",
-        "click .post .icon": "openPost",
-        "click .post .avatar": "openUser"
+        "click .post .avatar .icon": "openPost",
     },
 
     initialize: function(options) {
@@ -120,6 +115,7 @@ module.exports = Backbone.View.extend({
         if (!post) return;
 
         e.stopImmediatePropagation();
+        e.preventDefault();
 
         // Show original twist, not the retwist itself
         if (post.get('retwist')) {
@@ -129,26 +125,6 @@ module.exports = Backbone.View.extend({
         app.dispatcher.trigger('open-post-detail', {
             post: post,
             feed: this.feed
-        });
-    },
-
-    openUser: function (e) {
-        e.stopImmediatePropagation();
-        var $post = $(e.currentTarget).parents('.post');
-
-        // User clicked on his own avatar of the 'compose post'
-        if ($post.hasClass('compose')) {
-            app.dispatcher.trigger('open-user-profile', {
-                user: app.user
-            });
-            return;
-        }
-
-        // Normal click on an avatar of another user
-        var id = $post.attr('data-id');
-        var user = this.feed.get('posts').get(id).get('user');
-        app.dispatcher.trigger('open-user-profile', {
-            user: user
         });
     },
 
