@@ -34,9 +34,9 @@ var PostModel = module.exports = Backbone.Model.extend({
     },
 
     initialize: function (properties) {
-        if (properties && !properties.retwisters) this.set('retwisters', new Array());
-        if (properties && !properties.replies) this.set('replies', new Array());
-        if (properties && !properties.lovers) this.set('lovers', new Array());
+        if (properties && !properties.retwisters) this.set('retwisters', []);
+        if (properties && !properties.replies) this.set('replies', []);
+        if (properties && !properties.lovers) this.set('lovers', []);
     },
 
     /**
@@ -139,7 +139,7 @@ var PostModel = module.exports = Backbone.Model.extend({
 
     addRetwister: function (user) {
         var retwisters = this.get('retwisters');
-        if (retwisters.indexOf(user) != -1) {
+        if (retwisters.indexOf(user) !== -1) {
             return;
         }
         user.fetchAvatarFromDisk();
@@ -262,6 +262,7 @@ var PostModel = module.exports = Backbone.Model.extend({
     {
         var text = this.get('message');
         var usernames = text.match( /(^|[^@\w])@(\w{1,30})\b/g);
+        if (!usernames) return [];
         for (var i = 0; i < usernames.length; i++) {
             usernames[i] = usernames[i].trim().substr(1);
         }
