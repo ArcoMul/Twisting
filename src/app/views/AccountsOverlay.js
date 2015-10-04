@@ -16,6 +16,7 @@ Backbone.$ = $;
 module.exports = Backbone.View.extend({
 
     posts: null,
+    users: {},
 
     events: {
         "click a": "navigate",
@@ -27,15 +28,24 @@ module.exports = Backbone.View.extend({
 
         this.render();
 
+        // Fetch users from wallet
         Twister.getUsers(function (err, users) {
-            console.log('received users', users);
-            self.users = {};
             _.each(users, function (username) {
                 var user = new UserModel({username: username});
-                user.fetchAvatar(function (err) {
-                    self.$el.find('.user[data-user=' + user.get('username') + ']').children('img').attr('src', user.get('avatar'));
-                });
                 self.users[username] = user;
+
+                // Try to get avatar from disk
+                user.fetchAvatarFromDisk(function (err) {
+                    if (user.get('avatar')) {
+                        self.$el.find('.user[data-user=' + user.get('username') + ']').children('img').attr('src', user.get('avatar'));
+                        return;
+                    }
+
+                    // Couldn't find avatar on disk, try DHT
+                    user.fetchAvatar(function (err) {
+                        self.$el.find('.user[data-user=' + user.get('username') + ']').children('img').attr('src', user.get('avatar'));
+                    });
+                });
             });
             self.render(self.users);
         });
