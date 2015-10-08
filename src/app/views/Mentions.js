@@ -24,7 +24,8 @@ module.exports = Backbone.View.extend({
     $loader: null,
 
     events: {
-        "click .post .icon": "openPost"
+        "click .post .icon": "openPost",
+        "click .post": "openPost"
     },
 
     initialize: function(options) {
@@ -74,7 +75,17 @@ module.exports = Backbone.View.extend({
     },
 
     openPost: function (e) {
-        var $post = $(e.currentTarget).parents('.post');
+        // Don't do anything if a link is clicked
+        if ($(e.target).is('a') || $(e.target).is('img')) {
+            return;
+        }
+
+        var $post;
+        if ($(e.currentTarget).hasClass('post')) {
+            $post = $(e.currentTarget);
+        } else {
+            $post = $(e.currentTarget).parents('.post');
+        }
         var id = $post.attr('data-id');
         var post = this.feed.get('posts').get(id);
 

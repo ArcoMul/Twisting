@@ -35,6 +35,7 @@ module.exports = Backbone.View.extend({
         "click .post.new": "onNewPost",
         "click .retwisters span:nth-child(1)": "retwist",
         "click .post .avatar .icon": "openPost",
+        "click .post": "openPost"
     },
 
     initialize: function(options) {
@@ -96,7 +97,7 @@ module.exports = Backbone.View.extend({
     },
 
     setNewPost: function (n) {
-        this.$newpost.children(".icon").children("span").text(n);
+        this.$newpost.children(".avatar").children("span").text(n);
         this.$newpost.show();
     },
 
@@ -106,7 +107,17 @@ module.exports = Backbone.View.extend({
     },
 
     openPost: function (e) {
-        var $post = $(e.currentTarget).parents('.post');
+        // Don't do anything if a link is clicked
+        if ($(e.target).is('a') || $(e.target).is('img')) {
+            return;
+        }
+
+        var $post;
+        if ($(e.currentTarget).hasClass('post')) {
+            $post = $(e.currentTarget);
+        } else {
+            $post = $(e.currentTarget).parents('.post');
+        }
         var id = $post.attr('data-id');
         var post = this.feed.get('posts').get(id);
 

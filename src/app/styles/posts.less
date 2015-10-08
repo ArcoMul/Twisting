@@ -7,7 +7,7 @@
         height: 100%;
         width: 4px;
         position: absolute;
-        left: 32px;
+        left: 55px;
         top: 0;
         background-color: #c9e9ec;
         border-radius: 4px 4px 0 0;
@@ -17,11 +17,14 @@
         color: #605e58;
         position: relative;
         display: flex;
-        margin-bottom: 40px;
         font-size: 20px;
         line-height: 26px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        cursor: pointer;
 
         &:hover {
+            background-color: rgba(201, 233, 236, 0.5);
             .content {
                 .top {
                     .lovers.empty { display: inline-block }
@@ -88,13 +91,19 @@
             background-color: #7e50bd;
             background-image: url(../img/icon-reply.png);
         }
+        &.compose_reply:hover {
+            background-color: transparent;
+        }
         &.retwist .icon {
             background-color: #4fb547;
             background-image: url(../img/icon-retwist.png);
         }
-        &.compose .icon {
-            background-color: #BABABA;
-            background-image: url(../img/icon-compose.png);
+        &.compose {
+            &:hover { background-color: transparent; }
+            .icon {
+                background-color: #BABABA;
+                background-image: url(../img/icon-compose.png);
+            }
         }
         .avatar {
             flex: 0 0 75px;
@@ -167,9 +176,9 @@
                 position: absolute;
                 font-weight: lighter;
                 right: 20px;
-                top: 0;
+                top: 8px;
                 float: right;
-                color: #BEBEBE;
+                color: #8C8C8C;
                 font-family: 'Open Sans';
                 &.characters {
                     top: -20px;
@@ -206,14 +215,17 @@
     }
 
     .replies.posts {
-        margin-left: 88px;
+        margin-left: 40px;
+        margin-top: -10px;
         &.line::before {
-            left: 26px;
+            left: 41px;
+            height: calc(~"100% - 41px");
+            border-radius: 0;
         }
         .post {
             font-size: 18px;
             line-height: 24px;
-            margin-bottom: 30px;
+            padding: 10px 15px;
             .avatar {
                 flex: 0 0 56px;
                 height: 56px;
