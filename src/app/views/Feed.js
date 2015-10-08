@@ -103,6 +103,7 @@ module.exports = Backbone.View.extend({
 
     onNewPost: function () {
         this.$posts.find(".post:hidden").show();
+        this.$posts.children().first().after(this.$newpost);
         this.$newpost.hide();
     },
 
