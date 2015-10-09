@@ -1,1 +1,23 @@
-<h1>Messages</h1>
+<div id="messages">
+    <div class="conversation-list">
+        <% if(conversations) { %>
+            <% conversations.each(function (conversation) { %>
+                <% if(conversation.get('users').length === 1) { %>
+                    <div class="conversation">
+                        <a class="avatar" href="/user/<%= conversation.get('users').at(0).get('username')%>">
+                            <%= conversation.get('users').at(0).getAvatarImg() %>
+                        </a>
+                        <div class="content">
+                            <span class="date"><%= conversation.get('messages').at(0).getTimeAgo() %></span>
+                            <a class="username" href="/user/<%= conversation.get('users').at(0).get('username')%>"><%= conversation.get('users').at(0).get('username') %></a>
+                            <p><%= conversation.get('messages').at(0).get('message') %></p>
+                        </div>
+                    </div>
+                <% } %>
+            <% }) %>
+        <% } %>
+    </div>
+    <div class="conversation">
+
+    </div>
+</div>
