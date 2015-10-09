@@ -139,7 +139,7 @@ module.exports = Backbone.Model.extend({
         var self = this;
         Twister.getPosts(this.get('username'), amount, function (err, data) {
             if (err) {
-                console.log('Error getting user posts for user:', self.get('username'), err);
+                console.error('Error getting user posts for user:', self.get('username'), err);
                 callback(err);
                 return;
             }
@@ -156,7 +156,7 @@ module.exports = Backbone.Model.extend({
         var self = this;
         Twister.getAvatarFromDisk(this.get('username'), function (err, avatar) {
             if (err) {
-                console.log('Error getting avatar for user:', self.get('username'), err);
+                console.error('Error getting avatar for user:', self.get('username'), err);
                 return callback(err);
             }
             self.set('avatar', avatar);
@@ -168,7 +168,7 @@ module.exports = Backbone.Model.extend({
         var self = this;
         Twister.getAvatarFromDHT(this.get('username'), function (err, avatar) {
             if (err) {
-                console.log('Error getting avatar for user:', self.get('username'), err);
+                console.error('Error getting avatar for user:', self.get('username'), err);
                 return callback(err);
             }
             self.set('avatar', avatar);
@@ -180,6 +180,10 @@ module.exports = Backbone.Model.extend({
         var self = this;
         Twister.getProfile(this.get('username'), function (err, data) {
             if (err) return callback(err);
+            if (!data) {
+                console.error('No profile data found');
+                return callback();
+            }
             self.set(data[0].p.v);
             callback();
         });
