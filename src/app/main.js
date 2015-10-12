@@ -1,4 +1,4 @@
-// Break out the application running from the configuration definition to
+// Break out the application running fr×om the configuration definition to
 // assist with testing.
 
 var fs = require('fs'),
@@ -37,15 +37,12 @@ $(window.document).on('keyup', function (e) {
 
 var win = gui.Window.get();
 win.on('close', function() {
-    this.hide(); // Pretend to be closed already
+    // gui.App.quit();
     Twister.stopDeamon(function (err, data) {
-        // TODO: application should always quit, no matter what
-        //      this is just for debugging
         if (err) return console.log('Error stopping deamon, inspect!', err);
+        // TODO: show an overlay that the deamon is exiting + a force close button
+        gui.App.quit();
     });
-
-    // Quit the application
-    gui.App.quit();
 });
 
 // Enable shadow

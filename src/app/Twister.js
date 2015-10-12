@@ -312,6 +312,35 @@ module.exports = (function () {
         });
     }
 
+    var getLastHave = function (username, callback) {
+        twisterRpc("getlasthave", [username], function (err, data) {
+            callback(err, data);
+        });
+    };
+
+    var getGroups = function (username, callback) {
+        twisterRpc("listgroups", [], function (err, data) {
+            if (err) return callback(err);
+            var groups = [];
+            async.eachSeries(data, function (alias, done){
+                getGroupInfo(alias, function (err, data) {
+                    if (data) {
+                        groups.push(data);
+                    }
+                    done(err, data);
+                });
+            }, function (err, results) {
+                callback(err, groups);
+            });
+        });
+    };
+
+    var getGroupInfo = function (alias, callback) {
+        twisterRpc("getgroupinfo", [alias], function (err, data) {
+            callback(err, data);
+        });
+    };
+
     /**
      * Follows a user localy and optionally saves it to DHT
      */
@@ -413,12 +442,12 @@ module.exports = (function () {
             callback = replyTo;
         }
         var k;
-        getPosts(username, 1, function (err, posts) {
+        getLastHave(username, function (err, lasthaves) {
             if (err) return callback(err);
-            if (posts.length == 0) {
+            if (lasthaves[username] === -1) {
                 k = 0;
             } else {
-                k = posts[0].userpost.k + 1;
+                k = lasthaves[username] + 1;
             }
             var params = [username, k, text];
             if (isReplying) {
@@ -429,7 +458,7 @@ module.exports = (function () {
                 callback(err, data);
             });
         });
-    }
+    };
 
     /**
      * username = user retwisting
@@ -505,6 +534,8 @@ module.exports = (function () {
         getMentionsFromDHT: getMentionsFromDHT,
         getMentionsCombined: getMentionsCombined,
         getProfile: getProfile,
+        getLastHave: getLastHave,
+        getGroups: getGroups,
         follow: follow,
         unfollow: unfollow,
         post: post,

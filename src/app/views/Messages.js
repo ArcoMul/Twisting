@@ -8,6 +8,7 @@ var $ = require("jquery"),
     messagesTemplate = _.template(require("../templates/messages.html")),
     Twister = require("../Twister"),
     UserModel = require('../models/User'),
+    UserCollection = require('../collections/users'),
     ConversationModel = require('../models/Conversation'),
     ConversationCollection = require('../collections/conversations'),
     MessageModel = require('../models/Message'),
@@ -20,7 +21,7 @@ module.exports = Backbone.View.extend({
     messages: null,
 
     events: {
-
+        'click .conversation-list .conversation': 'openConversation'
     },
 
     initialize: function(options) {
@@ -29,25 +30,81 @@ module.exports = Backbone.View.extend({
 
         this.render();
 
-        var users = [];
+        var users = new UserCollection();
         var conversations = new ConversationCollection();
 
-        Twister.getFollowing(app.user.get('username'), function (err, usernames) {
-            _.each(usernames, function (u) {
-                users.push(new UserModel({username: u}));
-            });
-            Twister.getMessages(app.user.get('username'), 1, usernames, function (err, data) {
-                _.each(data, function (messages, username) {
-                    var c = new ConversationModel();
-                    c.addUser(new UserModel({username: username}));
-                    c.addMessage(new MessageModel().parse(messages[0], c.get('users').first()));
-                    conversations.add(c);
+        var aliases = [];
+
+        async.auto({
+            following: function (next) {
+                Twister.getFollowing(app.user.get('username'), function (err, usernames) {
+                    if (err) return next(err);
+                    _.each(usernames, function (u) {
+                        aliases.push(u);
+                    });
+                    next();
                 });
-                self.render(conversations);
-            });
+            },
+            groups: function (next) {
+                Twister.getGroups(app.user.get('username'), function (err, groups) {
+                    if (err) return next(err);
+                    _.each(groups, function (group) {
+                        aliases.push(group.alias);
+                        var c = new ConversationModel();
+                        c.setGroupAliases(group.alias);
+                        _.each(group.members, function (username) {
+                            var user = users.findWhere({username: username});
+                            if (!user) {
+                                user = new UserModel({username: username});
+                                users.add(user);
+                            }
+                            c.addUser(user);
+                        });
+                        conversations.add(c);
+                    });
+                    next();
+                });
+            },
+            messages: ['following', 'groups', function (next) {
+                Twister.getMessages(app.user.get('username'), 1, aliases, function (err, data) {
+                    if (err) return next(err);
+                    _.each(data, function (messages, alias) {
+                        var conversation = conversations.findWhere({alias: alias});
+                        // Direct messages don't have a conversation yet
+                        // group messages do
+                        if (!conversation) {
+                            conversation = new ConversationModel();
+                            conversations.add(conversation);
+                        }
+                        if (!conversation.isGroupConversation()) {
+                            var user = users.findWhere({username: alias});
+                            if (!user) {
+                                user = new UserModel({username: alias});
+                                users.add(user);
+                            }
+                            conversation.addUser(user);
+                        }
+                        var fromUser = users.findWhere({username: messages[0].from});
+                        if (!fromUser) {
+                            fromUser = new UserModel({username: alias});
+                            users.add(fromUser);
+                        }
+                        conversation.addMessage(new MessageModel().parse(messages[0], fromUser));
+                    });
+                    next();
+                });
+            }]
+        }, function (err, results) {
+            if (err) return console.error('Error getting direct and group messages', err);
+            conversations.sort();
+            self.render(conversations);
         });
     },
 
+    openConversation: function (e) {
+        var $conversation = $(e.currentTarget);
+        console.log($conversation);
+    },
 
     render: function(conversations) {
         this.$el.html(messagesTemplate({

@@ -24,6 +24,14 @@ module.exports = Backbone.Model.extend({
         this.set('messages', new MessagesCollection());
     },
 
+    setGroupAliases: function (alias) {
+        this.set('alias', alias);
+    },
+
+    isGroupConversation: function () {
+        return this.get('alias') ? true : false;
+    },
+
     addUser: function (user) {
         this.get('users').add(user);
     },
