@@ -4,53 +4,65 @@
     .conversation-list {
         flex: 0 0 350px;
         border-right: 2px solid #EDEDED;
-        .conversation {
-            display: flex;
-            padding: 10px;
-            position: relative;
-            background-color: #FFFFFF;
-            cursor: pointer;
-            height: 60px;
-            &:hover {
-                background-color: #E4F4F5;
-            }
-            .avatar {
-                flex: 0 0 60px;
-                padding-right: 10px;
-                img {
-                    width: 100%;
-                    border-radius: 60px;
-                }
-            }
-            .content {
-                font-family: Georgia;
-                font-size: 18px;
-                height: 60px;
-                line-height: 21px;
-                padding-top: 10px;
-                .date {
-                    position: absolute;
-                    right: 5px;
-                    top: 5px;
-                    font-family: 'Open Sans';
-                    font-size: 14px;
-                    color: #999;
-                }
-                .username {
-                    font-family: 'Open Sans';
-                    font-size: 16px;
-                }
-                p {
-                    text-overflow: ellipsis;
-                    height: 23px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    color: #666;
-                }
-            }
-        }
     }
     .conversation {
         flex: 1;
+    }
+    .message {
+        display: flex;
+        padding: 10px;
+        position: relative;
+        background-color: #FFFFFF;
+        cursor: pointer;
+        height: 60px;
+        &:hover {
+            background-color: #E4F4F5;
+        }
+        .avatar {
+            flex: 0 0 60px;
+            padding-right: 10px;
+            img {
+                width: 100%;
+                border-radius: 60px;
+            }
+        }
+        .content {
+            font-family: Georgia;
+            font-size: 18px;
+            height: 60px;
+            line-height: 21px;
+            padding-top: 10px;
+            .date {
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                font-family: 'Open Sans';
+                font-size: 14px;
+                color: #999;
+            }
+            .username {
+                font-family: 'Open Sans';
+                font-size: 16px;
+            }
+            p {
+                text-overflow: ellipsis;
+                height: 23px;
+                overflow: hidden;
+                white-space: nowrap;
+                color: #666;
+            }
+        }
+    }
+    #conversation {
+        overflow-y: scroll;
+        .message {
+            height: auto;
+            .content p {
+                text-overflow: initial;
+                height: auto;
+                overflow: visible;
+                white-space: normal;
+            }
+        }
     }
 }

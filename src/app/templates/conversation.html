@@ -1,0 +1,12 @@
+<% conversation.get('messages').toArray().reverse().forEach(function (message) { %>
+    <div class="message">
+        <a class="avatar" href="/user/<%= message.get('user').get('username')%>">
+            <%= message.get('user').getAvatarImg() %>
+        </a>
+        <div class="content">
+            <span class="date"><%= message.getTimeAgo() %></span>
+            <a class="username" href="/user/<%= message.get('user').get('username')%>"><%= message.get('user').get('username') %></a>
+            <p><%= message.get('message') %></p>
+        </div>
+    </div>
+<% }) %>

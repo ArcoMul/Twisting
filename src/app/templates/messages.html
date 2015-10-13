@@ -3,7 +3,7 @@
         <% if(conversations) { %>
             <% conversations.each(function (conversation) { %>
                 <% if(conversation.get('users').length === 1) { %>
-                    <div class="conversation">
+                    <div class="message" data-cid="<%= conversation.cid %>">
                         <a class="avatar" href="/user/<%= conversation.get('users').at(0).get('username')%>">
                             <%= conversation.get('users').at(0).getAvatarImg() %>
                         </a>
@@ -17,7 +17,7 @@
             <% }) %>
         <% } %>
     </div>
-    <div class="conversation">
+    <div id="conversation">
 
     </div>
 </div>
