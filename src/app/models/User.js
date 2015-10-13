@@ -239,5 +239,13 @@ module.exports = Backbone.Model.extend({
         } else {
             return '<img data-username="'+this.get('username')+'" ' + (title ? 'title="@'+this.get('username')+'"' : '') + ' src="app/img/profile.jpg" />';
         }
+    },
+
+    getAvatar: function () {
+        if (this.get('avatar')) {
+            return this.get('avatar');
+        } else {
+            return 'app/img/profile.jpg';
+        }
     }
 });

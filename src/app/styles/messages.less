@@ -1,12 +1,15 @@
 #messages {
-    display: flex;
     height: calc(~"100vh - 40px");
-    .conversation-list {
-        flex: 0 0 350px;
+    #conversation-list {
+        height: calc(~"100vh - 40px");
+        top: 40px;
+        position: fixed;
         border-right: 2px solid #EDEDED;
+        width: 350px;
     }
-    .conversation {
-        flex: 1;
+    #conversation {
+        width: calc(~"100% - 352px");
+        margin-left: 352px;
     }
     .message {
         display: flex;
@@ -54,14 +57,19 @@
         }
     }
     #conversation {
-        overflow-y: scroll;
         .message {
             height: auto;
-            .content p {
-                text-overflow: initial;
+            width: 80%;
+            margin: 0 auto;
+            .content {
+                padding-top: 0px;
                 height: auto;
-                overflow: visible;
-                white-space: normal;
+                p {
+                    text-overflow: initial;
+                    height: auto;
+                    overflow: visible;
+                    white-space: normal;
+                }
             }
         }
     }

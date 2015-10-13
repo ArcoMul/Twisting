@@ -23,7 +23,7 @@ module.exports = Backbone.View.extend({
     conversations: null,
 
     events: {
-        'click .conversation-list .message': 'openConversation'
+        'click #conversation-list .message': 'openConversation'
     },
 
     initialize: function(options) {
@@ -53,6 +53,7 @@ module.exports = Backbone.View.extend({
                     _.each(groups, function (group) {
                         aliases.push(group.alias);
                         var c = new ConversationModel();
+                        c.on('avatarLoaded', self.onAvatarLoaded, self);
                         c.setGroupAliases(group.alias);
                         _.each(group.members, function (username) {
                             var user = self.users.findWhere({username: username});
@@ -76,6 +77,7 @@ module.exports = Backbone.View.extend({
                         // group messages do
                         if (!conversation) {
                             conversation = new ConversationModel();
+                            conversation.on('avatarLoaded', self.onAvatarLoaded, self);
                             self.conversations.add(conversation);
                         }
                         if (!conversation.isGroupConversation()) {
@@ -103,6 +105,12 @@ module.exports = Backbone.View.extend({
         });
     },
 
+    onAvatarLoaded: function (user) {
+        this.$el.find('img[data-username=' + user.get('username') + ']').each(function () {
+            $(this).attr('src', user.getAvatar());
+        });
+    },
+
     openConversation: function (e) {
         var self = this;
         var $conversation = $(e.currentTarget);
@@ -113,14 +121,17 @@ module.exports = Backbone.View.extend({
                 if (err) return console.error('Error fetching messages for conversation');
                 self.renderConversation(conversation);
             });
+        } else {
+            self.renderConversation(conversation);
         }
     },
 
     renderConversation: function (conversation) {
         this.$conversation.html(conversationTemplate({
-            conversation: conversation
+            conversation: conversation,
+            user: app.user
         }));
-        this.$conversation.scrollTop(this.$conversation[0].scrollHeight);
+        $("#main-scrollable").scrollTop($("#main-scrollable")[0].scrollHeight);
     },
 
     render: function() {

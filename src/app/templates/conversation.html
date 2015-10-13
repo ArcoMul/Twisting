@@ -1,12 +1,27 @@
-<% conversation.get('messages').toArray().reverse().forEach(function (message) { %>
+<div class="messages">
+    <% conversation.get('messages').toArray().reverse().forEach(function (message) { %>
+        <div class="message">
+            <a class="avatar" href="/user/<%= message.get('user').get('username')%>">
+                <%= message.get('user').getAvatarImg() %>
+            </a>
+            <div class="content">
+                <span class="date"><%= message.getTimeAgo() %></span>
+                <a class="username" href="/user/<%= message.get('user').get('username')%>"><%= message.get('user').get('username') %></a>
+                <p><%= message.get('message') %></p>
+            </div>
+        </div>
+    <% }) %>
+</div>
+<!--
+<div id="new-message">
     <div class="message">
-        <a class="avatar" href="/user/<%= message.get('user').get('username')%>">
-            <%= message.get('user').getAvatarImg() %>
+        <a class="avatar" href="/user/<%= user.get('username')%>">
+            <%= user.getAvatarImg() %>
         </a>
-        <div class="content">
-            <span class="date"><%= message.getTimeAgo() %></span>
-            <a class="username" href="/user/<%= message.get('user').get('username')%>"><%= message.get('user').get('username') %></a>
-            <p><%= message.get('message') %></p>
+        <div class="content new">
+            Write a message to
+            <% var first=true; conversation.getOthers().forEach(function(user){ %><%= (first ? '' : ', ') + user.get('username') %><% if(first) { first = false; } }) %>
         </div>
     </div>
-<% }) %>
+</div>
+-->

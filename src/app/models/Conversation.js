@@ -5,6 +5,7 @@ var $ = require("jquery"),
     _ = require("underscore"),
     Backbone = require("backbone"),
     async = require("async"),
+    app = require("../app"),
     Twister = require("../Twister"),
     MessagesCollection = require("../collections/messages"),
     UserCollection = require("../collections/users"),
@@ -35,7 +36,11 @@ module.exports = Backbone.Model.extend({
     },
 
     addUser: function (user) {
+        var self = this;
         this.get('users').add(user);
+        user.fetchAvatarFromDisk(function (err) {
+            self.trigger('avatarLoaded', user);
+        });
     },
 
     addMessage: function (message) {
@@ -60,13 +65,21 @@ module.exports = Backbone.Model.extend({
                     var fromUser = self.get('users').findWhere({username: message.from});
                     if (!fromUser) {
                         fromUser = new UserModel({username: message.from});
-                        self.get('users').add(fromUser);
+                        self.addUser(fromUser);
                     }
                     self.addMessage(new MessageModel().parse(message, fromUser));
                 });
             });
             done(null, self);
         });
+    },
+
+    getOthers: function () {
+        var users = this.get('users').toArray();
+        users = _.filter(users, function (u) {
+            return u.get('username') !== app.user.get('username');
+        });
+        return users;
     }
 
 });
