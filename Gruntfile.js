@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 
     var platforms;
     if (target == 'all') {
-        platforms = ['win64', 'linux64'];
+        platforms = ['win32', 'win64', 'linux64'];
     } else {
         platforms = [target];
     }
